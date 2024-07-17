@@ -1,0 +1,49 @@
+{
+  "name": "mowziesmobs:monastery/room_up_pool",
+  "fallback": "mowziesmobs:monastery/room_up_pool",
+  "elements": [
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_room_middle",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "conditions": {
+          "max_height": -1
+        },
+        "bounds": {
+          "special_bounds": "tower",
+          "interior_bounds_min_offset": [ 1, 0, 1 ],
+          "interior_bounds_max_offset": [ -1, 0, -1 ]
+        },
+        "tags": {
+          "inherits_tag": true
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_room_top",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "conditions": {
+          "min_height": -1
+        },
+        "bounds": {
+          "special_bounds": "tower",
+          "interior_bounds_min_offset": [ 1, 0, 1 ],
+          "interior_bounds_max_offset": [ -1, 0, -1 ]
+        },
+        "tags": {
+          "inherits_tag": true
+        }
+      }
+    }
+
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "name": "mowziesmobs:monastery/room_wall_right_pool",
+  "fallback": "mowziesmobs:monastery/fallback/room_wall_right_fallback_pool",
+  "elements": [
+
+    {
+      "weight": 6,
+      "element": {
+        "element_type": "mowziesmobs:fallback_element"
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_wall_connector_exit",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "bounds_min_offset": [ 0, 5, 2 ],
+          "bounds_max_offset": [ 0, 0, -2 ],
+          "check_bounds_min_offset": [ 0, -80, 0 ],
+          "check_bounds_max_offset": [ 3, 80, 0 ]
+        },
+        "two_way": true,
+        "conditions": {
+          "min_height": -4,
+          "max_height": 8,
+          "max_allowed_paths": 4
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_tower_gap",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "ignore_bounds": true,
+          "needs_overlap_bounds": "tower",
+          "bounds_min_offset": [ 0, 2, 0 ],
+          "bounds_max_offset": [ 0, -2, 0 ]
+        },
+        "gen_order": 3,
+        "priority": -1
+      }
+    }
+
+  ]
+}

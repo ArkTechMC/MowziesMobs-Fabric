@@ -1,0 +1,103 @@
+{
+  "name": "mowziesmobs:monastery/fallback/tower_wall_fallback_pool",
+  "fallback": "mowziesmobs:monastery/fallback/tower_wall_fallback_pool",
+  "elements": [
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_tower_blank",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "ignore_bounds": true
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_tower_window1",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "bounds_max_offset": [ 0, 0, -1 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ],
+          "place_bounds": false
+        },
+        "conditions": {
+          "min_height": -1
+        }
+      }
+    },
+
+    {
+      "weight": 3,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_tower_window1",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "bounds_max_offset": [ 0, 0, -1 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ],
+          "place_bounds": false
+        },
+        "conditions": {
+          "forbidden_parents": [
+            "mowziesmobs:monastery/monastery_tower_top"
+          ],
+          "min_height": -1
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_tower_window_short",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "bounds_max_offset": [ 0, 0, -1 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ],
+          "place_bounds": false
+        },
+        "conditions": {
+          "min_height": -1,
+          "forbidden_parents": [
+            "mowziesmobs:monastery/monastery_tower_top",
+            "mowziesmobs:monastery/monastery_tower"
+          ]
+        }
+      }
+    },
+
+    {
+      "weight": 3,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_tower_window_tall",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "bounds_max_offset": [ 0, 0, -1 ],
+          "check_bounds_max_offset": [ 0, 80, 0 ],
+          "place_bounds": false
+        },
+        "conditions": {
+          "min_height": -1,
+          "forbidden_parents": [
+            "mowziesmobs:monastery/monastery_tower_middle",
+            "mowziesmobs:monastery/monastery_tower_bottom"
+          ]
+        }
+      }
+    }
+
+  ]
+}

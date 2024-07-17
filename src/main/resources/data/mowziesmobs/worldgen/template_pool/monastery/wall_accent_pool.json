@@ -1,0 +1,30 @@
+{
+  "name": "mowziesmobs:monastery/crown",
+  "fallback": "minecraft:empty",
+  "elements": [
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_wall_accent",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "ignore_bounds": true
+        }
+      }
+    },
+
+    {
+      "weight": 10,
+      "element": {
+        "location": "minecraft:empty",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "name": "mowziesmobs:monastery/center_corners_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+
+    {
+      "weight": 5,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_wall_corner",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "special_bounds": "corner",
+          "bounds_min_offset": [ 1, 5, 1 ],
+          "check_bounds_min_offset": [ 0, -80, 0 ]
+        },
+        "conditions": {
+          "min_required_paths": 2,
+          "num_paths_override": 0
+        }
+      }
+    },
+
+    {
+      "weight": 4,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_wall_3way",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "special_bounds": "wall",
+          "check_bounds_min_offset": [ 0, -80, 0 ]
+        },
+        "conditions": {
+          "max_allowed_paths": 4,
+          "num_paths_override": 1
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_wall_4way",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "special_bounds": "wall",
+          "check_bounds_min_offset": [ 0, -80, 0 ]
+        },
+        "conditions": {
+          "max_allowed_paths": 3,
+          "num_paths_override": 2
+        }
+      }
+    }
+
+  ]
+}

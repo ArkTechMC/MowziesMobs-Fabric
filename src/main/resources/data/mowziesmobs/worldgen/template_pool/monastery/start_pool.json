@@ -1,0 +1,23 @@
+{
+  "name": "mowziesmobs:monastery/start_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_center",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "bounds_min_offset": [ 3, 0, 3 ],
+          "bounds_max_offset": [ -3, 0, -3 ],
+          "offset": [ 0, -1, -12 ],
+          "check_bounds_min_offset": [ 0, -80, 0 ]
+        }
+      }
+    }
+
+  ]
+}

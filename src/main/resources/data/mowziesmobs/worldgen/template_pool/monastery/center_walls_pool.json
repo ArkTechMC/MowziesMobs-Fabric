@@ -1,0 +1,26 @@
+{
+  "name": "mowziesmobs:monastery/center_walls_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_wall_straight_center",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "bounds_min_offset": [ 1, 5, 1 ],
+          "bounds_max_offset": [ -1, 0, -1 ],
+          "special_bounds": "wall",
+          "check_bounds_min_offset": [ 0, -80, 0 ]
+        },
+        "conditions": {
+          "num_paths_override": 0
+        }
+      }
+    }
+
+  ]
+}

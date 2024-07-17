@@ -1,0 +1,22 @@
+{
+  "name": "mowziesmobs:monastery/test_zone_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_test_zone",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "bounds_min_offset": [ 4, 1, 4 ],
+          "bounds_max_offset": [ -4, -2, -4 ]
+        },
+        "gen_order": -10
+      }
+    }
+
+  ]
+}

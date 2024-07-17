@@ -1,0 +1,50 @@
+{
+  "name": "mowziesmobs:monastery/dead_end_connect_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_wall_straight_deadend",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "bounds_min_offset": [ 0, 0, 1 ],
+          "bounds_max_offset": [ 0, 0, -1 ],
+          "special_bounds": "wall"
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_wall_corner_deadend",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "bounds_min_offset": [ 1, 0, 1 ]
+        }
+      }
+    },
+
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_wall_connector_gap",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "ignore_bounds": true,
+          "needs_overlap_bounds": "wall",
+          "bounds_min_offset": [ 0, 0, 1 ],
+          "bounds_max_offset": [ 0, 0, -1 ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "mowziesmobs:monastery/tower_roof_pool",
+  "fallback": "mowziesmobs:monastery/tower_roof_pool",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/monastery_tower_roof",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "bounds_min_offset": [ 3, 3, 3 ],
+          "bounds_max_offset": [ -3, -3, -3 ],
+          "ignore_bounds": true
+        },
+        "gen_order": -5
+      }
+    }
+  ]
+}

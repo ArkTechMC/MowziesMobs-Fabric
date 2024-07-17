@@ -1,0 +1,19 @@
+{
+  "name": "mowziesmobs:monastery/interior/floor_helper_pool",
+  "fallback": "mowziesmobs:monastery/interior/floor_helper_pool",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "mowziesmobs:monastery/interior/monastery_floor_helper",
+        "processors": "mowziesmobs:monastery",
+        "projection": "rigid",
+        "element_type": "mowziesmobs:mowzie_element",
+        "bounds": {
+          "ignore_bounds": true
+        },
+        "gen_order": -5
+      }
+    }
+  ]
+}

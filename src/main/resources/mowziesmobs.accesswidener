@@ -1,0 +1,37 @@
+accessWidener v2 named
+accessible method net/minecraft/block/FireBlock registerFlammableBlock (Lnet/minecraft/block/Block;II)V
+mutable field net/minecraft/client/render/entity/model/BipedEntityModel body Lnet/minecraft/client/model/ModelPart;
+mutable field net/minecraft/client/render/entity/model/BipedEntityModel head Lnet/minecraft/client/model/ModelPart;
+mutable field net/minecraft/client/render/entity/model/BipedEntityModel hat Lnet/minecraft/client/model/ModelPart;
+mutable field net/minecraft/client/render/entity/model/BipedEntityModel rightArm Lnet/minecraft/client/model/ModelPart;
+mutable field net/minecraft/client/render/entity/model/BipedEntityModel leftArm Lnet/minecraft/client/model/ModelPart;
+mutable field net/minecraft/client/render/entity/model/BipedEntityModel rightLeg Lnet/minecraft/client/model/ModelPart;
+mutable field net/minecraft/client/render/entity/model/BipedEntityModel leftLeg Lnet/minecraft/client/model/ModelPart;
+accessible field net/minecraft/client/render/entity/model/PlayerEntityModel ear Lnet/minecraft/client/model/ModelPart;
+mutable field net/minecraft/client/render/entity/model/PlayerEntityModel jacket Lnet/minecraft/client/model/ModelPart;
+mutable field net/minecraft/client/render/entity/model/PlayerEntityModel leftSleeve Lnet/minecraft/client/model/ModelPart;
+mutable field net/minecraft/client/render/entity/model/PlayerEntityModel rightSleeve Lnet/minecraft/client/model/ModelPart;
+mutable field net/minecraft/client/render/entity/model/PlayerEntityModel leftPants Lnet/minecraft/client/model/ModelPart;
+mutable field net/minecraft/client/render/entity/model/PlayerEntityModel rightPants Lnet/minecraft/client/model/ModelPart;
+mutable field net/minecraft/client/render/entity/model/PlayerEntityModel ear Lnet/minecraft/client/model/ModelPart;
+extendable class net/minecraft/client/model/ModelPart
+accessible field net/minecraft/client/model/ModelPart cuboids Ljava/util/List;
+accessible field net/minecraft/client/model/ModelPart children Ljava/util/Map;
+accessible method net/minecraft/client/render/entity/feature/ArmorFeatureRenderer usesInnerModel (Lnet/minecraft/entity/EquipmentSlot;)Z
+accessible method net/minecraft/client/render/item/HeldItemRenderer renderArmHoldingItem (Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IFFLnet/minecraft/util/Arm;)V
+accessible method net/minecraft/client/render/item/HeldItemRenderer renderFirstPersonItem (Lnet/minecraft/client/network/AbstractClientPlayerEntity;FFLnet/minecraft/util/Hand;FLnet/minecraft/item/ItemStack;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V
+accessible method net/minecraft/client/render/entity/PlayerEntityRenderer getArmPose (Lnet/minecraft/client/network/AbstractClientPlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/client/render/entity/model/BipedEntityModel$ArmPose;
+accessible field net/minecraft/entity/ai/goal/RevengeGoal noHelpTypes [Ljava/lang/Class;
+accessible field net/minecraft/entity/LivingEntity lastDamageTaken F
+accessible field net/minecraft/entity/player/PlayerEntity damageTiltYaw F
+accessible field net/minecraft/entity/Entity dimensions Lnet/minecraft/entity/EntityDimensions;
+accessible field net/minecraft/block/AbstractBlock settings Lnet/minecraft/block/AbstractBlock$Settings;
+extendable method net/minecraft/entity/Entity getHeight ()F
+accessible field net/minecraft/client/render/GameRenderer skyDarkness F
+extendable method net/minecraft/item/Item getMaxDamage ()I
+accessible field net/minecraft/item/ArmorItem attributeModifiers Lcom/google/common/collect/Multimap;
+mutable field net/minecraft/item/ArmorItem attributeModifiers Lcom/google/common/collect/Multimap;
+accessible field net/minecraft/item/MiningToolItem attributeModifiers Lcom/google/common/collect/Multimap;
+mutable field net/minecraft/item/MiningToolItem attributeModifiers Lcom/google/common/collect/Multimap;
+accessible method net/minecraft/structure/pool/SinglePoolElement getStructure (Lnet/minecraft/structure/StructureTemplateManager;)Lnet/minecraft/structure/StructureTemplate;
+accessible field net/minecraft/structure/StructurePiecesCollector pieces Ljava/util/List;

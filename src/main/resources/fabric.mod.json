@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "mowziesmobs",
+  "version": "${version}",
+  "name": "MowziesMobs Fabric",
+  "description": "",
+  "authors": [
+    "BobMowzie(Original Author)",
+    "IAFEnvoy"
+  ],
+  "contact": {
+    "repo": "https://github.com/ArkTechMC/MowziesMobs-Fabric"
+  },
+  "license": "LGPL-3.0",
+  "icon": "banner.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+    ],
+    "client": [
+      "com.bobmowzie.mowziesmobs.client.MowziesMobsClient"
+    ]
+  },
+  "accessWidener": "mowziesmobs.accesswidener",
+  "mixins": [
+    "mowziesmobs.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
