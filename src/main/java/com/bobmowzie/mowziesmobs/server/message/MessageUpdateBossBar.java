@@ -1,15 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
-import com.bobmowzie.mowziesmobs.client.ClientProxy;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.UUID;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 public class MessageUpdateBossBar {
     private UUID bossID;
@@ -24,7 +20,7 @@ public class MessageUpdateBossBar {
     public MessageUpdateBossBar(UUID bossID, LivingEntity entity) {
         this.bossID = bossID;
         if (entity != null) {
-            this.registryName = ForgeRegistries.ENTITY_TYPES.getKey(entity.getType());
+            this.registryName = Registries.ENTITY_TYPE.getId(entity.getType());
             this.remove = false;
         } else {
             this.registryName = null;
@@ -46,18 +42,15 @@ public class MessageUpdateBossBar {
         return message;
     }
 
-    public static class Handler implements BiConsumer<MessageUpdateBossBar, Supplier<NetworkEvent.Context>> {
-        @Override
-        public void accept(final MessageUpdateBossBar message, final Supplier<NetworkEvent.Context> contextSupplier) {
-            final NetworkEvent.Context context = contextSupplier.get();
-            context.enqueueWork(() -> {
-                if (message.registryName == null) {
-                    ClientProxy.bossBarRegistryNames.remove(message.bossID);
-                } else {
-                    ClientProxy.bossBarRegistryNames.put(message.bossID, message.registryName);
-                }
-            });
-            context.setPacketHandled(true);
-        }
+    public UUID getBossID() {
+        return this.bossID;
+    }
+
+    public boolean isRemove() {
+        return this.remove;
+    }
+
+    public Identifier getRegistryName() {
+        return this.registryName;
     }
 }

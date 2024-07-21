@@ -1,10 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.message.MessageUpdateBossBar;
+import com.bobmowzie.mowziesmobs.server.message.StaticVariables;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.boss.ServerBossBar;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraftforge.network.NetworkDirection;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,7 +37,9 @@ public class MMBossInfoServer extends ServerBossBar {
 
     @Override
     public void addPlayer(ServerPlayerEntity player) {
-        MowziesMobs.NETWORK.sendTo(new MessageUpdateBossBar(this.getUuid(), this.entity), player.networkHandler.connection, NetworkDirection.PLAY_TO_CLIENT);
+        PacketByteBuf buf = PacketByteBufs.create();
+        MessageUpdateBossBar.serialize(new MessageUpdateBossBar(this.getUuid(), this.entity), buf);
+        ServerPlayNetworking.send(player, StaticVariables.UPDATE_BOSS_BAR, buf);
         if (this.entity.getVisibilityCache().canSee(player)) {
             super.addPlayer(player);
         } else {
@@ -45,7 +49,9 @@ public class MMBossInfoServer extends ServerBossBar {
 
     @Override
     public void removePlayer(ServerPlayerEntity player) {
-        MowziesMobs.NETWORK.sendTo(new MessageUpdateBossBar(this.getUuid(), null), player.networkHandler.connection, NetworkDirection.PLAY_TO_CLIENT);
+        PacketByteBuf buf = PacketByteBufs.create();
+        MessageUpdateBossBar.serialize(new MessageUpdateBossBar(this.getUuid(), null), buf);
+        ServerPlayNetworking.send(player, StaticVariables.UPDATE_BOSS_BAR, buf);
         super.removePlayer(player);
         this.unseen.remove(player);
     }

@@ -6,7 +6,10 @@ import com.bobmowzie.mowziesmobs.server.inventory.ContainerUmvuthiTrade;
 import com.bobmowzie.mowziesmobs.server.inventory.InventoryUmvuthi;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessageUmvuthiTrade;
+import com.bobmowzie.mowziesmobs.server.message.StaticVariables;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -18,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
@@ -61,7 +65,9 @@ public final class GuiUmvuthiTrade extends HandledScreen<ContainerUmvuthiTrade> 
         if (button == this.grantButton) {
             this.hasTraded = true;
             this.updateButton();
-            MowziesMobs.NETWORK.sendToServer(new MessageUmvuthiTrade(this.umvuthi));
+            PacketByteBuf buf = PacketByteBufs.create();
+            MessageUmvuthiTrade.serialize(new MessageUmvuthiTrade(this.umvuthi), buf);
+            ClientPlayNetworking.send(StaticVariables.UMVUTHI_TRADE, buf);
             if (!MinecraftClient.getInstance().isInSingleplayer()) {
                 boolean satisfied = this.umvuthi.hasTradedWith(this.player);
                 if (!satisfied) {

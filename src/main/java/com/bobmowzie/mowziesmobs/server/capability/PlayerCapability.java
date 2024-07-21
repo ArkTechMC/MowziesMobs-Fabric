@@ -9,10 +9,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthanaFollowerToPlayer;
 import com.bobmowzie.mowziesmobs.server.item.ItemEarthrendGauntlet;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
-import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
-import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
-import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
+import com.bobmowzie.mowziesmobs.server.message.StaticVariables;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
@@ -22,6 +19,8 @@ import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import dev.onyxstudios.cca.api.v3.component.tick.CommonTickingComponent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
@@ -292,12 +291,10 @@ public class PlayerCapability {
 
             Ability<?> iceBreathAbility = AbilityHandler.INSTANCE.getAbility(player, AbilityHandler.ICE_BREATH_ABILITY);
             if (iceBreathAbility != null && !iceBreathAbility.isUsing()) {
-                for (ItemStack stack : player.getInventory().main) {
+                for (ItemStack stack : player.getInventory().main)
                     this.restoreIceCrystalStack(player, stack);
-                }
-                for (ItemStack stack : player.getInventory().offHand) {
+                for (ItemStack stack : player.getInventory().offHand)
                     this.restoreIceCrystalStack(player, stack);
-                }
             }
 
             this.useIceCrystalStack(player);
@@ -305,51 +302,43 @@ public class PlayerCapability {
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 if (MinecraftClient.getInstance().options.attackKey.isPressed() && !this.mouseLeftDown) {
                     this.mouseLeftDown = true;
-                    MowziesMobs.NETWORK.sendToServer(new MessageLeftMouseDown());
+                    ClientPlayNetworking.send(StaticVariables.LEFT_MOUSE_DOWN, PacketByteBufs.create());
                     for (Power power : this.powers) power.onLeftMouseDown(player);
                     AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
-                    if (abilityCapability != null) {
-                        for (Ability<?> ability : abilityCapability.getAbilities()) {
+                    if (abilityCapability != null)
+                        for (Ability<?> ability : abilityCapability.getAbilities())
                             if (ability instanceof PlayerAbility playerAbility)
                                 playerAbility.onLeftMouseDown(player);
-                        }
-                    }
                 }
                 if (MinecraftClient.getInstance().options.useKey.isPressed() && !this.mouseRightDown) {
                     this.mouseRightDown = true;
-                    MowziesMobs.NETWORK.sendToServer(new MessageRightMouseDown());
+                    ClientPlayNetworking.send(StaticVariables.RIGHT_MOUSE_DOWN, PacketByteBufs.create());
                     for (Power power : this.powers) power.onRightMouseDown(player);
                     AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
-                    if (abilityCapability != null) {
-                        for (Ability<?> ability : abilityCapability.getAbilities()) {
+                    if (abilityCapability != null)
+                        for (Ability<?> ability : abilityCapability.getAbilities())
                             if (ability instanceof PlayerAbility playerAbility)
                                 playerAbility.onRightMouseDown(player);
-                        }
-                    }
                 }
                 if (!MinecraftClient.getInstance().options.attackKey.isPressed() && this.mouseLeftDown) {
                     this.mouseLeftDown = false;
-                    MowziesMobs.NETWORK.sendToServer(new MessageLeftMouseUp());
+                    ClientPlayNetworking.send(StaticVariables.LEFT_MOUSE_UP, PacketByteBufs.create());
                     for (Power power : this.powers) power.onLeftMouseUp(player);
                     AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
-                    if (abilityCapability != null) {
-                        for (Ability<?> ability : abilityCapability.getAbilities()) {
+                    if (abilityCapability != null)
+                        for (Ability<?> ability : abilityCapability.getAbilities())
                             if (ability instanceof PlayerAbility playerAbility)
                                 playerAbility.onLeftMouseUp(player);
-                        }
-                    }
                 }
                 if (!MinecraftClient.getInstance().options.useKey.isPressed() && this.mouseRightDown) {
                     this.mouseRightDown = false;
-                    MowziesMobs.NETWORK.sendToServer(new MessageRightMouseUp());
+                    ClientPlayNetworking.send(StaticVariables.RIGHT_MOUSE_UP, PacketByteBufs.create());
                     for (Power power : this.powers) power.onRightMouseUp(player);
                     AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
-                    if (abilityCapability != null) {
-                        for (Ability<?> ability : abilityCapability.getAbilities()) {
+                    if (abilityCapability != null)
+                        for (Ability<?> ability : abilityCapability.getAbilities())
                             if (ability instanceof PlayerAbility playerAbility)
                                 playerAbility.onRightMouseUp(player);
-                        }
-                    }
                 }
             }
 

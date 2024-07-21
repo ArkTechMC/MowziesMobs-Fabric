@@ -9,18 +9,16 @@ import com.bobmowzie.mowziesmobs.server.ability.abilities.player.heliomancy.Suns
 import com.bobmowzie.mowziesmobs.server.ability.abilities.player.heliomancy.SupernovaAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
-import com.bobmowzie.mowziesmobs.server.message.MessageInterruptAbility;
-import com.bobmowzie.mowziesmobs.server.message.MessageJumpToAbilitySection;
-import com.bobmowzie.mowziesmobs.server.message.MessagePlayerUseAbility;
-import com.bobmowzie.mowziesmobs.server.message.MessageUseAbility;
+import com.bobmowzie.mowziesmobs.server.message.*;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraftforge.network.PacketDistributor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
-
-import javax.annotation.Nullable;
 
 public enum AbilityHandler {
     INSTANCE;
@@ -116,7 +114,9 @@ public enum AbilityHandler {
         }
         AbilityCapability.IAbilityCapability abilityCapability = this.getAbilityCapability(entity);
         if (abilityCapability != null) {
-            MowziesMobs.NETWORK.sendToServer(new MessagePlayerUseAbility(ArrayUtils.indexOf(abilityCapability.getAbilityTypesOnEntity(entity), ability)));
+            PacketByteBuf buf = PacketByteBufs.create();
+            MessagePlayerUseAbility.serialize(new MessagePlayerUseAbility(ArrayUtils.indexOf(abilityCapability.getAbilityTypesOnEntity(entity), ability)), buf);
+            ClientPlayNetworking.send(StaticVariables.PLAYER_USE_ABILITY, buf);
         }
     }
 
@@ -127,7 +127,7 @@ public enum AbilityHandler {
         }
         AbilityCapability.IAbilityCapability abilityCapability = this.getAbilityCapability(entity);
         if (abilityCapability != null) {
-            Ability instance = abilityCapability.getAbilityMap().get(abilityType);
+            Ability<?> instance = abilityCapability.getAbilityMap().get(abilityType);
             if (instance.isUsing()) {
                 instance.jumpToSection(sectionIndex);
                 MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageJumpToAbilitySection(entity.getId(), ArrayUtils.indexOf(abilityCapability.getAbilityTypesOnEntity(entity), abilityType), sectionIndex));

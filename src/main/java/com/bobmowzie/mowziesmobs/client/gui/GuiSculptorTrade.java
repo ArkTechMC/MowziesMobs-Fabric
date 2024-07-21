@@ -6,7 +6,10 @@ import com.bobmowzie.mowziesmobs.server.inventory.ContainerSculptorTrade;
 import com.bobmowzie.mowziesmobs.server.inventory.InventorySculptor;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessageSculptorTrade;
+import com.bobmowzie.mowziesmobs.server.message.StaticVariables;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -18,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
@@ -55,7 +59,9 @@ public final class GuiSculptorTrade extends HandledScreen<ContainerSculptorTrade
 
     private void actionPerformed(ButtonWidget button) {
         if (button == this.beginButton) {
-            MowziesMobs.NETWORK.sendToServer(new MessageSculptorTrade(this.sculptor));
+            PacketByteBuf buf = PacketByteBufs.create();
+            MessageSculptorTrade.serialize(new MessageSculptorTrade(this.sculptor), PacketByteBufs.create());
+            ClientPlayNetworking.send(StaticVariables.SCULPTOR_TRADE, buf);
         }
     }
 

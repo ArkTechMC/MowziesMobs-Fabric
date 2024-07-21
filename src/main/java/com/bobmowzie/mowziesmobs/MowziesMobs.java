@@ -16,6 +16,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
+import com.bobmowzie.mowziesmobs.server.message.ServerNetworkHelper;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionTypeHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -42,8 +43,6 @@ import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib.GeckoLib;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-@Mod(MowziesMobs.MODID)
-@Mod.EventBusSubscriber(modid = MowziesMobs.MODID)
 public final class MowziesMobs {
     public static final String MODID = "mowziesmobs";
     public static final Logger LOGGER = LogManager.getLogger();
@@ -81,6 +80,8 @@ public final class MowziesMobs {
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
         AbilityCommonEventHandler.register();
         MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, CapabilityHandler::attachEntityCapability);
+
+        ServerNetworkHelper.register();
     }
 
     @SubscribeEvent

@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.client.model.LayerHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
+import com.bobmowzie.mowziesmobs.server.message.ClientNetworkHelper;
 import net.fabricmc.api.ClientModInitializer;
 
 public class MowziesMobsClient implements ClientModInitializer {
@@ -10,5 +11,6 @@ public class MowziesMobsClient implements ClientModInitializer {
         ParticleHandler.registerParticles();
         LayerHandler.registerLayer();
         EntityRendererHandler.registerEntityRenderer();
+        ClientNetworkHelper.register();
     }
 }
