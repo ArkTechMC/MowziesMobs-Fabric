@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.power;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -52,7 +53,7 @@ public abstract class Power {
 
     }
 
-    public void onTakeDamage(LivingHurtEvent event) {
+    public void onTakeDamage(LivingEntity livingEntity, DamageSource source, float damage) {
 
     }
 

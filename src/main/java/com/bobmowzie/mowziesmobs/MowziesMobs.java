@@ -25,8 +25,15 @@ import com.bobmowzie.mowziesmobs.server.world.feature.structure.StructureTypeHan
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw.JigsawHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.processor.ProcessorHandler;
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
+import com.iafenvoy.uranus.event.EntityEvents;
+import com.iafenvoy.uranus.event.LivingEntityEvents;
 import me.pepperbell.simplenetworking.SimpleChannel;
+import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
+import net.minecraft.client.item.ModelPredicateProvider;
+import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.Items;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -47,8 +54,6 @@ public final class MowziesMobs {
     public static final String MODID = "mowziesmobs";
     public static final Logger LOGGER = LogManager.getLogger();
     public static ServerProxy PROXY;
-
-    public static SimpleChannel NETWORK;
 
     public MowziesMobs() {
         GeckoLibUtil.addCustomBakedModelFactory(MODID, new MowzieModelFactory());
@@ -82,6 +87,8 @@ public final class MowziesMobs {
         MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, CapabilityHandler::attachEntityCapability);
 
         ServerNetworkHelper.register();
+        LivingEntityEvents.DAMAGE.register(ServerEventHandler::onLivingHurt);
+        EntityEvents.ON_JOIN_WORLD.register(ServerEventHandler::onJoinWorld);
     }
 
     @SubscribeEvent
@@ -134,7 +141,6 @@ public final class MowziesMobs {
 
     public void init(final FMLCommonSetupEvent event) {
         SpawnHandler.registerSpawnPlacementTypes();
-        PROXY.initNetwork();
         AdvancementHandler.preInit();
 
         event.enqueueWork(() -> {

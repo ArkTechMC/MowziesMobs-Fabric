@@ -32,7 +32,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class PlayerCapability {
 
         void tick(PlayerEntity player);
 
-        void addedToWorld(EntityJoinLevelEvent event);
+        void addedToWorld(PlayerEntity player, World world);
 
         boolean isVerticalSwing();
 
@@ -241,14 +241,13 @@ public class PlayerCapability {
         }
 
         @Override
-        public void addedToWorld(EntityJoinLevelEvent event) {
+        public void addedToWorld(PlayerEntity player, World world) {
             // Create the geckoplayer instances when an entity joins the world
             // Normally, the animation controllers and lastModel field are only set when rendered for the first time, but this won't work for player animations
-            if (event.getLevel().isClientSide()) {
-                PlayerEntity player = (PlayerEntity) event.getEntity();
+            if (world.isClient) {
                 this.geckoPlayer = new GeckoPlayer.GeckoPlayerThirdPerson(player);
                 // Only create 1st person instance if the player joining is this client's player
-                if (event.getEntity() == MinecraftClient.getInstance().player) {
+                if (player == MinecraftClient.getInstance().player) {
                     GeckoPlayer.GeckoPlayerFirstPerson geckoPlayerFirstPerson = new GeckoPlayer.GeckoPlayerFirstPerson(player);
                 }
             }

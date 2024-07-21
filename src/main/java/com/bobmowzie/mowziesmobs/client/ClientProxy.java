@@ -57,12 +57,6 @@ public class ClientProxy extends ServerProxy {
     }
 
     @Override
-    public void onLateInit(final IEventBus modbus) {
-        ModelPredicateProvider pulling = ModelPredicateProviderRegistry.get(Items.BOW, new Identifier("pulling"));
-        ModelPredicateProviderRegistry.register(ItemHandler.BLOWGUN.get().asItem(), new Identifier("pulling"), pulling);
-    }
-
-    @Override
     public void playSunstrikeSound(EntitySunstrike strike) {
         MinecraftClient.getInstance().getSoundManager().play(new SunstrikeSound(strike));
     }

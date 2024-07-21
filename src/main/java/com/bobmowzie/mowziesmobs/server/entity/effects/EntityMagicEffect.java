@@ -1,8 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.ILinkedEntity;
 import com.bobmowzie.mowziesmobs.server.message.MessageLinkEntities;
+import com.bobmowzie.mowziesmobs.server.message.StaticVariables;
+import com.iafenvoy.uranus.ServerHelper;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -11,13 +13,13 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,6 +76,7 @@ public abstract class EntityMagicEffect extends Entity implements ILinkedEntity 
         super.tick();
     }
 
+
     @Override
     public void onAddedToWorld() {
         super.onAddedToWorld();
@@ -81,7 +84,9 @@ public abstract class EntityMagicEffect extends Entity implements ILinkedEntity 
             Entity casterEntity = ((ServerWorld) this.getWorld()).getEntity(this.getCasterID().get());
             if (casterEntity instanceof LivingEntity) {
                 this.caster = (LivingEntity) casterEntity;
-                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this), new MessageLinkEntities(this, this.caster));
+                PacketByteBuf buf = PacketByteBufs.create();
+                MessageLinkEntities.serialize(new MessageLinkEntities(this, this.caster), buf);
+                ServerHelper.sendToAll(StaticVariables.LINK_ENTITIES, buf);
             }
             this.hasSyncedCaster = true;
         }

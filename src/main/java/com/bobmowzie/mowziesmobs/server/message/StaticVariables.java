@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 
 public class StaticVariables {

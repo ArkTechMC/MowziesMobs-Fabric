@@ -100,10 +100,6 @@ public class ServerProxy {
     public void minecartParticles(ClientWorld world, AbstractMinecartEntity minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {
     }
 
-    public void initNetwork() {
-    }
-
-
     public Entity getReferencedMob() {
         return null;
     }

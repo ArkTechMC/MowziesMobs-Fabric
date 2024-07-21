@@ -27,9 +27,12 @@ import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.message.MessageFreezeEffect;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerAttackMob;
 import com.bobmowzie.mowziesmobs.server.message.MessageSunblockEffect;
+import com.bobmowzie.mowziesmobs.server.message.StaticVariables;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import com.iafenvoy.uranus.ServerHelper;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
@@ -52,6 +55,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -59,9 +63,9 @@ import net.minecraft.stat.Stats;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.*;
@@ -70,56 +74,52 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public final class ServerEventHandler {
-
-    @SubscribeEvent
-    public void onJoinWorld(EntityJoinLevelEvent event) {
-        if (event.getEntity() instanceof PlayerEntity || event.getEntity() instanceof MowzieGeckoEntity) {
-            AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability((LivingEntity) event.getEntity());
-            if (abilityCapability != null) abilityCapability.instanceAbilities((LivingEntity) event.getEntity());
+    public static boolean onJoinWorld(Entity entity, World world) {
+        if (entity instanceof PlayerEntity || entity instanceof MowzieGeckoEntity) {
+            AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability((LivingEntity) entity);
+            if (abilityCapability != null) abilityCapability.instanceAbilities((LivingEntity) entity);
         }
 
-        if (event.getEntity() instanceof PlayerEntity) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability((PlayerEntity) event.getEntity(), CapabilityHandler.PLAYER_CAPABILITY);
-            if (playerCapability != null) playerCapability.addedToWorld(event);
+        if (entity instanceof PlayerEntity player) {
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
+            if (playerCapability != null) playerCapability.addedToWorld(player, world);
         }
 
-        if (event.getLevel().isClientSide) {
-            return;
-        }
-        Entity entity = event.getEntity();
+        if (world.isClient)
+            return false;
         if (entity instanceof ZombieEntity && !(entity instanceof ZombifiedPiglinEntity)) {
             ((PathAwareEntity) entity).targetSelector.add(2, new ActiveTargetGoal<>((PathAwareEntity) entity, EntityFoliaath.class, 0, true, false, null));
             ((PathAwareEntity) entity).targetSelector.add(3, new ActiveTargetGoal<>((PathAwareEntity) entity, EntityUmvuthana.class, 0, true, false, null));
             ((PathAwareEntity) entity).targetSelector.add(2, new ActiveTargetGoal<>((PathAwareEntity) entity, EntityUmvuthi.class, 0, true, false, null));
         }
-        if (entity instanceof AbstractSkeletonEntity) {
-            ((PathAwareEntity) entity).targetSelector.add(3, new ActiveTargetGoal<>((PathAwareEntity) entity, EntityUmvuthana.class, 0, true, false, null));
-            ((PathAwareEntity) entity).targetSelector.add(2, new ActiveTargetGoal<>((PathAwareEntity) entity, EntityUmvuthi.class, 0, true, false, null));
+        if (entity instanceof AbstractSkeletonEntity skeleton) {
+            skeleton.targetSelector.add(3, new ActiveTargetGoal<>((PathAwareEntity) entity, EntityUmvuthana.class, 0, true, false, null));
+            skeleton.targetSelector.add(2, new ActiveTargetGoal<>((PathAwareEntity) entity, EntityUmvuthi.class, 0, true, false, null));
         }
 
-        if (entity instanceof ParrotEntity) {
-            ((PathAwareEntity) entity).goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
+        if (entity instanceof ParrotEntity parrot) {
+            parrot.goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
         }
-        if (entity instanceof AnimalEntity) {
-            ((PathAwareEntity) entity).goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>((PathAwareEntity) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
-            ((PathAwareEntity) entity).goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>((PathAwareEntity) entity, EntityUmvuthana.class, 6.0F, 1.0D, 1.2D));
-            ((PathAwareEntity) entity).goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>((PathAwareEntity) entity, EntityUmvuthi.class, 6.0F, 1.0D, 1.2D));
-            ((PathAwareEntity) entity).goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>((PathAwareEntity) entity, EntityNaga.class, 10.0F, 1.0D, 1.2D));
-            ((PathAwareEntity) entity).goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>((PathAwareEntity) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
+        if (entity instanceof AnimalEntity animal) {
+            animal.goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>((PathAwareEntity) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
+            animal.goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>((PathAwareEntity) entity, EntityUmvuthana.class, 6.0F, 1.0D, 1.2D));
+            animal.goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>((PathAwareEntity) entity, EntityUmvuthi.class, 6.0F, 1.0D, 1.2D));
+            animal.goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>((PathAwareEntity) entity, EntityNaga.class, 10.0F, 1.0D, 1.2D));
+            animal.goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>((PathAwareEntity) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
-        if (entity instanceof MerchantEntity) {
-            ((PathAwareEntity) entity).goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityUmvuthana.class, 6.0F, 1.0D, 1.2D));
-            ((PathAwareEntity) entity).goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityUmvuthi.class, 6.0F, 1.0D, 1.2D));
-            ((PathAwareEntity) entity).goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityNaga.class, 10.0F, 1.0D, 1.2D));
-            ((PathAwareEntity) entity).goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
+        if (entity instanceof MerchantEntity merchant) {
+            merchant.goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityUmvuthana.class, 6.0F, 1.0D, 1.2D));
+            merchant.goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityUmvuthi.class, 6.0F, 1.0D, 1.2D));
+            merchant.goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityNaga.class, 10.0F, 1.0D, 1.2D));
+            merchant.goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
+        return false;
     }
 
     @SubscribeEvent
@@ -127,7 +127,7 @@ public final class ServerEventHandler {
         if (event.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) event.getEntity();
 
-            if (entity.getStatusEffect(EffectHandler.POISON_RESIST.get()) != null && entity.getStatusEffect(StatusEffects.POISON) != null) {
+            if (entity.getStatusEffect(EffectHandler.POISON_RESIST) != null && entity.getStatusEffect(StatusEffects.POISON) != null) {
                 entity.removeStatusEffectInternal(StatusEffects.POISON);
             }
 
@@ -139,7 +139,7 @@ public final class ServerEventHandler {
             }
 
             if (entity instanceof MobEntity mob && !(entity instanceof EntityUmvuthanaCrane)) {
-                if (mob.getTarget() instanceof EntityUmvuthi && mob.getTarget().hasStatusEffect(EffectHandler.SUNBLOCK.get())) {
+                if (mob.getTarget() instanceof EntityUmvuthi && mob.getTarget().hasStatusEffect(EffectHandler.SUNBLOCK)) {
                     EntityUmvuthanaCrane sunblocker = mob.getWorld().getClosestEntity(EntityUmvuthanaCrane.class, TargetPredicate.DEFAULT, mob, mob.getX(), mob.getY() + mob.getStandingEyeHeight(), mob.getZ(), mob.getBoundingBox().expand(40.0D, 15.0D, 40.0D));
                     mob.setTarget(sunblocker);
                 }
@@ -162,15 +162,19 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onAddPotionEffect(MobEffectEvent.Added event) {
-        if (event.getEffectInstance().getEffect() == EffectHandler.SUNBLOCK.get()) {
+        if (event.getEffectInstance().getEffect() == EffectHandler.SUNBLOCK) {
             if (!event.getEntity().level().isClientSide()) {
-                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntity(), true));
+                PacketByteBuf buf = PacketByteBufs.create();
+                MessageSunblockEffect.serialize(new MessageSunblockEffect(event.getEntity(), true), buf);
+                ServerHelper.sendToAll(StaticVariables.SUNBLOCK_EFFECT, buf);
             }
             MowziesMobs.PROXY.playSunblockSound(event.getEntity());
         }
-        if (event.getEffectInstance().getEffect() == EffectHandler.FROZEN.get()) {
+        if (event.getEffectInstance().getEffect() == EffectHandler.FROZEN) {
             if (!event.getEntity().level().isClientSide()) {
-                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntity(), true));
+                PacketByteBuf buf = PacketByteBufs.create();
+                MessageFreezeEffect.serialize(new MessageFreezeEffect(event.getEntity(), true), buf);
+                ServerHelper.sendToAll(StaticVariables.FREEZE_EFFECT, buf);
                 FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.FROZEN_CAPABILITY);
                 if (frozenCapability != null) {
                     frozenCapability.onFreeze(event.getEntity());
@@ -183,11 +187,15 @@ public final class ServerEventHandler {
     public void onRemovePotionEffect(MobEffectEvent.Remove event) {
         if (event.getEffectInstance() == null)
             return;
-        if (!event.getEntity().level().isClientSide() && event.getEffectInstance().getEffect() == EffectHandler.SUNBLOCK.get()) {
-            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntity(), false));
+        if (!event.getEntity().level().isClientSide() && event.getEffectInstance().getEffect() == EffectHandler.SUNBLOCK) {
+            PacketByteBuf buf = PacketByteBufs.create();
+            MessageSunblockEffect.serialize(new MessageSunblockEffect(event.getEntity(), false), buf);
+            ServerHelper.sendToAll(StaticVariables.SUNBLOCK_EFFECT, buf);
         }
-        if (!event.getEntity().level().isClientSide() && event.getEffectInstance().getEffect() == EffectHandler.FROZEN.get()) {
-            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntity(), false));
+        if (!event.getEntity().level().isClientSide() && event.getEffectInstance().getEffect() == EffectHandler.FROZEN) {
+            PacketByteBuf buf = PacketByteBufs.create();
+            MessageFreezeEffect.serialize(new MessageFreezeEffect(event.getEntity(), false), buf);
+            ServerHelper.sendToAll(StaticVariables.FREEZE_EFFECT, buf);
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.FROZEN_CAPABILITY);
             if (frozenCapability != null) {
                 frozenCapability.onUnfreeze(event.getEntity());
@@ -198,11 +206,15 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onPotionEffectExpire(MobEffectEvent.Expired event) {
         StatusEffectInstance effectInstance = event.getEffectInstance();
-        if (!event.getEntity().level().isClientSide() && effectInstance != null && effectInstance.getEffectType() == EffectHandler.SUNBLOCK.get()) {
-            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntity(), false));
+        if (!event.getEntity().level().isClientSide() && effectInstance != null && effectInstance.getEffectType() == EffectHandler.SUNBLOCK) {
+            PacketByteBuf buf = PacketByteBufs.create();
+            MessageSunblockEffect.serialize(new MessageSunblockEffect(event.getEntity(), false), buf);
+            ServerHelper.sendToAll(StaticVariables.SUNBLOCK_EFFECT, buf);
         }
-        if (!event.getEntity().level().isClientSide() && effectInstance != null && effectInstance.getEffectType() == EffectHandler.FROZEN.get()) {
-            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntity(), false));
+        if (!event.getEntity().level().isClientSide() && effectInstance != null && effectInstance.getEffectType() == EffectHandler.FROZEN) {
+            PacketByteBuf buf = PacketByteBufs.create();
+            MessageFreezeEffect.serialize(new MessageFreezeEffect(event.getEntity(), false), buf);
+            ServerHelper.sendToAll(StaticVariables.FREEZE_EFFECT, buf);
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.FROZEN_CAPABILITY);
             if (frozenCapability != null) {
                 frozenCapability.onUnfreeze(event.getEntity());
@@ -210,56 +222,52 @@ public final class ServerEventHandler {
         }
     }
 
-    @SubscribeEvent
-    public void onLivingHurt(LivingHurtEvent event) {
+    public static float onLivingHurt(LivingEntity livingEntity, DamageSource source, float damage) {
         // Copied from LivingEntity's applyPotionDamageCalculations
-        DamageSource source = event.getSource();
-        LivingEntity livingEntity = event.getEntity();
-        if (source == null || livingEntity == null) return;
-        float damage = event.getAmount();
+        if (source == null || livingEntity == null) return damage;
         if (!source.isIn(DamageTypeTags.BYPASSES_RESISTANCE)) {
-            if (livingEntity.hasStatusEffect(EffectHandler.SUNBLOCK.get()) && !source.isOf(DamageTypes.OUT_OF_WORLD)) {
-                int i = (livingEntity.getStatusEffect(EffectHandler.SUNBLOCK.get()).getAmplifier() + 2) * 5;
+            if (livingEntity.hasStatusEffect(EffectHandler.SUNBLOCK) && !source.isOf(DamageTypes.OUT_OF_WORLD)) {
+                int i = (livingEntity.getStatusEffect(EffectHandler.SUNBLOCK).getAmplifier() + 2) * 5;
                 int j = 25 - i;
                 float f = damage * (float) j;
                 float f1 = damage;
                 damage = Math.max(f / 25.0F, 0.0F);
                 float f2 = f1 - damage;
                 if (f2 > 0.0F && f2 < 3.4028235E37F) {
-                    if (livingEntity instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity) livingEntity).increaseStat(Stats.DAMAGE_RESISTED, Math.round(f2 * 10.0F));
-                    } else if (source.getAttacker() instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity) source.getAttacker()).increaseStat(Stats.DAMAGE_DEALT_RESISTED, Math.round(f2 * 10.0F));
+                    if (livingEntity instanceof ServerPlayerEntity serverPlayer) {
+                        serverPlayer.increaseStat(Stats.DAMAGE_RESISTED, Math.round(f2 * 10.0F));
+                    } else if (source.getAttacker() instanceof ServerPlayerEntity serverPlayer) {
+                        serverPlayer.increaseStat(Stats.DAMAGE_DEALT_RESISTED, Math.round(f2 * 10.0F));
                     }
                 }
             }
         }
 
-        if (event.getSource().is(DamageTypeTags.IS_FIRE)) {
-            event.getEntity().removeEffectNoUpdate(EffectHandler.FROZEN.get());
-            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntity(), false));
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.FROZEN_CAPABILITY);
+        if (source.isIn(DamageTypeTags.IS_FIRE)) {
+            livingEntity.removeStatusEffectInternal(EffectHandler.FROZEN);
+            PacketByteBuf buf = PacketByteBufs.create();
+            MessageFreezeEffect.serialize(new MessageFreezeEffect(livingEntity, false), buf);
+            ServerHelper.sendToAll(StaticVariables.FREEZE_EFFECT, buf);
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(livingEntity, CapabilityHandler.FROZEN_CAPABILITY);
             if (frozenCapability != null) {
-                frozenCapability.onUnfreeze(event.getEntity());
+                frozenCapability.onUnfreeze(livingEntity);
             }
         }
-        if (event.getEntity() instanceof PlayerEntity) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.PLAYER_CAPABILITY);
+        if (livingEntity instanceof PlayerEntity) {
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(livingEntity, CapabilityHandler.PLAYER_CAPABILITY);
             if (playerCapability != null) {
                 Power[] powers = playerCapability.getPowers();
                 for (Power power : powers) {
-                    power.onTakeDamage(event);
+                    power.onTakeDamage(livingEntity, source, damage);
                 }
             }
         }
 
-        if (event.getEntity() != null) {
-            LivingEntity living = event.getEntity();
-            LivingCapability.ILivingCapability capability = CapabilityHandler.getCapability(living, CapabilityHandler.LIVING_CAPABILITY);
-            if (capability != null) {
-                capability.setLastDamage(event.getAmount());
-            }
+        LivingCapability.ILivingCapability capability = CapabilityHandler.getCapability(livingEntity, CapabilityHandler.LIVING_CAPABILITY);
+        if (capability != null) {
+            capability.setLastDamage(damage);
         }
+        return damage;
     }
 
     @SubscribeEvent
@@ -270,7 +278,7 @@ public final class ServerEventHandler {
         PlayerEntity player = event.player;
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
         if (playerCapability != null) {
-            playerCapability.tick(event);
+            playerCapability.tick(player);
 
             Power[] powers = playerCapability.getPowers();
             for (Power power : powers) {
@@ -282,7 +290,7 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onUseItem(LivingEntityUseItemEvent event) {
         LivingEntity living = event.getEntity();
-        if (event.isCancelable() && living.hasStatusEffect(EffectHandler.FROZEN.get())) {
+        if (event.isCancelable() && living.hasStatusEffect(EffectHandler.FROZEN)) {
             event.setCanceled(true);
             return;
         }
@@ -329,7 +337,7 @@ public final class ServerEventHandler {
     public void onFillBucket(FillBucketEvent event) {
         LivingEntity living = event.getEntity();
         if (living != null) {
-            if (event.isCancelable() && living.hasStatusEffect(EffectHandler.FROZEN.get())) {
+            if (event.isCancelable() && living.hasStatusEffect(EffectHandler.FROZEN)) {
                 event.setCanceled(true);
                 return;
             }
@@ -500,10 +508,12 @@ public final class ServerEventHandler {
         double range = 6.5;
         PlayerEntity player = event.getEntity();
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
-        if (player.getMainHandStack() != null && player.getMainHandStack().getItem() == ItemHandler.SPEAR.get()) {
+        if (player.getMainHandStack() != null && player.getMainHandStack().getItem() == ItemHandler.SPEAR) {
             LivingEntity entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
             if (entityHit != null) {
-                MowziesMobs.NETWORK.sendToServer(new MessagePlayerAttackMob(entityHit));
+                PacketByteBuf buf = PacketByteBufs.create();
+                MessagePlayerAttackMob.serialize(new MessagePlayerAttackMob(entityHit), buf);
+                ServerHelper.sendToAll(StaticVariables.PLAYER_ATTACK_MOB, buf);
             }
         }
         if (playerCapability != null) {
@@ -517,10 +527,12 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onLivingDamage(LivingDamageEvent event) {
         LivingEntity entity = event.getEntity();
-        if (entity.getHealth() <= event.getAmount() && entity.hasStatusEffect(EffectHandler.FROZEN.get())) {
-            entity.removeStatusEffectInternal(EffectHandler.FROZEN.get());
+        if (entity.getHealth() <= event.getAmount() && entity.hasStatusEffect(EffectHandler.FROZEN)) {
+            entity.removeStatusEffectInternal(EffectHandler.FROZEN);
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
-            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntity(), false));
+            PacketByteBuf buf = PacketByteBufs.create();
+            MessageFreezeEffect.serialize(new MessageFreezeEffect(event.getEntity(), false), buf);
+            ServerHelper.sendToAll(StaticVariables.FREEZE_EFFECT, buf);
             if (frozenCapability != null) {
                 frozenCapability.onUnfreeze(entity);
             }
@@ -615,8 +627,7 @@ public final class ServerEventHandler {
                     power.onLeftClickEntity(event);
                 }
 
-                if (event.getTarget() instanceof ItemFrameEntity) {
-                    ItemFrameEntity itemFrame = (ItemFrameEntity) event.getTarget();
+                if (event.getTarget() instanceof ItemFrameEntity itemFrame) {
                     if (itemFrame.getHeldItemStack().getItem() instanceof ItemUmvuthanaMask) {
                         this.aggroUmvuthana(event.getEntity());
                     }

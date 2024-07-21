@@ -1,9 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.entity.grottol;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.message.MessageBlackPinkInYourArea;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import com.bobmowzie.mowziesmobs.server.message.StaticVariables;
+import com.iafenvoy.uranus.ServerHelper;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -25,6 +27,8 @@ public final class BlackPinkInYourArea implements BiConsumer<World, AbstractMine
             minecart.setDisplayTileOffset(minecart.getDefaultDisplayTileOffset());
         }
         minecart.setDisplayTile(state.with(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK));*/
-        MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> minecart), new MessageBlackPinkInYourArea(minecart));
+        PacketByteBuf buf = PacketByteBufs.create();
+        MessageBlackPinkInYourArea.serialize(new MessageBlackPinkInYourArea(minecart), buf);
+        ServerHelper.sendToAll(StaticVariables.BLACK_PINK_IN_YOUR_AREA, buf);
     }
 }
