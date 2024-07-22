@@ -31,9 +31,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 public class FrozenCapability {
-    public static Identifier ID = new Identifier(MowziesMobs.MODID, "frozen_cap");
-
     public static int MAX_FREEZE_DECAY_DELAY = 10;
+
+    public static IFrozenCapability get(LivingEntity entity){
+        return FrozenProvider.get(entity).capability;
+    }
 
     public interface IFrozenCapability {
         boolean getFrozen();
@@ -428,7 +430,7 @@ public class FrozenCapability {
     }
 
     public static class FrozenProvider implements ComponentV3, AutoSyncedComponent, CommonTickingComponent {
-        protected static final ComponentKey<AbilityCapability.AbilityProvider> FROZEN_COMPONENT = ComponentRegistryV3.INSTANCE.getOrCreate(new Identifier(MowziesMobs.MODID, "ability"), AbilityCapability.AbilityProvider.class);
+        protected static final ComponentKey<FrozenProvider> COMPONENT = ComponentRegistryV3.INSTANCE.getOrCreate(new Identifier(MowziesMobs.MODID, "frozen"), FrozenProvider.class);
         private final IFrozenCapability capability = new FrozenCapabilityImp();
         private final LivingEntity entity;
 
@@ -436,8 +438,8 @@ public class FrozenCapability {
             this.entity = entity;
         }
 
-        public static AbilityCapability.AbilityProvider get(LivingEntity entity) {
-            return FROZEN_COMPONENT.get(entity);
+        public static FrozenProvider get(LivingEntity entity) {
+            return COMPONENT.get(entity);
         }
 
         @Override

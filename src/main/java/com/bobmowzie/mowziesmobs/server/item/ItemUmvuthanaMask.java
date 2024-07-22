@@ -3,7 +3,6 @@ package com.bobmowzie.mowziesmobs.server.item;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.item.RenderUmvuthanaMaskArmor;
 import com.bobmowzie.mowziesmobs.client.render.item.RenderUmvuthanaMaskItem;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -17,7 +16,6 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
@@ -87,7 +85,7 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
     }
 
     private boolean spawnUmvuthana(MaskType mask, ItemStack stack, PlayerEntity player, float durability) {
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get(player);
         if (playerCapability != null && playerCapability.getPackSize() < ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.maxFollowers) {
             player.playSound(MMSounds.ENTITY_UMVUTHI_BELLY, 1.5f, 1);
             player.playSound(MMSounds.ENTITY_UMVUTHANA_BLOWDART, 1.5f, 0.5f);

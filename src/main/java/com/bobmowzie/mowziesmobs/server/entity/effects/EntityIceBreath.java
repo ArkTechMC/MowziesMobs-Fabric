@@ -7,7 +7,6 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleRing;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleSnowFlake;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
@@ -56,7 +55,7 @@ public class EntityIceBreath extends EntityMagicEffect {
         if (this.age == 1) this.playSound(MMSounds.ENTITY_FROSTMAW_ICEBREATH_START, 1, 0.6f);
         if (this.caster instanceof PlayerEntity player) {
             this.updatePositionAndAngles(player.getX(), player.getY() + player.getActiveEyeHeight(player.getPose(), player.getDimensions(player.getPose())) - 0.5f, player.getZ(), player.getYaw(), player.getPitch());
-            AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+            AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
             if (abilityCapability != null && !abilityCapability.getAbilityFromType(AbilityHandler.ICE_BREATH_ABILITY).isUsing()) {
                 this.discard();
             }
@@ -143,7 +142,7 @@ public class EntityIceBreath extends EntityMagicEffect {
 
                 if (entityHit.damage(this.getDamageSources().freeze(), damage) && entityHit instanceof LivingEntity) {
                     entityHit.setVelocity(entityHit.getVelocity().multiply(0.25, 1, 0.25));
-                    FrozenCapability.IFrozenCapability capability = CapabilityHandler.getCapability(entityHit, CapabilityHandler.FROZEN_CAPABILITY);
+                    FrozenCapability.IFrozenCapability capability = AbilityCapability.get((PlayerEntity) entityHit);
                     if (capability != null) capability.addFreezeProgress((LivingEntity) entityHit, 0.23f);
                 }
             }

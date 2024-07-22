@@ -6,7 +6,6 @@ import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.block.BlockGrottol;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
 import com.bobmowzie.mowziesmobs.server.entity.ILinkedEntity;
@@ -17,6 +16,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.math.BlockPos;
@@ -47,7 +47,7 @@ public class ClientNetworkHelper {
             if (MinecraftClient.getInstance().world != null) {
                 Entity entity = MinecraftClient.getInstance().world.getEntityById(message.getEntityID());
                 if (entity instanceof LivingEntity living) {
-                    FrozenCapability.IFrozenCapability livingCapability = CapabilityHandler.getCapability(living, CapabilityHandler.FROZEN_CAPABILITY);
+                    FrozenCapability.IFrozenCapability livingCapability = FrozenCapability.get(living);
                     if (livingCapability != null) {
                         if (message.isFrozen()) livingCapability.onFreeze(living);
                         else livingCapability.onUnfreeze(living);
@@ -59,7 +59,7 @@ public class ClientNetworkHelper {
             MessageInterruptAbility message = MessageInterruptAbility.deserialize(buf);
             LivingEntity entity = (LivingEntity) MinecraftClient.getInstance().world.getEntityById(message.getEntityID());
             if (entity != null) {
-                AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.ABILITY_CAPABILITY);
+                AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
                 if (abilityCapability != null) {
                     AbilityType<?, ?> abilityType = abilityCapability.getAbilityTypesOnEntity(entity)[message.getIndex()];
                     Ability<?> instance = abilityCapability.getAbilityMap().get(abilityType);
@@ -71,7 +71,7 @@ public class ClientNetworkHelper {
             MessageJumpToAbilitySection message = MessageJumpToAbilitySection.deserialize(buf);
             LivingEntity entity = (LivingEntity) MinecraftClient.getInstance().world.getEntityById(message.getEntityID());
             if (entity != null) {
-                AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.ABILITY_CAPABILITY);
+                AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
                 if (abilityCapability != null) {
                     AbilityType<?, ?> abilityType = abilityCapability.getAbilityTypesOnEntity(entity)[message.getIndex()];
                     Ability<?> instance = abilityCapability.getAbilityMap().get(abilityType);
@@ -94,7 +94,7 @@ public class ClientNetworkHelper {
             if (MinecraftClient.getInstance().world != null) {
                 Entity entity = MinecraftClient.getInstance().world.getEntityById(message.getEntityID());
                 if (entity instanceof LivingEntity living) {
-                    LivingCapability.ILivingCapability livingCapability = CapabilityHandler.getCapability(living, CapabilityHandler.LIVING_CAPABILITY);
+                    LivingCapability.ILivingCapability livingCapability = LivingCapability.get(living);
                     if (livingCapability != null)
                         livingCapability.setHasSunblock(message.hasSunblock());
                 }
@@ -113,7 +113,7 @@ public class ClientNetworkHelper {
             MessageUseAbility message = MessageUseAbility.deserialize(buf);
             LivingEntity entity = (LivingEntity) MinecraftClient.getInstance().world.getEntityById(message.getEntityID());
             if (entity != null) {
-                AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.ABILITY_CAPABILITY);
+                AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
                 if (abilityCapability != null)
                     abilityCapability.activateAbility(entity, abilityCapability.getAbilityTypesOnEntity(entity)[message.getIndex()]);
             }

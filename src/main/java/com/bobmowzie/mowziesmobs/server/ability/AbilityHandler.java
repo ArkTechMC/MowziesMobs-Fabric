@@ -7,7 +7,6 @@ import com.bobmowzie.mowziesmobs.server.ability.abilities.player.heliomancy.Sola
 import com.bobmowzie.mowziesmobs.server.ability.abilities.player.heliomancy.SunstrikeAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.player.heliomancy.SupernovaAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.message.*;
 import com.iafenvoy.uranus.ServerHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -66,13 +65,8 @@ public enum AbilityHandler {
     };
 
     @Nullable
-    public AbilityCapability.IAbilityCapability getAbilityCapability(LivingEntity entity) {
-        return CapabilityHandler.getCapability(entity, CapabilityHandler.ABILITY_CAPABILITY);
-    }
-
-    @Nullable
     public Ability<?> getAbility(LivingEntity entity, AbilityType<?, ?> abilityType) {
-        AbilityCapability.IAbilityCapability abilityCapability = this.getAbilityCapability(entity);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
         if (abilityCapability != null)
             return abilityCapability.getAbilityMap().get(abilityType);
         return null;
@@ -80,7 +74,7 @@ public enum AbilityHandler {
 
     public <T extends LivingEntity> void sendAbilityMessage(T entity, AbilityType<?, ?> abilityType) {
         if (entity.getWorld().isClient) return;
-        AbilityCapability.IAbilityCapability abilityCapability = this.getAbilityCapability(entity);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
         if (abilityCapability != null) {
             Ability<?> instance = abilityCapability.getAbilityMap().get(abilityType);
             if (instance != null && instance.canUse()) {
@@ -94,7 +88,7 @@ public enum AbilityHandler {
 
     public <T extends LivingEntity> void sendInterruptAbilityMessage(T entity, AbilityType<?, ?> abilityType) {
         if (entity.getWorld().isClient) return;
-        AbilityCapability.IAbilityCapability abilityCapability = this.getAbilityCapability(entity);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
         if (abilityCapability != null) {
             Ability<?> instance = abilityCapability.getAbilityMap().get(abilityType);
             if (instance.isUsing()) {
@@ -108,7 +102,7 @@ public enum AbilityHandler {
 
     public <T extends PlayerEntity> void sendPlayerTryAbilityMessage(T entity, AbilityType<?, ?> ability) {
         if (!(entity.getWorld().isClient && entity instanceof ClientPlayerEntity)) return;
-        AbilityCapability.IAbilityCapability abilityCapability = this.getAbilityCapability(entity);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(entity);
         if (abilityCapability != null) {
             PacketByteBuf buf = PacketByteBufs.create();
             MessagePlayerUseAbility.serialize(new MessagePlayerUseAbility(ArrayUtils.indexOf(abilityCapability.getAbilityTypesOnEntity(entity), ability)), buf);
@@ -119,7 +113,7 @@ public enum AbilityHandler {
 
     public <T extends LivingEntity> void sendJumpToSectionMessage(T entity, AbilityType<?, ?> abilityType, int sectionIndex) {
         if (entity.getWorld().isClient) return;
-        AbilityCapability.IAbilityCapability abilityCapability = this.getAbilityCapability(entity);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
         if (abilityCapability != null) {
             Ability<?> instance = abilityCapability.getAbilityMap().get(abilityType);
             if (instance.isUsing()) {

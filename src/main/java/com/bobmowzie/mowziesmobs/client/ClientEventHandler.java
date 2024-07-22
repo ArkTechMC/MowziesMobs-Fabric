@@ -9,9 +9,7 @@ import com.bobmowzie.mowziesmobs.client.render.block.SculptorBlockMarking;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -65,11 +63,11 @@ public enum ClientEventHandler {
         PlayerEntity player = MinecraftClient.getInstance().player;
         if (player == null) return;
         boolean shouldAnimate = false;
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
         if (abilityCapability != null) shouldAnimate = abilityCapability.getActiveAbility() != null;
 //        shouldAnimate = (player.ticksExisted / 20) % 2 == 0;
         if (shouldAnimate) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
+            PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get(player);
             if (playerCapability != null) {
                 GeckoPlayer.GeckoPlayerFirstPerson geckoPlayer = GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON;
                 if (geckoPlayer != null) {
@@ -100,10 +98,10 @@ public enum ClientEventHandler {
             PlayerEntity player = (PlayerEntity) event.getEntity();
             if (player == null) return;
             float delta = event.getPartialTick();
-            AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+            AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
 //        shouldAnimate = (player.ticksExisted / 20) % 2 == 0;
             if (abilityCapability != null && abilityCapability.getActiveAbility() != null) {
-                PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), CapabilityHandler.PLAYER_CAPABILITY);
+                PlayerCapability.IPlayerCapability playerCapability = AbilityCapability.get(event.getEntity());
                 if (playerCapability != null) {
                     GeckoPlayer.GeckoPlayerThirdPerson geckoPlayer = playerCapability.getGeckoPlayer();
                     if (geckoPlayer != null) {
@@ -129,7 +127,7 @@ public enum ClientEventHandler {
             return;
         }
         PlayerEntity player = event.player;
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get(player);
         if (playerCapability != null && event.side == LogicalSide.CLIENT) {
             GeckoPlayer geckoPlayer = playerCapability.getGeckoPlayer();
             if (geckoPlayer != null) geckoPlayer.tick();
@@ -173,7 +171,7 @@ public enum ClientEventHandler {
 //                player.prevRotationPitch = player.rotationPitch;
 //                player.prevRotationYawHead = player.rotationYawHead;
 //            }
-        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, CapabilityHandler.FROZEN_CAPABILITY);
+        FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(player);
         if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
             player.setYaw(frozenCapability.getFrozenYaw());
             player.setPitch(frozenCapability.getFrozenPitch());
@@ -187,7 +185,7 @@ public enum ClientEventHandler {
     @SubscribeEvent
     public void onRenderLiving(RenderLivingEvent.Pre event) {
         LivingEntity entity = event.getEntity();
-        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
+        FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(entity);
         if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
             entity.setYaw(entity.prevYaw = frozenCapability.getFrozenYaw());
             entity.setPitch(entity.prevPitch = frozenCapability.getFrozenPitch());
@@ -207,7 +205,7 @@ public enum ClientEventHandler {
         final int timePerMillis = 22;
         if (e.getOverlay() == VanillaGuiOverlay.FROSTBITE.type()) {
             if (MinecraftClient.getInstance().player != null) {
-                FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(MinecraftClient.getInstance().player, CapabilityHandler.FROZEN_CAPABILITY);
+                FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(MinecraftClient.getInstance().player);
                 if (frozenCapability != null && frozenCapability.getFrozen() && MinecraftClient.getInstance().options.getPerspective() == Perspective.FIRST_PERSON) {
                     Window res = e.getWindow();
                     e.getGuiGraphics().blit(FROZEN_BLUR, 0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());

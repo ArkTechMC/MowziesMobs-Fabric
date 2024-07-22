@@ -11,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -40,7 +41,7 @@ public class Ability<T extends LivingEntity> {
     public Ability(AbilityType<T, ? extends Ability> abilityType, T user, AbilitySection[] sectionTrack, int cooldownMax) {
         this.abilityType = abilityType;
         this.user = user;
-        this.abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(user);
+        this.abilityCapability = AbilityCapability.get((PlayerEntity) user);
         this.sectionTrack = sectionTrack;
         this.cooldownMax = cooldownMax;
         this.rand = new Random();

@@ -16,7 +16,7 @@ public class AbilityClientEventHandler {
     public static void onRenderTick() {
         PlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null) {
-            AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+            AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
             if (abilityCapability != null)
                 for (Ability<?> ability : abilityCapability.getAbilities())
                     ability.onRenderTick();

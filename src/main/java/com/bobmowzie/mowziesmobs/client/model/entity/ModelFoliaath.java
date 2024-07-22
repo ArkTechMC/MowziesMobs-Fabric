@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.client.model.tools.AdvancedModelRenderer;
@@ -263,7 +262,7 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
         float frame = entity.frame + delta;
 
         float globalSpeed = 0.9f;
-        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
+        FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(entity);
         boolean frozen = frozenCapability != null && frozenCapability.getFrozen();
         if (!frozen) {
             this.flap(this.stem1Base, 0.25F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);

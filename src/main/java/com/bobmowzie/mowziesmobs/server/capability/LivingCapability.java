@@ -12,7 +12,9 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class LivingCapability {
-    public static Identifier ID = new Identifier(MowziesMobs.MODID, "living_cap");
+    public static ILivingCapability get(LivingEntity entity) {
+        return LivingProvider.get(entity).capability;
+    }
 
     public interface ILivingCapability {
         float getLastDamage();
@@ -70,7 +72,7 @@ public class LivingCapability {
     }
 
     public static class LivingProvider implements ComponentV3, AutoSyncedComponent, CommonTickingComponent {
-        protected static final ComponentKey<AbilityCapability.AbilityProvider> LIVING_COMPONENT = ComponentRegistryV3.INSTANCE.getOrCreate(new Identifier(MowziesMobs.MODID, "ability"), AbilityCapability.AbilityProvider.class);
+        protected static final ComponentKey<LivingProvider> COMPONENT = ComponentRegistryV3.INSTANCE.getOrCreate(new Identifier(MowziesMobs.MODID, "living"), LivingProvider.class);
         private final ILivingCapability capability = new LivingCapabilityImp();
         private final LivingEntity entity;
 
@@ -78,8 +80,8 @@ public class LivingCapability {
             this.entity = entity;
         }
 
-        public static AbilityCapability.AbilityProvider get(LivingEntity entity) {
-            return LIVING_COMPONENT.get(entity);
+        public static LivingProvider get(LivingEntity entity) {
+            return COMPONENT.get(entity);
         }
 
         @Override

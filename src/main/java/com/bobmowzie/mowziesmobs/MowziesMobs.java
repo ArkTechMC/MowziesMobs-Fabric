@@ -3,13 +3,14 @@ package com.bobmowzie.mowziesmobs;
 import com.bobmowzie.mowziesmobs.client.ClientProxy;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
+import com.bobmowzie.mowziesmobs.event.LivingEvents;
+import com.bobmowzie.mowziesmobs.event.PlayerEvents;
 import com.bobmowzie.mowziesmobs.server.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityCommonEventHandler;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.block.entity.BlockEntityHandler;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -27,24 +28,17 @@ import com.bobmowzie.mowziesmobs.server.world.feature.structure.processor.Proces
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import com.iafenvoy.uranus.event.EntityEvents;
 import com.iafenvoy.uranus.event.LivingEntityEvents;
-import me.pepperbell.simplenetworking.SimpleChannel;
-import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
-import net.minecraft.client.item.ModelPredicateProvider;
-import net.minecraft.client.item.ModelPredicateProviderRegistry;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.Items;
-import net.minecraft.util.Identifier;
+import io.github.fabricators_of_create.porting_lib.event.common.BlockEvents;
+import net.fabricmc.fabric.api.event.player.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib.GeckoLib;
@@ -79,16 +73,28 @@ public final class MowziesMobs {
         bus.<FMLCommonSetupEvent>addListener(this::init);
         bus.<FMLLoadCompleteEvent>addListener(this::init);
         bus.addListener(this::onModConfigEvent);
-        bus.addListener(CapabilityHandler::registerCapabilities);
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
         AbilityCommonEventHandler.register();
-        MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, CapabilityHandler::attachEntityCapability);
 
         ServerNetworkHelper.register();
         LivingEntityEvents.DAMAGE.register(ServerEventHandler::onLivingHurt);
         EntityEvents.ON_JOIN_WORLD.register(ServerEventHandler::onJoinWorld);
+        LivingEvents.AFTER_TICK.register(ServerEventHandler::onLivingTick);
+        LivingEvents.ADD_EFFECT.register(ServerEventHandler::onAddPotionEffect);
+        LivingEvents.REMOVE_EFFECT.register(ServerEventHandler::onRemovePotionEffect);
+        PlayerEvents.AFTER_TICK.register(ServerEventHandler::onPlayerTick);
+        BlockEvents.POST_PROCESS_PLACE.register(ServerEventHandler::onPlaceBlock);
+        BlockEvents.BLOCK_BREAK.register(ServerEventHandler::onBreakBlock);
+        UseEntityCallback.EVENT.register(ServerEventHandler::onPlayerInteractEntity);
+        UseBlockCallback.EVENT.register(ServerEventHandler::onPlayerInteractBlock);
+        LivingEntityEvents.DAMAGE.register(ServerEventHandler::onLivingDamage);
+        UseItemCallback.EVENT.register(ServerEventHandler::onPlayerUseItem);
+        AttackBlockCallback.EVENT.register(ServerEventHandler::onPlayerLeftClickBlock);
+        io.github.fabricators_of_create.porting_lib.entity.events.LivingEntityEvents.LivingJumpEvent.JUMP.register(ServerEventHandler::onLivingJump);
+        AttackEntityCallback.EVENT.register(ServerEventHandler::onPlayerAttack);
+
     }
 
     @SubscribeEvent

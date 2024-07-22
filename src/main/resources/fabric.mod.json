@@ -19,6 +19,17 @@
     ],
     "client": [
       "com.bobmowzie.mowziesmobs.client.MowziesMobsClient"
+    ],
+    "cardinal-components-entity": [
+      "com.bobmowzie.mowziesmobs.server.capability.ModComponentEntry"
+    ]
+  },
+  "custom": {
+    "cardinal-components": [
+      "mowziesmobs:ability",
+      "mowziesmobs:frozen",
+      "mowziesmobs:living",
+      "mowziesmobs:player"
     ]
   },
   "accessWidener": "mowziesmobs.accesswidener",

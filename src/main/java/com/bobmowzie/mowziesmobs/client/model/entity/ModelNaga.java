@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.client.model.tools.AdvancedModelRenderer;
@@ -684,7 +683,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         float nonHoverAnim = 1f - hoverAnim;
 
         float flapAnim = entity.prevFlapAnimFrac + (entity.flapAnimFrac - entity.prevFlapAnimFrac) * partial;
-        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
+        FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(entity);
         boolean frozen = frozenCapability != null && frozenCapability.getFrozen();
         if (!frozen) {
             //Hover anim
@@ -778,7 +777,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.setDefaultAngle(entity, limbSwing, limbSwingAmount, headYaw, headPitch, delta);
         float frame = entity.frame + delta;
 
-        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.FROZEN_CAPABILITY);
+        FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(entity);
         boolean frozen = frozenCapability != null && frozenCapability.getFrozen();
         if (!frozen) {
 

@@ -4,7 +4,6 @@ import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -26,14 +25,14 @@ public class ServerNetworkHelper {
     public static void register() {
         ServerPlayNetworking.registerGlobalReceiver(StaticVariables.LEFT_MOUSE_DOWN, (server, player, handler, buf, responseSender) -> {
             if (player != null) {
-                PlayerCapability.IPlayerCapability capability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
+                PlayerCapability.IPlayerCapability capability = PlayerCapability.get(player);
                 if (capability != null) {
                     capability.setMouseLeftDown(true);
                     Power[] powers = capability.getPowers();
                     for (Power power : powers)
                         power.onLeftMouseDown(player);
                 }
-                AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
                 if (abilityCapability != null)
                     for (Ability<?> ability : abilityCapability.getAbilities())
                         if (ability instanceof PlayerAbility playerAbility)
@@ -42,14 +41,14 @@ public class ServerNetworkHelper {
         });
         ServerPlayNetworking.registerGlobalReceiver(StaticVariables.LEFT_MOUSE_UP, (server, player, handler, buf, responseSender) -> {
             if (player != null) {
-                PlayerCapability.IPlayerCapability capability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
+                PlayerCapability.IPlayerCapability capability = PlayerCapability.get(player);
                 if (capability != null) {
                     capability.setMouseLeftDown(false);
                     Power[] powers = capability.getPowers();
                     for (Power power : powers)
                         power.onLeftMouseUp(player);
                 }
-                AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
                 if (abilityCapability != null)
                     for (Ability<?> ability : abilityCapability.getAbilities())
                         if (ability instanceof PlayerAbility playerAbility)
@@ -58,7 +57,7 @@ public class ServerNetworkHelper {
         });
         ServerPlayNetworking.registerGlobalReceiver(StaticVariables.RIGHT_MOUSE_DOWN, (server, player, handler, buf, responseSender) -> {
             if (player != null) {
-                PlayerCapability.IPlayerCapability capability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
+                PlayerCapability.IPlayerCapability capability = PlayerCapability.get(player);
                 if (capability != null) {
                     capability.setMouseRightDown(true);
                     Power[] powers = capability.getPowers();
@@ -66,7 +65,7 @@ public class ServerNetworkHelper {
                         power.onRightMouseDown(player);
                 }
 
-                AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
                 if (abilityCapability != null)
                     for (Ability<?> ability : abilityCapability.getAbilities())
                         if (ability instanceof PlayerAbility playerAbility)
@@ -75,14 +74,14 @@ public class ServerNetworkHelper {
         });
         ServerPlayNetworking.registerGlobalReceiver(StaticVariables.RIGHT_MOUSE_UP, (server, player, handler, buf, responseSender) -> {
             if (player != null) {
-                PlayerCapability.IPlayerCapability capability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
+                PlayerCapability.IPlayerCapability capability = PlayerCapability.get(player);
                 if (capability != null) {
                     capability.setMouseRightDown(false);
                     Power[] powers = capability.getPowers();
                     for (Power power : powers)
                         power.onRightMouseUp(player);
                 }
-                AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
                 if (abilityCapability != null)
                     for (Ability<?> ability : abilityCapability.getAbilities())
                         if (ability instanceof PlayerAbility playerAbility)
@@ -109,7 +108,7 @@ public class ServerNetworkHelper {
         });
         ServerPlayNetworking.registerGlobalReceiver(StaticVariables.PLAYER_USE_ABILITY, (server, player, handler, buf, responseSender) -> {
             MessagePlayerUseAbility message = MessagePlayerUseAbility.deserialize(buf);
-            AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(player, CapabilityHandler.ABILITY_CAPABILITY);
+            AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
             if (abilityCapability != null) {
                 AbilityHandler.INSTANCE.sendAbilityMessage(player, abilityCapability.getAbilityTypesOnEntity(player)[message.getIndex()]);
             }

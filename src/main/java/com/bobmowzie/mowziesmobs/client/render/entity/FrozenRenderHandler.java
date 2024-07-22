@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
@@ -44,7 +43,7 @@ public enum FrozenRenderHandler {
         PlayerEntity player = MinecraftClient.getInstance().player;
 
         if (player != null) {
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, CapabilityHandler.FROZEN_CAPABILITY);
+            FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(player);
             if (frozenCapability != null && frozenCapability.getFrozen()) {
                 boolean isMainHand = event.getHand() == Hand.MAIN_HAND;
                 if (isMainHand && !player.isInvisible() && event.getItemStack().isEmpty()) {
@@ -145,7 +144,7 @@ public enum FrozenRenderHandler {
 
         @Override
         public void render(MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn, LivingEntity living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(living, CapabilityHandler.FROZEN_CAPABILITY);
+            FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(living);
             if (frozenCapability != null && frozenCapability.getFrozen()) {
                 EntityModel model = this.renderer.getModel();
 
@@ -164,7 +163,7 @@ public enum FrozenRenderHandler {
 
         @Override
         public void render(MatrixStack poseStack, T animatable, BakedGeoModel bakedModel, RenderLayer renderType, VertexConsumerProvider bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(animatable, CapabilityHandler.FROZEN_CAPABILITY);
+            FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(animatable);
             if (frozenCapability != null && frozenCapability.getFrozen()) {
                 RenderLayer frozenRenderType = RenderLayer.getEntityTranslucent(FROZEN_TEXTURE);
 

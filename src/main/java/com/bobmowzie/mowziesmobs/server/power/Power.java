@@ -1,15 +1,25 @@
 package com.bobmowzie.mowziesmobs.server.power;
 
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
+import io.github.fabricators_of_create.porting_lib.entity.events.LivingEntityEvents;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -21,7 +31,7 @@ public abstract class Power {
         this.capability = capability;
     }
 
-    public void tick(TickEvent.PlayerTickEvent event) {
+    public void tick(PlayerEntity player) {
 
     }
 
@@ -29,15 +39,15 @@ public abstract class Power {
 
     }
 
-    public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+    public void onRightClickBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
 
     }
 
-    public void onRightClickWithItem(PlayerInteractEvent.RightClickItem event) {
+    public void onRightClickWithItem(PlayerEntity player, World world, Hand hand) {
 
     }
 
-    public void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
+    public void onRightClickEntity(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
 
     }
 
@@ -45,11 +55,11 @@ public abstract class Power {
 
     }
 
-    public void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+    public void onLeftClickBlock(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction) {
 
     }
 
-    public void onLeftClickEntity(AttackEntityEvent event) {
+    public void onLeftClickEntity(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
 
     }
 
@@ -57,7 +67,7 @@ public abstract class Power {
 
     }
 
-    public void onJump(LivingEvent.LivingJumpEvent event) {
+    public void onJump(LivingEntityEvents.LivingJumpEvent event) {
 
     }
 

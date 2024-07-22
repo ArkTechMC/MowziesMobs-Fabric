@@ -26,7 +26,9 @@ import software.bernie.geckolib.core.object.PlayState;
 import java.util.*;
 
 public class AbilityCapability {
-    public static Identifier ID = new Identifier(MowziesMobs.MODID, "ability_cap");
+    public static IAbilityCapability get(PlayerEntity entity) {
+        return AbilityProvider.get(entity).capability;
+    }
 
     public interface IAbilityCapability {
 
@@ -46,7 +48,7 @@ public class AbilityCapability {
 
         Ability getActiveAbility();
 
-        void setActiveAbility(Ability activeAbility);
+        void setActiveAbility(Ability<?> activeAbility);
 
         boolean attackingPrevented();
 
@@ -121,12 +123,12 @@ public class AbilityCapability {
         }
 
         @Override
-        public Ability getActiveAbility() {
+        public Ability<?> getActiveAbility() {
             return this.activeAbility;
         }
 
         @Override
-        public void setActiveAbility(Ability activeAbility) {
+        public void setActiveAbility(Ability<?> activeAbility) {
             if (this.getActiveAbility() != null && this.getActiveAbility().isUsing())
                 this.getActiveAbility().interrupt();
             this.activeAbility = activeAbility;
@@ -187,16 +189,16 @@ public class AbilityCapability {
     }
 
     public static class AbilityProvider implements ComponentV3, AutoSyncedComponent, CommonTickingComponent {
-        protected static final ComponentKey<AbilityProvider> ABILITY_COMPONENT = ComponentRegistryV3.INSTANCE.getOrCreate(new Identifier(MowziesMobs.MODID, "ability"), AbilityProvider.class);
+        protected static final ComponentKey<AbilityProvider> COMPONENT = ComponentRegistryV3.INSTANCE.getOrCreate(new Identifier(MowziesMobs.MODID, "ability"), AbilityProvider.class);
         private final IAbilityCapability capability = new AbilityCapabilityImp();
-        private final LivingEntity entity;
+        private final PlayerEntity entity;
 
-        public AbilityProvider(LivingEntity entity) {
+        public AbilityProvider(PlayerEntity entity) {
             this.entity = entity;
         }
 
-        public static AbilityProvider get(LivingEntity entity) {
-            return ABILITY_COMPONENT.get(entity);
+        public static AbilityProvider get(PlayerEntity entity) {
+            return COMPONENT.get(entity);
         }
 
         @Override

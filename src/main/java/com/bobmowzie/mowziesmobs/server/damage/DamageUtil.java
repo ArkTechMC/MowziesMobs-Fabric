@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.damage;
 
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -20,7 +19,7 @@ public class DamageUtil {
         boolean flag1 = source1.getAttacker() != null && target.isTeammate(source1.getAttacker());
         boolean flag2 = source2.getAttacker() != null && target.isTeammate(source2.getAttacker());
         if (flag1 || flag2) return Pair.of(false, false);
-        LivingCapability.ILivingCapability lastDamageCapability = CapabilityHandler.getCapability(target, CapabilityHandler.LIVING_CAPABILITY);
+        LivingCapability.ILivingCapability lastDamageCapability = LivingCapability.get(target);
         if (lastDamageCapability != null) {
             lastDamageCapability.setLastDamage(-1);
             float damageSoFar = 0;

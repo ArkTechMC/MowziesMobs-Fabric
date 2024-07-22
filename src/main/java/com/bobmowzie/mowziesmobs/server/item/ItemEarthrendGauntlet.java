@@ -20,6 +20,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -75,7 +76,7 @@ public class ItemEarthrendGauntlet extends MowzieToolItem implements GeoItem {
     @Override
     public TypedActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack stack = playerIn.getStackInHand(handIn);
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(playerIn);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(playerIn);
         if (abilityCapability != null) {
             playerIn.setCurrentHand(handIn);
             if (stack.getDamage() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.breakable.get()) {
@@ -130,7 +131,7 @@ public class ItemEarthrendGauntlet extends MowzieToolItem implements GeoItem {
 
     @Override
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(entity);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
         if (abilityCapability != null && abilityCapability.getActiveAbility() == null) {
             if (entity.getActiveItem() != stack) {
                 if (entity.getWorld() instanceof ServerWorld) {

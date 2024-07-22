@@ -4,7 +4,6 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -130,7 +129,7 @@ public class EntityUmvuthanaFollowerToPlayer extends EntityUmvuthanaFollower<Pla
     }
 
     private PlayerCapability.IPlayerCapability getPlayerCapability() {
-        return CapabilityHandler.getCapability(this.leader, CapabilityHandler.PLAYER_CAPABILITY);
+        return PlayerCapability.get(this.leader);
     }
 
     @Override

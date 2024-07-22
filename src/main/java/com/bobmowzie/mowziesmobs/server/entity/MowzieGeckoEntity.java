@@ -6,10 +6,10 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.player.SimpleAnimationAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -61,7 +61,7 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements GeoEntit
 
     protected <E extends GeoEntity> PlayState predicate(AnimationState<E> state) {
         AbilityCapability.IAbilityCapability abilityCapability = this.getAbilityCapability();
-        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(this, CapabilityHandler.FROZEN_CAPABILITY);
+        FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(this);
         if (abilityCapability == null) {
             return PlayState.STOP;
         }
@@ -101,7 +101,7 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements GeoEntit
     }
 
     public AbilityCapability.IAbilityCapability getAbilityCapability() {
-        return AbilityHandler.INSTANCE.getAbilityCapability(this);
+        return AbilityCapability.get((PlayerEntity) this);
     }
 
     public Ability getActiveAbility() {

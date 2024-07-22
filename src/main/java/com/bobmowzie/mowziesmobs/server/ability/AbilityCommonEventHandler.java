@@ -45,7 +45,7 @@ public class AbilityCommonEventHandler {
 //    }
 
     public static ActionResult onPlayerRightClickBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
         if (abilityCapability != null)
             for (Ability<?> ability : abilityCapability.getAbilities())
                 if (ability instanceof PlayerAbility playerAbility)
@@ -54,7 +54,7 @@ public class AbilityCommonEventHandler {
     }
 
     public static TypedActionResult<ItemStack> onPlayerRightClickItem(PlayerEntity player, World world, Hand hand) {
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
         if (abilityCapability != null)
             for (Ability<?> ability : abilityCapability.getAbilities())
                 if (ability instanceof PlayerAbility playerAbility)
@@ -63,7 +63,7 @@ public class AbilityCommonEventHandler {
     }
 
     public static ActionResult onPlayerRightClickEntity(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
         if (abilityCapability != null)
             for (Ability<?> ability : abilityCapability.getAbilities())
                 if (ability instanceof PlayerAbility playerAbility)
@@ -73,7 +73,7 @@ public class AbilityCommonEventHandler {
 
     public static void onPlayerLeftClickEmpty(PlayerInteractionEvents.LeftClickEmpty event) {
         PlayerEntity player = event.getEntity();
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
         if (abilityCapability != null)
             for (Ability<?> ability : abilityCapability.getAbilities())
                 if (ability instanceof PlayerAbility playerAbility)
@@ -81,7 +81,7 @@ public class AbilityCommonEventHandler {
     }
 
     public static ActionResult onPlayerLeftClickBlock(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction) {
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
         if (abilityCapability != null)
             for (Ability<?> ability : abilityCapability.getAbilities())
                 if (ability instanceof PlayerAbility playerAbility)
@@ -90,7 +90,7 @@ public class AbilityCommonEventHandler {
     }
 
     public static ActionResult onLeftClickEntity(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
         if (abilityCapability != null)
             for (Ability<?> ability : abilityCapability.getAbilities())
                 if (ability instanceof PlayerAbility playerAbility)
@@ -99,7 +99,7 @@ public class AbilityCommonEventHandler {
     }
 
     public static float onTakeDamage(LivingEntity entity, DamageSource source, float amount) {
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(entity);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
         if (abilityCapability != null)
             for (Ability<?> ability : abilityCapability.getAbilities())
                 ability.onTakeDamage(entity, source, amount);
@@ -108,7 +108,7 @@ public class AbilityCommonEventHandler {
 
     public static void onJump(io.github.fabricators_of_create.porting_lib.entity.events.LivingEntityEvents.LivingJumpEvent event) {
         LivingEntity player = event.getEntity();
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) player);
         if (abilityCapability != null)
             for (Ability<?> ability : abilityCapability.getAbilities())
                 if (ability instanceof PlayerAbility playerAbility)

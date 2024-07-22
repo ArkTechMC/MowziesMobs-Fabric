@@ -39,7 +39,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerCapability {
-    public static Identifier ID = new Identifier(MowziesMobs.MODID, "player_cap");
+    public static IPlayerCapability get(PlayerEntity entity) {
+        return PlayerProvider.get(entity).capability;
+    }
 
     public interface IPlayerCapability {
 
@@ -303,7 +305,7 @@ public class PlayerCapability {
                     this.mouseLeftDown = true;
                     ClientPlayNetworking.send(StaticVariables.LEFT_MOUSE_DOWN, PacketByteBufs.create());
                     for (Power power : this.powers) power.onLeftMouseDown(player);
-                    AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                    AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
                     if (abilityCapability != null)
                         for (Ability<?> ability : abilityCapability.getAbilities())
                             if (ability instanceof PlayerAbility playerAbility)
@@ -313,7 +315,7 @@ public class PlayerCapability {
                     this.mouseRightDown = true;
                     ClientPlayNetworking.send(StaticVariables.RIGHT_MOUSE_DOWN, PacketByteBufs.create());
                     for (Power power : this.powers) power.onRightMouseDown(player);
-                    AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                    AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
                     if (abilityCapability != null)
                         for (Ability<?> ability : abilityCapability.getAbilities())
                             if (ability instanceof PlayerAbility playerAbility)
@@ -323,7 +325,7 @@ public class PlayerCapability {
                     this.mouseLeftDown = false;
                     ClientPlayNetworking.send(StaticVariables.LEFT_MOUSE_UP, PacketByteBufs.create());
                     for (Power power : this.powers) power.onLeftMouseUp(player);
-                    AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                    AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
                     if (abilityCapability != null)
                         for (Ability<?> ability : abilityCapability.getAbilities())
                             if (ability instanceof PlayerAbility playerAbility)
@@ -333,7 +335,7 @@ public class PlayerCapability {
                     this.mouseRightDown = false;
                     ClientPlayNetworking.send(StaticVariables.RIGHT_MOUSE_UP, PacketByteBufs.create());
                     for (Power power : this.powers) power.onRightMouseUp(player);
-                    AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                    AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
                     if (abilityCapability != null)
                         for (Ability<?> ability : abilityCapability.getAbilities())
                             if (ability instanceof PlayerAbility playerAbility)
@@ -343,7 +345,7 @@ public class PlayerCapability {
 
             if (player.isSneaking() && !this.prevSneaking) {
                 for (Power power : this.powers) power.onSneakDown(player);
-                AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
                 if (abilityCapability != null) {
                     for (Ability<?> ability : abilityCapability.getAbilities()) {
                         if (ability instanceof PlayerAbility playerAbility)
@@ -352,7 +354,7 @@ public class PlayerCapability {
                 }
             } else if (!player.isSneaking() && this.prevSneaking) {
                 for (Power power : this.powers) power.onSneakUp(player);
-                AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
                 if (abilityCapability != null) {
                     for (Ability<?> ability : abilityCapability.getAbilities()) {
                         if (ability instanceof PlayerAbility playerAbility)
@@ -449,7 +451,7 @@ public class PlayerCapability {
     }
 
     public static class PlayerProvider implements ComponentV3, AutoSyncedComponent, CommonTickingComponent {
-        protected static final ComponentKey<AbilityCapability.AbilityProvider> LIVING_COMPONENT = ComponentRegistryV3.INSTANCE.getOrCreate(new Identifier(MowziesMobs.MODID, "ability"), AbilityCapability.AbilityProvider.class);
+        protected static final ComponentKey<PlayerProvider> COMPONENT = ComponentRegistryV3.INSTANCE.getOrCreate(new Identifier(MowziesMobs.MODID, "player"), PlayerProvider.class);
         private final IPlayerCapability capability = new PlayerCapabilityImp();
         private final PlayerEntity player;
 
@@ -457,8 +459,8 @@ public class PlayerCapability {
             this.player = player;
         }
 
-        public static AbilityCapability.AbilityProvider get(PlayerEntity player) {
-            return LIVING_COMPONENT.get(player);
+        public static PlayerProvider get(PlayerEntity player) {
+            return COMPONENT.get(player);
         }
 
         @Override

@@ -4,7 +4,9 @@
   "package": "com.bobmowzie.mowziesmobs.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "BlockBehaviourMixin"
+    "BlockBehaviourMixin",
+    "LivingEntityMixin",
+    "PlayerEntityMixin"
   ],
   "client": [
   ],

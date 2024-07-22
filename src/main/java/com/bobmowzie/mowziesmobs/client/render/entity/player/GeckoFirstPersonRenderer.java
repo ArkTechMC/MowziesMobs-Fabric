@@ -4,7 +4,6 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
@@ -85,7 +84,7 @@ public class GeckoFirstPersonRenderer extends HeldItemRenderer implements GeoRen
 
         PlayerAbility.HandDisplay handDisplay = PlayerAbility.HandDisplay.DEFAULT;
         float offHandEquipProgress = 0.0f;
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
         if (abilityCapability != null && abilityCapability.getActiveAbility() != null) {
             Ability ability = abilityCapability.getActiveAbility();
             if (ability instanceof PlayerAbility playerAbility) {

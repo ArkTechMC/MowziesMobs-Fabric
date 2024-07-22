@@ -4,9 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -50,7 +48,7 @@ public abstract class GeckoPlayer implements GeoEntity {
     @Nullable
     public static GeckoPlayer getGeckoPlayer(PlayerEntity player, Perspective perspective) {
         if (perspective == Perspective.FIRST_PERSON) return GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON;
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get(player);
         if (playerCapability != null) {
             return playerCapability.getGeckoPlayer();
         }
@@ -58,7 +56,7 @@ public abstract class GeckoPlayer implements GeoEntity {
     }
 
     public static MowzieAnimationController<GeckoPlayer> getAnimationController(PlayerEntity player, Perspective perspective) {
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get(player);
         if (playerCapability != null) {
             GeckoPlayer geckoPlayer;
             if (perspective == Perspective.FIRST_PERSON)
@@ -100,7 +98,7 @@ public abstract class GeckoPlayer implements GeoEntity {
         if (player == null) {
             return PlayState.STOP;
         }
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
         if (abilityCapability == null) {
             return PlayState.STOP;
         }

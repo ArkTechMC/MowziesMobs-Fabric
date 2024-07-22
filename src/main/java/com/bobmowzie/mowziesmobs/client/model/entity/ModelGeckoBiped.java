@@ -4,7 +4,6 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoModel;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -264,7 +263,7 @@ public class ModelGeckoBiped extends MowzieGeoModel<GeckoPlayer> {
 //			this.bipedRightLeg().setRotX(MathHelper.lerp(this.swimAnimation, this.bipedRightLeg().getRotX(), 0.3F * MathHelper.cos(limbSwing * 0.33333334F)));
 //		}
 
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(entityIn);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(entityIn);
         if (abilityCapability != null && abilityCapability.getActiveAbility() != null) {
             abilityCapability.codeAnimations(this, partialTick);
         }

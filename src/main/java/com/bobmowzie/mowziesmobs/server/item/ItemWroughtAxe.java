@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.iafenvoy.uranus.object.ISwingable;
@@ -38,7 +38,7 @@ public class ItemWroughtAxe extends MowzieAxeItem implements ISwingable {
 
     @Override
     public boolean onEntitySwing(ItemStack itemStack, Entity entity) {
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(entity, CapabilityHandler.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = AbilityCapability.get((PlayerEntity) entity);
         return playerCapability != null && playerCapability.getUntilAxeSwing() > 0;
     }
 
@@ -54,7 +54,7 @@ public class ItemWroughtAxe extends MowzieAxeItem implements ISwingable {
         if (!entityHit.getWorld().isClient) {
             entityHit.playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);
         }
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(attacker, CapabilityHandler.PLAYER_CAPABILITY);
+        PlayerCapability.IPlayerCapability playerCapability = AbilityCapability.get((PlayerEntity) attacker);
         return playerCapability == null || (!playerCapability.getAxeCanAttack() && playerCapability.getUntilAxeSwing() > 0);
     }
 
@@ -66,7 +66,7 @@ public class ItemWroughtAxe extends MowzieAxeItem implements ISwingable {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         if (hand == Hand.MAIN_HAND && player.getAttackCooldownProgress(0.5F) == 1.0f) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
+            PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get(player);
             if (playerCapability != null && playerCapability.getUntilAxeSwing() <= 0) {
                 boolean verticalAttack = player.isSneaking() && player.isOnGround();
                 if (verticalAttack)

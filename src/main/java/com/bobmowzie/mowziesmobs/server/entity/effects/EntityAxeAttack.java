@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -173,7 +173,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                 // Do raycast check to prevent damaging through walls
                 if (!this.raytraceCheckEntity(entityHit)) continue;
 
-                PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(this.caster, CapabilityHandler.PLAYER_CAPABILITY);
+                PlayerCapability.IPlayerCapability playerCapability = AbilityCapability.get((PlayerEntity) this.caster);
                 if (playerCapability != null) {
                     playerCapability.setAxeCanAttack(true);
                     if (this.caster instanceof PlayerEntity)

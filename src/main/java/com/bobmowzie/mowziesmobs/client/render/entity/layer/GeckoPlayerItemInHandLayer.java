@@ -3,7 +3,6 @@ package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import net.fabricmc.api.EnvType;
@@ -35,7 +34,7 @@ public class GeckoPlayerItemInHandLayer extends FeatureRenderer<AbstractClientPl
         boolean flag = entitylivingbaseIn.getMainArm() == Arm.RIGHT;
         ItemStack mainHandStack = entitylivingbaseIn.getMainHandStack();
         ItemStack offHandStack = entitylivingbaseIn.getOffHandStack();
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(entitylivingbaseIn);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(entitylivingbaseIn);
         if (abilityCapability != null && abilityCapability.getActiveAbility() != null) {
             Ability ability = abilityCapability.getActiveAbility();
             if (ability instanceof PlayerAbility playerAbility) {

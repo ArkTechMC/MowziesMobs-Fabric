@@ -33,7 +33,7 @@ public class ItemIceCrystal extends Item {
     @Override
     public TypedActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack stack = playerIn.getStackInHand(handIn);
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(playerIn);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(playerIn);
         if (abilityCapability != null) {
             playerIn.setCurrentHand(handIn);
             if (stack.getDamage() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable) {
