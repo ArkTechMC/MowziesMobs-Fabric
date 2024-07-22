@@ -31,49 +31,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ServerProxy {
-    public static final TrackedDataHandler<Optional<Trade>> OPTIONAL_TRADE = new TrackedDataHandler<Optional<Trade>>() {
-        @Override
-        public void write(PacketByteBuf buf, Optional<Trade> value) {
-            if (value.isPresent()) {
-                Trade trade = value.get();
-                buf.writeItemStack(trade.getInput());
-                buf.writeItemStack(trade.getOutput());
-                buf.writeInt(trade.getWeight());
-            } else {
-                buf.writeItemStack(ItemStack.EMPTY);
-            }
-        }
-
-        @Override
-        public Optional<Trade> read(PacketByteBuf buf) {
-            ItemStack input = buf.readItemStack();
-            if (input == ItemStack.EMPTY) {
-                return Optional.empty();
-            }
-            return Optional.of(new Trade(input, buf.readItemStack(), buf.readInt()));
-        }
-
-        @Override
-        public TrackedData<Optional<Trade>> create(int id) {
-            return new TrackedData<>(id, this);
-        }
-
-        @Override
-        public Optional<Trade> copy(Optional<Trade> value) {
-            if (value.isPresent()) {
-                return Optional.of(new Trade(value.get()));
-            }
-            return Optional.empty();
-        }
-    };
     private int nextMessageId;
 
     public void init(final IEventBus modbus) {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_CONFIG);
-        TrackedDataHandlerRegistry.register(OPTIONAL_TRADE);
-    }
-
-    public void onLateInit(final IEventBus modbus) {
     }
 
     public void playSunstrikeSound(EntitySunstrike strike) {

@@ -6,7 +6,8 @@
   "mixins": [
     "BlockBehaviourMixin",
     "LivingEntityMixin",
-    "PlayerEntityMixin"
+    "PlayerEntityMixin",
+    "PlayerManagerMixin"
   ],
   "client": [
   ],

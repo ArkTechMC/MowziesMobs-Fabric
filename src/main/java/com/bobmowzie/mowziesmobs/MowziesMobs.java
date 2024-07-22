@@ -14,6 +14,7 @@ import com.bobmowzie.mowziesmobs.server.block.entity.BlockEntityHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
@@ -28,8 +29,16 @@ import com.bobmowzie.mowziesmobs.server.world.feature.structure.processor.Proces
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import com.iafenvoy.uranus.event.EntityEvents;
 import com.iafenvoy.uranus.event.LivingEntityEvents;
+import io.github.fabricators_of_create.porting_lib.entity.events.CriticalHitEvent;
+import io.github.fabricators_of_create.porting_lib.entity.events.EntityMountEvents;
+import io.github.fabricators_of_create.porting_lib.event.common.AttackAirCallback;
 import io.github.fabricators_of_create.porting_lib.event.common.BlockEvents;
 import net.fabricmc.fabric.api.event.player.*;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandler;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -44,10 +53,44 @@ import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib.GeckoLib;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.Optional;
+
 public final class MowziesMobs {
     public static final String MODID = "mowziesmobs";
     public static final Logger LOGGER = LogManager.getLogger();
     public static ServerProxy PROXY;
+    public static final TrackedDataHandler<Optional<Trade>> OPTIONAL_TRADE = new TrackedDataHandler<>() {
+        @Override
+        public void write(PacketByteBuf buf, Optional<Trade> value) {
+            if (value.isPresent()) {
+                Trade trade = value.get();
+                buf.writeItemStack(trade.getInput());
+                buf.writeItemStack(trade.getOutput());
+                buf.writeInt(trade.getWeight());
+            } else {
+                buf.writeItemStack(ItemStack.EMPTY);
+            }
+        }
+
+        @Override
+        public Optional<Trade> read(PacketByteBuf buf) {
+            ItemStack input = buf.readItemStack();
+            if (input == ItemStack.EMPTY) {
+                return Optional.empty();
+            }
+            return Optional.of(new Trade(input, buf.readItemStack(), buf.readInt()));
+        }
+
+        @Override
+        public TrackedData<Optional<Trade>> create(int id) {
+            return new TrackedData<>(id, this);
+        }
+
+        @Override
+        public Optional<Trade> copy(Optional<Trade> value) {
+            return value.map(Trade::new);
+        }
+    };
 
     public MowziesMobs() {
         GeckoLibUtil.addCustomBakedModelFactory(MODID, new MowzieModelFactory());
@@ -94,7 +137,11 @@ public final class MowziesMobs {
         AttackBlockCallback.EVENT.register(ServerEventHandler::onPlayerLeftClickBlock);
         io.github.fabricators_of_create.porting_lib.entity.events.LivingEntityEvents.LivingJumpEvent.JUMP.register(ServerEventHandler::onLivingJump);
         AttackEntityCallback.EVENT.register(ServerEventHandler::onPlayerAttack);
+        CriticalHitEvent.CRITICAL_HIT.register(ServerEventHandler::checkCritEvent);
+        EntityMountEvents.MOUNT.register(ServerEventHandler::onRideEntity);
+        PlayerEvents.RESPAWN.register(ServerEventHandler::onPlayerRespawn);
 
+        TrackedDataHandlerRegistry.register(OPTIONAL_TRADE);
     }
 
     @SubscribeEvent

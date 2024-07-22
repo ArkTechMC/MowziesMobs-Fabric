@@ -8,7 +8,6 @@ import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ai.AvoidEntityIfNotTamedGoal;
-import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
@@ -35,6 +34,8 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.iafenvoy.uranus.ServerHelper;
+import io.github.fabricators_of_create.porting_lib.core.event.BaseEvent;
+import io.github.fabricators_of_create.porting_lib.entity.events.CriticalHitEvent;
 import io.github.fabricators_of_create.porting_lib.entity.events.LivingEntityEvents;
 import io.github.fabricators_of_create.porting_lib.event.common.BlockEvents;
 import net.fabricmc.api.EnvType;
@@ -78,11 +79,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.*;
-import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -327,12 +325,12 @@ public final class ServerEventHandler {
         ) aggroUmvuthana(event.getPlayer());
     }
 
-    public <T extends Entity> List<T> getEntitiesNearby(Entity startEntity, Class<T> entityClass, double r) {
+    public static <T extends Entity> List<T> getEntitiesNearby(Entity startEntity, Class<T> entityClass, double r) {
         return startEntity.getWorld().getEntitiesByClass(entityClass, startEntity.getBoundingBox().expand(r, r, r), e -> e != startEntity && startEntity.distanceTo(e) <= r);
     }
 
-    private List<LivingEntity> getEntityBaseNearby(LivingEntity user, double distanceX, double distanceY,
-                                                   double distanceZ, double radius) {
+    private static List<LivingEntity> getEntityBaseNearby(LivingEntity user, double distanceX, double distanceY,
+                                                          double distanceZ, double radius) {
         List<Entity> list = user.getWorld().getOtherEntities(user, user.getBoundingBox().expand(distanceX, distanceY, distanceZ));
         ArrayList<LivingEntity> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof LivingEntity && user.distanceTo(entityNeighbor) <= radius).map(entityNeighbor -> (LivingEntity) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
@@ -557,28 +555,26 @@ public final class ServerEventHandler {
         return ActionResult.PASS;
     }
 
-    @SubscribeEvent
-    public void checkCritEvent(CriticalHitEvent event) {
-        ItemStack weapon = event.getEntity().getMainHandItem();
+    public static void checkCritEvent(CriticalHitEvent event) {
+        ItemStack weapon = event.getEntity().getMainHandStack();
         PlayerEntity attacker = event.getEntity();
-        PlayerCapability.IPlayerCapability playerCapability = AbilityCapability.get(event.getEntity());
-        if (playerCapability != null && playerCapability.getPrevCooledAttackStrength() == 1.0f && !weapon.isEmpty() && event.getTarget() instanceof LivingEntity) {
-            LivingEntity target = (LivingEntity) event.getTarget();
+        PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get(event.getEntity());
+        if (playerCapability != null && playerCapability.getPrevCooledAttackStrength() == 1.0f && !weapon.isEmpty() && event.getTarget() instanceof LivingEntity target) {
             if (weapon.getItem() instanceof ItemNagaFangDagger) {
                 Vec3d lookDir = new Vec3d(target.getRotationVector().x, 0, target.getRotationVector().z).normalize();
                 Vec3d vecBetween = new Vec3d(target.getX() - event.getEntity().getX(), 0, target.getZ() - event.getEntity().getZ()).normalize();
                 double dot = lookDir.dotProduct(vecBetween);
                 if (dot > 0.7) {
-                    event.setResult(Event.Result.ALLOW);
-                    event.setDamageModifier(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.backstabDamageMultiplier.get().floatValue());
-                    target.playSound(MMSounds.ENTITY_NAGA_ACID_HIT.get(), 1f, 1.2f);
+                    event.setResult(BaseEvent.Result.ALLOW);
+                    event.setDamageModifier((float) ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.backstabDamageMultiplier);
+                    target.playSound(MMSounds.ENTITY_NAGA_ACID_HIT, 1f, 1.2f);
                     AbilityHandler.INSTANCE.sendAbilityMessage(attacker, AbilityHandler.BACKSTAB_ABILITY);
 
-                    if (target.getWorld().isClient() && target != null && attacker != null) {
+                    if (target.getWorld().isClient()) {
                         Vec3d ringOffset = attacker.getRotationVector().multiply(-target.getWidth() / 2.f);
                         ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
                         Vec3d pos = target.getPos().add(0, target.getHeight() / 2f, 0).add(ringOffset);
-                        AdvancedParticleBase.spawnParticle(target.getWorld(), ParticleHandler.RING_SPARKS.get(), pos.getX(), pos.getY(), pos.getZ(), 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, 6, false, true, new ParticleComponent[]{
+                        AdvancedParticleBase.spawnParticle(target.getWorld(), ParticleHandler.RING_SPARKS, pos.getX(), pos.getY(), pos.getZ(), 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, 6, false, true, new ParticleComponent[]{
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(new float[]{1f, 1f, 0f}, new float[]{0f, 0.5f, 1f}), false),
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, 15f), false)
                         });
@@ -598,7 +594,7 @@ public final class ServerEventHandler {
                             particlePos = particlePos.rotateX((float) (rand.nextFloat() * 2 * Math.PI));
                             double value = rand.nextFloat() * 0.1f;
                             double life = rand.nextFloat() * 2.5f + 5f;
-                            AdvancedParticleBase.spawnParticle(target.getWorld(), ParticleHandler.PIXEL.get(), pos.getX(), pos.getY(), pos.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.6, life * 0.95, false, true);
+                            AdvancedParticleBase.spawnParticle(target.getWorld(), ParticleHandler.PIXEL, pos.getX(), pos.getY(), pos.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.6, life * 0.95, false, true);
                         }
                         for (int i = 0; i < 6; i++) {
                             Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.25, 0, 0);
@@ -606,48 +602,32 @@ public final class ServerEventHandler {
                             particlePos = particlePos.rotateX((float) (rand.nextFloat() * 2 * Math.PI));
                             double value = rand.nextFloat() * 0.1f;
                             double life = rand.nextFloat() * 5f + 10f;
-                            AdvancedParticleBase.spawnParticle(target.getWorld(), ParticleHandler.BUBBLE.get(), pos.getX(), pos.getY(), pos.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.25d + value, 0.75d + value, 0.25d + value, 1d, 0.6, life * 0.95, false, true);
+                            AdvancedParticleBase.spawnParticle(target.getWorld(), ParticleHandler.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.25d + value, 0.75d + value, 0.25d + value, 1d, 0.6, life * 0.95, false, true);
                         }
                     }
                 }
             } else if (weapon.getItem() instanceof ItemSpear) {
                 if (target instanceof AnimalEntity && target.getMaxHealth() <= 30 && attacker.getWorld().getRandom().nextFloat() <= 0.334) {
-                    event.setResult(Event.Result.ALLOW);
+                    event.setResult(BaseEvent.Result.ALLOW);
                     event.setDamageModifier(400);
                 }
             }
         }
     }
 
-    @SubscribeEvent
-    public void onRideEntity(EntityMountEvent event) {
-        if (event.getEntityMounting() instanceof EntityUmvuthi || event.getEntityMounting() instanceof EntityFrostmaw || event.getEntityMounting() instanceof EntityWroughtnaut)
-            event.setCanceled(true);
+    public static boolean onRideEntity(Entity vehicle, Entity passenger) {
+        return !(vehicle instanceof EntityUmvuthi) && !(vehicle instanceof EntityFrostmaw) && !(vehicle instanceof EntityWroughtnaut);
     }
 
-    @SubscribeEvent
-    public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        List<MowzieEntity> mobs = this.getEntitiesNearby(event.getEntity(), MowzieEntity.class, 40);
-        for (MowzieEntity mob : mobs) {
-            if (mob.resetHealthOnPlayerRespawn()) {
+    public static void onPlayerRespawn(ServerPlayerEntity player) {
+        List<MowzieEntity> mobs = getEntitiesNearby(player, MowzieEntity.class, 40);
+        for (MowzieEntity mob : mobs)
+            if (mob.resetHealthOnPlayerRespawn())
                 mob.setHealth(mob.getMaxHealth());
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onFurnaceFuelBurnTimeEvent(FurnaceFuelBurnTimeEvent event) {
-        if (event.getItemStack().is(BlockHandler.CLAWED_LOG.get().asItem()) || event.getItemStack().is(BlockHandler.PAINTED_ACACIA.get().asItem())) {
-            event.setBurnTime(300);
-        } else if (event.getItemStack().is(BlockHandler.PAINTED_ACACIA_SLAB.get().asItem())) {
-            event.setBurnTime(150);
-        } else if (event.getItemStack().is(BlockHandler.THATCH.get().asItem())) {
-            event.setBurnTime(100);
-        }
     }
 
     private static void aggroUmvuthana(PlayerEntity player) {
-        List<EntityUmvuthi> barakos = this.getEntitiesNearby(player, EntityUmvuthi.class, 50);
+        List<EntityUmvuthi> barakos = getEntitiesNearby(player, EntityUmvuthi.class, 50);
         for (EntityUmvuthi barako : barakos) {
             if (barako.getTarget() == null || !(barako.getTarget() instanceof PlayerEntity)) {
                 if (!player.isCreative() && !player.isSpectator() && player.getBlockPos().getSquaredDistance(barako.getPositionTarget()) < 900) {
@@ -655,7 +635,7 @@ public final class ServerEventHandler {
                 }
             }
         }
-        List<EntityUmvuthanaMinion> barakoas = this.getEntitiesNearby(player, EntityUmvuthanaMinion.class, 50);
+        List<EntityUmvuthanaMinion> barakoas = getEntitiesNearby(player, EntityUmvuthanaMinion.class, 50);
         for (EntityUmvuthanaMinion barakoa : barakoas) {
             if (barakoa.getTarget() == null || !(barakoa.getTarget() instanceof PlayerEntity)) {
                 if (player.getBlockPos().getSquaredDistance(barakoa.getPositionTarget()) < 900) {
