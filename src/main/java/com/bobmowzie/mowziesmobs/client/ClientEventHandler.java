@@ -1,11 +1,11 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.gui.CustomBossBar;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.client.render.block.SculptorBlockMarking;
+import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
@@ -16,20 +16,24 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.ItemBlowgun;
+import io.github.fabricators_of_create.porting_lib.event.client.CameraSetupCallback;
+import io.github.fabricators_of_create.porting_lib.event.client.OverlayRenderCallback;
+import io.github.fabricators_of_create.porting_lib.event.client.RenderHandCallback;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.Perspective;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.OverlayVertexConsumer;
-import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
@@ -38,17 +42,13 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockRenderView;
-import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
+import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public enum ClientEventHandler {
@@ -57,10 +57,11 @@ public enum ClientEventHandler {
     private static final Identifier FROZEN_BLUR = new Identifier("textures/misc/powder_snow_outline.png");
     private static final Identifier SCULPTOR_BLOCK_GLOW = new Identifier(MowziesMobs.MODID, "textures/entity/sculptor_highlight.png");
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onHandRender(RenderHandEvent event) {
-        if (!ConfigHandler.CLIENT.customPlayerAnims.get()) return;
-        PlayerEntity player = MinecraftClient.getInstance().player;
+    public static void onHandRender(RenderHandCallback.RenderHandEvent event) {
+        FrozenRenderHandler.INSTANCE.onRenderHand(event);
+
+        if (!ConfigHandler.CLIENT.customPlayerAnims) return;
+        AbstractClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player == null) return;
         boolean shouldAnimate = false;
         AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
@@ -75,15 +76,15 @@ public enum ClientEventHandler {
                     GeckoFirstPersonRenderer firstPersonRenderer = (GeckoFirstPersonRenderer) geckoPlayer.getPlayerRenderer();
 
                     if (geckoFirstPersonModel != null && firstPersonRenderer != null) {
-                        if (!geckoFirstPersonModel.isUsingSmallArms() && ((AbstractClientPlayerEntity) player).getModel().equals("slim")) {
+                        if (!geckoFirstPersonModel.isUsingSmallArms() && player.getModel().equals("slim")) {
                             firstPersonRenderer.setSmallArms();
                         }
                         event.setCanceled(true);
 
                         if (event.isCanceled()) {
-                            float delta = event.getPartialTick();
+                            float delta = event.getPartialTicks();
                             float f1 = MathHelper.lerp(delta, player.prevPitch, player.getPitch());
-                            firstPersonRenderer.renderItemInFirstPerson((AbstractClientPlayerEntity) player, f1, delta, event.getHand(), event.getSwingProgress(), event.getItemStack(), event.getEquipProgress(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), geckoPlayer);
+                            firstPersonRenderer.renderItemInFirstPerson(player, f1, delta, event.getHand(), event.getSwingProgress(), event.getItemStack(), event.getEquipProgress(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), geckoPlayer);
                         }
                     }
                 }
@@ -91,44 +92,43 @@ public enum ClientEventHandler {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void renderLivingEvent(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
-        if (event.getEntity() instanceof PlayerEntity) {
-            if (!ConfigHandler.CLIENT.customPlayerAnims.get()) return;
-            PlayerEntity player = (PlayerEntity) event.getEntity();
-            if (player == null) return;
-            float delta = event.getPartialTick();
+    public static boolean renderLivingEvent(LivingEntity entity, LivingEntityRenderer<?, ?> renderer, float partialRenderTick, MatrixStack matrixStack, VertexConsumerProvider buffers, int light) {
+        if (entity instanceof PlayerEntity player) {
+            if (!ConfigHandler.CLIENT.customPlayerAnims) return false;
             AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
 //        shouldAnimate = (player.ticksExisted / 20) % 2 == 0;
             if (abilityCapability != null && abilityCapability.getActiveAbility() != null) {
-                PlayerCapability.IPlayerCapability playerCapability = AbilityCapability.get(event.getEntity());
+                PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get(player);
                 if (playerCapability != null) {
                     GeckoPlayer.GeckoPlayerThirdPerson geckoPlayer = playerCapability.getGeckoPlayer();
                     if (geckoPlayer != null) {
                         ModelGeckoPlayerThirdPerson geckoPlayerModel = (ModelGeckoPlayerThirdPerson) geckoPlayer.getModel();
                         GeckoRenderPlayer animatedPlayerRenderer = (GeckoRenderPlayer) geckoPlayer.getPlayerRenderer();
-
                         if (geckoPlayerModel != null && animatedPlayerRenderer != null) {
-                            event.setCanceled(true);
-
-                            if (event.isCanceled()) {
-                                animatedPlayerRenderer.render((AbstractClientPlayerEntity) event.getEntity(), event.getEntity().getYRot(), delta, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), geckoPlayer);
-                            }
+                            animatedPlayerRenderer.render((AbstractClientPlayerEntity) player, player.getYaw(), partialRenderTick, matrixStack, buffers, light, geckoPlayer);
+                            return true;
                         }
                     }
                 }
             }
         }
+        FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(entity);
+        if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
+            entity.setYaw(entity.prevYaw = frozenCapability.getFrozenYaw());
+            entity.setPitch(entity.prevPitch = frozenCapability.getFrozenPitch());
+            entity.headYaw = entity.prevHeadYaw = frozenCapability.getFrozenYawHead();
+            entity.bodyYaw = entity.prevBodyYaw = frozenCapability.getFrozenRenderYawOffset();
+            entity.handSwingProgress = entity.lastHandSwingProgress = frozenCapability.getFrozenSwingProgress();
+            entity.limbAnimator.setSpeed(frozenCapability.getFrozenWalkAnimSpeed());
+            entity.limbAnimator.pos = frozenCapability.getFrozenWalkAnimPosition();
+            entity.setSneaking(false);
+        }
+        return false;
     }
 
-    @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START || event.player == null) {
-            return;
-        }
-        PlayerEntity player = event.player;
+    public static void onPlayerTick(PlayerEntity player) {
         PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get(player);
-        if (playerCapability != null && event.side == LogicalSide.CLIENT) {
+        if (playerCapability != null && FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             GeckoPlayer geckoPlayer = playerCapability.getGeckoPlayer();
             if (geckoPlayer != null) geckoPlayer.tick();
             if (player == MinecraftClient.getInstance().player)
@@ -153,8 +153,7 @@ public enum ClientEventHandler {
         }
     }
 
-    @SubscribeEvent
-    public void onRenderTick(TickEvent.RenderTickEvent event) {
+    public static void onRenderTick() {
         PlayerEntity player = MinecraftClient.getInstance().player;
 //        if (player != null) {
 //            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, CapabilityHandler.PLAYER_CAPABILITY);
@@ -172,7 +171,7 @@ public enum ClientEventHandler {
 //                player.prevRotationYawHead = player.rotationYawHead;
 //            }
         FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(player);
-        if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
+        if (player != null && frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
             player.setYaw(frozenCapability.getFrozenYaw());
             player.setPitch(frozenCapability.getFrozenPitch());
             player.headYaw = frozenCapability.getFrozenYawHead();
@@ -182,147 +181,99 @@ public enum ClientEventHandler {
         }
     }
 
-    @SubscribeEvent
-    public void onRenderLiving(RenderLivingEvent.Pre event) {
-        LivingEntity entity = event.getEntity();
-        FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(entity);
-        if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
-            entity.setYaw(entity.prevYaw = frozenCapability.getFrozenYaw());
-            entity.setPitch(entity.prevPitch = frozenCapability.getFrozenPitch());
-            entity.headYaw = entity.prevHeadYaw = frozenCapability.getFrozenYawHead();
-            entity.bodyYaw = entity.prevBodyYaw = frozenCapability.getFrozenRenderYawOffset();
-            entity.handSwingProgress = entity.lastHandSwingProgress = frozenCapability.getFrozenSwingProgress();
-            entity.limbAnimator.setSpeed(frozenCapability.getFrozenWalkAnimSpeed());
-            entity.limbAnimator.pos = frozenCapability.getFrozenWalkAnimPosition();
-            entity.setSneaking(false);
-        }
-    }
-
-    @SubscribeEvent
-    public void onRenderOverlay(RenderGuiOverlayEvent.Post e) {
-        final int startTime = 210;
-        final int pointStart = 1200;
-        final int timePerMillis = 22;
-        if (e.getOverlay() == VanillaGuiOverlay.FROSTBITE.type()) {
-            if (MinecraftClient.getInstance().player != null) {
-                FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(MinecraftClient.getInstance().player);
-                if (frozenCapability != null && frozenCapability.getFrozen() && MinecraftClient.getInstance().options.getPerspective() == Perspective.FIRST_PERSON) {
-                    Window res = e.getWindow();
-                    e.getGuiGraphics().blit(FROZEN_BLUR, 0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());
-                }
-            }
-        }
-    }
-
-    // Remove frozen overlay
-    @SubscribeEvent
-    public void onRenderHUD(RenderGuiOverlayEvent.Pre event) {
+    public static boolean onRenderOverlay(DrawContext guiGraphics, float partialTicks, Window window, OverlayRenderCallback.Types type) {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null && player.hasVehicle()) {
             if (player.getVehicle() instanceof EntityFrozenController) {
-                if (event.getOverlay() == VanillaGuiOverlay.MOUNT_HEALTH.type()) {
-                    event.setCanceled(true);
-                }
+                if (type == OverlayRenderCallback.Types.PLAYER_HEALTH)
+                    return true;
                 MinecraftClient.getInstance().inGameHud.setOverlayMessage(Text.empty(), false);
             }
         }
+        final int startTime = 210;
+        final int pointStart = 1200;
+        final int timePerMillis = 22;
+        //VanillaGuiOverlay.FROSTBITE.type()
+        if (type == OverlayRenderCallback.Types.CROSSHAIRS) {
+            if (MinecraftClient.getInstance().player != null) {
+                FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(MinecraftClient.getInstance().player);
+                if (frozenCapability != null && frozenCapability.getFrozen() && MinecraftClient.getInstance().options.getPerspective() == Perspective.FIRST_PERSON)
+                    guiGraphics.drawTexture(FROZEN_BLUR, 0, 0, 0, 0, window.getScaledWidth(), window.getScaledHeight(), window.getScaledWidth(), window.getScaledHeight());
+            }
+        }
+        return false;
     }
 
-    @SubscribeEvent
-    public void updateFOV(ComputeFovModifierEvent event) {
-        PlayerEntity player = event.getPlayer();
+    public static double updateFOV(GameRenderer renderer, Camera camera, double partialTicks, boolean usedFovSetting, double fov) {
+        PlayerEntity player = MinecraftClient.getInstance().player;
+        assert player != null;
         if (player.isUsingItem() && player.getActiveItem().getItem() instanceof ItemBlowgun) {
             int i = player.getItemUseTime();
             float f1 = (float) i / 5.0F;
-            if (f1 > 1.0F) {
-                f1 = 1.0F;
-            } else {
-                f1 = f1 * f1;
-            }
-
-            event.setNewFovModifier(1.0F - f1 * 0.15F);
+            if (f1 > 1.0F) f1 = 1.0F;
+            else f1 = f1 * f1;
+            fov = 1.0F - f1 * 0.15F;
         }
+        return fov;
     }
 
-    @SubscribeEvent
-    public void onSetupCamera(ViewportEvent.ComputeCameraAngles event) {
+    public static boolean onSetupCamera(CameraSetupCallback.CameraInfo info) {
         PlayerEntity player = MinecraftClient.getInstance().player;
+        assert player != null;
         float delta = MinecraftClient.getInstance().getTickDelta();
         float ticksExistedDelta = player.age + delta;
-        if (player != null) {
-            if (ConfigHandler.CLIENT.doCameraShakes.get() && !MinecraftClient.getInstance().isPaused()) {
-                float shakeAmplitude = 0;
-                for (EntityCameraShake cameraShake : player.getWorld().getNonSpectatingEntities(EntityCameraShake.class, player.getBoundingBox().expand(20, 20, 20))) {
-                    if (cameraShake.distanceTo(player) < cameraShake.getRadius()) {
-                        shakeAmplitude += cameraShake.getShakeAmount(player, delta);
-                    }
-                }
-                if (shakeAmplitude > 1.0f) shakeAmplitude = 1.0f;
-                event.setPitch((float) (event.getPitch() + shakeAmplitude * Math.cos(ticksExistedDelta * 3 + 2) * 25));
-                event.setYaw((float) (event.getYaw() + shakeAmplitude * Math.cos(ticksExistedDelta * 5 + 1) * 25));
-                event.setRoll((float) (event.getRoll() + shakeAmplitude * Math.cos(ticksExistedDelta * 4) * 25));
-            }
+        if (ConfigHandler.CLIENT.doCameraShakes && !MinecraftClient.getInstance().isPaused()) {
+            float shakeAmplitude = 0;
+            for (EntityCameraShake cameraShake : player.getWorld().getNonSpectatingEntities(EntityCameraShake.class, player.getBoundingBox().expand(20, 20, 20)))
+                if (cameraShake.distanceTo(player) < cameraShake.getRadius())
+                    shakeAmplitude += cameraShake.getShakeAmount(player, delta);
+            if (shakeAmplitude > 1.0f) shakeAmplitude = 1.0f;
+            info.pitch = (float) (info.pitch + shakeAmplitude * Math.cos(ticksExistedDelta * 3 + 2) * 25);
+            info.yaw = (float) (info.yaw + shakeAmplitude * Math.cos(ticksExistedDelta * 5 + 1) * 25);
+            info.roll = (float) (info.roll + shakeAmplitude * Math.cos(ticksExistedDelta * 4) * 25);
         }
+        return false;
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onRenderBossBar(CustomizeGuiOverlayEvent.BossEventProgress event) {
-        if (!ConfigHandler.CLIENT.customBossBars.get()) return;
-        Identifier bossRegistryName = ClientProxy.bossBarRegistryNames.getOrDefault(event.getBossEvent().getId(), null);
-        if (bossRegistryName == null) return;
-        CustomBossBar customBossBar = CustomBossBar.customBossBars.getOrDefault(bossRegistryName, null);
-        if (customBossBar == null) return;
-
-        event.setCanceled(true);
-        customBossBar.renderBossBar(event);
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onRenderLevelStage(RenderLevelStageEvent event) {
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
-            ClientWorld level = MinecraftClient.getInstance().world;
-            if (MinecraftClient.getInstance().player != null && level != null && level.getModelDataManager() != null) {
-                Vec3d cameraPos = event.getCamera().getPosition();
-                double d0 = cameraPos.getX();
-                double d1 = cameraPos.getY();
-                double d2 = cameraPos.getZ();
-                for (Long2ObjectMap.Entry<SculptorBlockMarking> entry : ClientProxy.sculptorMarkedBlocks.long2ObjectEntrySet()) {
-                    BlockPos blockpos2 = BlockPos.fromLong(entry.getLongKey());
-                    double d3 = (double) blockpos2.getX() - d0;
-                    double d4 = (double) blockpos2.getY() - d1;
-                    double d5 = (double) blockpos2.getZ() - d2;
-                    if (!(d3 * d3 + d4 * d4 + d5 * d5 > 1024.0D)) {
-                        SculptorBlockMarking blockMarking = entry.getValue();
-                        float alpha = 1f - (float) blockMarking.getTicks() / (float) blockMarking.getDuration();
-                        event.getPoseStack().pushPose();
-                        event.getPoseStack().translate((double) blockpos2.getX() - d0, (double) blockpos2.getY() - d1, (double) blockpos2.getZ() - d2);
-                        MatrixStack.Entry posestack$pose1 = event.getPoseStack().last();
-                        float f = (float) MinecraftClient.getInstance().player.age + MinecraftClient.getInstance().getPartialTick();
-                        float blockOffset = (blockpos2.getX() + blockpos2.getY() + blockpos2.getZ()) * 0.25f;
-                        VertexConsumer vertexconsumer1 = new OverlayVertexConsumer(MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers().getBuffer(MMRenderType.highlight(SCULPTOR_BLOCK_GLOW, f * 0.02f + blockOffset, f * 0.01f + blockOffset)), posestack$pose1.getPositionMatrix(), posestack$pose1.getNormalMatrix(), 0.25F);
-                        net.minecraftforge.client.model.data.ModelData modelData = level.getModelDataManager().getAt(blockpos2);
-                        this.renderBreakingTexture(level.getBlockState(blockpos2), blockpos2, level, event.getPoseStack(), level.random, vertexconsumer1, modelData == null ? net.minecraftforge.client.model.data.ModelData.EMPTY : modelData);
-
-                        event.getPoseStack().popPose();
-                    }
+    public static boolean onRenderLevelStage(WorldRenderContext context, @Nullable HitResult hitResult) {
+        ClientWorld world = MinecraftClient.getInstance().world;
+        if (MinecraftClient.getInstance().player != null && world != null) {
+            Vec3d cameraPos = context.camera().getPos();
+            double d0 = cameraPos.getX();
+            double d1 = cameraPos.getY();
+            double d2 = cameraPos.getZ();
+            for (Long2ObjectMap.Entry<SculptorBlockMarking> entry : ClientProxy.sculptorMarkedBlocks.long2ObjectEntrySet()) {
+                BlockPos blockpos2 = BlockPos.fromLong(entry.getLongKey());
+                double d3 = (double) blockpos2.getX() - d0;
+                double d4 = (double) blockpos2.getY() - d1;
+                double d5 = (double) blockpos2.getZ() - d2;
+                if (!(d3 * d3 + d4 * d4 + d5 * d5 > 1024.0D)) {
+                    SculptorBlockMarking blockMarking = entry.getValue();
+                    float alpha = 1f - (float) blockMarking.getTicks() / (float) blockMarking.getDuration();
+                    context.matrixStack().push();
+                    context.matrixStack().translate((double) blockpos2.getX() - d0, (double) blockpos2.getY() - d1, (double) blockpos2.getZ() - d2);
+                    MatrixStack.Entry posestack$pose1 = context.matrixStack().peek();
+                    float f = (float) MinecraftClient.getInstance().player.age + MinecraftClient.getInstance().getTickDelta();
+                    float blockOffset = (blockpos2.getX() + blockpos2.getY() + blockpos2.getZ()) * 0.25f;
+                    VertexConsumer vertexconsumer1 = new OverlayVertexConsumer(MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers().getBuffer(MMRenderType.highlight(SCULPTOR_BLOCK_GLOW, f * 0.02f + blockOffset, f * 0.01f + blockOffset)), posestack$pose1.getPositionMatrix(), posestack$pose1.getNormalMatrix(), 0.25F);
+                    renderBreakingTexture(world.getBlockState(blockpos2), blockpos2, world, context.matrixStack(), world.random, vertexconsumer1);
+                    context.matrixStack().pop();
                 }
             }
         }
+        return false;
     }
 
-    private void renderBreakingTexture(BlockState state, BlockPos pos, BlockRenderView blockAndTintGetter, MatrixStack poseStack, Random random, VertexConsumer vertexConsumer, net.minecraftforge.client.model.data.ModelData modelData) {
+    private static void renderBreakingTexture(BlockState state, BlockPos pos, BlockRenderView blockAndTintGetter, MatrixStack poseStack, Random random, VertexConsumer vertexConsumer) {
         if (state.getRenderType() == BlockRenderType.MODEL) {
             BlockRenderManager blockRenderDispatcher = MinecraftClient.getInstance().getBlockRenderManager();
             BakedModel bakedmodel = blockRenderDispatcher.getModel(state);
             long i = state.getRenderingSeed(pos);
-            blockRenderDispatcher.getModelRenderer().render(blockAndTintGetter, bakedmodel, state, pos, poseStack, vertexConsumer, true, random, i, OverlayTexture.DEFAULT_UV, modelData, null);
+            blockRenderDispatcher.getModelRenderer().render(blockAndTintGetter, bakedmodel, state, pos, poseStack, vertexConsumer, true, random, i, OverlayTexture.DEFAULT_UV);
         }
     }
 
-    @SubscribeEvent
-    public void onLevelTick(TickEvent.LevelTickEvent event) {
-        if (event.side == LogicalSide.CLIENT) {
-            MowziesMobs.PROXY.updateMarkedBlocks();
-        }
+    public static void onLevelTick(ClientWorld world) {
+        MowziesMobs.PROXY.updateMarkedBlocks();
     }
 }

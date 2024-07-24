@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.world.BiomeChecker;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -19,10 +20,10 @@ import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.util.TriPredicate;
-import net.minecraftforge.common.world.ModifiableBiomeInfo;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class SpawnHandler {
     public static final Map<EntityType<?>, ConfigHandler.SpawnConfig> spawnConfigs = new HashMap<>();
@@ -99,7 +100,7 @@ public class SpawnHandler {
         }
     }
 
-    private static void registerEntityWorldSpawn(EntityType<?> entity, ConfigHandler.SpawnConfig spawnConfig, SpawnGroup classification) {
-        BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),classification,entity,spawnConfig.spawnRate,spawnConfig.minGroupSize,spawnConfig.maxGroupSize);
+    private static void registerEntityWorldSpawn(Predicate<BiomeSelectionContext> biomeSelector, EntityType<?> entity, ConfigHandler.SpawnConfig spawnConfig, SpawnGroup classification) {
+        BiomeModifications.addSpawn(biomeSelector, classification, entity, spawnConfig.spawnRate, spawnConfig.minGroupSize, spawnConfig.maxGroupSize);
     }
 }

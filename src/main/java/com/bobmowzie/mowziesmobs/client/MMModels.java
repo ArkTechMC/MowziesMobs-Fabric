@@ -9,6 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelOverrideList;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.ModelIdentifier;
@@ -69,12 +70,17 @@ public class MMModels {
                 }
 
                 @Override
+                public ModelTransformation getTransformation() {
+                    return null;
+                }
+
+                @Override
                 public ModelOverrideList getOverrides() {
                     return bakedModelDefault.getOverrides();
                 }
 
                 @Override
-                public BakedModel applyTransform(ModelTransformationMode cameraTransformType, MatrixStack mat, boolean applyLeftHandTransform) {
+                public BakedModel getTransform(ModelTransformationMode cameraTransformType, MatrixStack mat, boolean applyLeftHandTransform) {
                     BakedModel modelToUse = bakedModelDefault;
                     if (cameraTransformType == ModelTransformationMode.FIRST_PERSON_LEFT_HAND || cameraTransformType == ModelTransformationMode.FIRST_PERSON_RIGHT_HAND
                             || cameraTransformType == ModelTransformationMode.THIRD_PERSON_LEFT_HAND || cameraTransformType == ModelTransformationMode.THIRD_PERSON_RIGHT_HAND) {

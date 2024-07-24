@@ -27,7 +27,6 @@ import com.bobmowzie.mowziesmobs.server.item.ItemNagaFangDagger;
 import com.bobmowzie.mowziesmobs.server.item.ItemSpear;
 import com.bobmowzie.mowziesmobs.server.item.ItemUmvuthanaMask;
 import com.bobmowzie.mowziesmobs.server.message.MessageFreezeEffect;
-import com.bobmowzie.mowziesmobs.server.message.MessagePlayerAttackMob;
 import com.bobmowzie.mowziesmobs.server.message.MessageSunblockEffect;
 import com.bobmowzie.mowziesmobs.server.message.StaticVariables;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
@@ -79,9 +78,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.living.*;
-import net.minecraftforge.event.entity.player.*;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -268,29 +264,17 @@ public final class ServerEventHandler {
         ) aggroUmvuthana(player);
     }
 
-    @SubscribeEvent
-    public void onFillBucket(FillBucketEvent event) {
-        LivingEntity living = event.getEntity();
-        if (living != null) {
-            if (event.isCancelable() && living.hasStatusEffect(EffectHandler.FROZEN)) {
-                event.setCanceled(true);
-                return;
-            }
-
-            AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(event.getEntity());
-            if (abilityCapability != null && event.isCancelable() && abilityCapability.interactingPrevented()) {
-                event.setCanceled(true);
-                return;
-            }
-
-            if (event.getEmptyBucket().getItem() == Items.LAVA_BUCKET) {
-                this.aggroUmvuthana(event.getEntity());
-            }
-
-            if (event.getEmptyBucket().getItem() == Items.WATER_BUCKET) {
-                this.cheatSculptor(event.getEntity());
-            }
+    public static boolean onFillBucket(World world, PlayerEntity user, Hand hand, ItemStack filledBucket) {
+        if (user != null) {
+            if (user.hasStatusEffect(EffectHandler.FROZEN))
+                return true;
+            AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(user);
+            if (abilityCapability != null && abilityCapability.interactingPrevented())
+                return true;
+            if (filledBucket.isOf(Items.LAVA_BUCKET)) aggroUmvuthana(user);
+            if (filledBucket.isOf(Items.WATER_BUCKET)) cheatSculptor(user);
         }
+        return false;
     }
 
     public static void onBreakBlock(BlockEvents.BreakEvent event) {
@@ -336,37 +320,37 @@ public final class ServerEventHandler {
         return nearEntities;
     }
 
-    @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
-        if (event.isCancelable() && event.getEntity().hasEffect(EffectHandler.FROZEN.get())) {
-            event.setCanceled(true);
-            return;
-        }
-
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(event.getEntity());
-        if (abilityCapability != null && event.isCancelable() && abilityCapability.interactingPrevented()) {
-            event.setCanceled(true);
-            return;
-        }
-
-        PlayerEntity player = event.getEntity();
-        PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get(player);
-        if (playerCapability != null) {
-
-            if (event.getLevel().isClientSide && player.getInventory().getMainHandStack().isEmpty() && player.hasStatusEffect(EffectHandler.SUNS_BLESSING.get())) {
-                if (player.isSneaking()) {
-                    AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.SOLAR_BEAM_ABILITY);
-                } else {
-                    AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.SUNSTRIKE_ABILITY);
-                }
-            }
-
-            Power[] powers = playerCapability.getPowers();
-            for (Power power : powers) {
-                power.onRightClickEmpty(event);
-            }
-        }
-    }
+//    @SubscribeEvent
+//    public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
+//        if (event.isCancelable() && event.getEntity().hasEffect(EffectHandler.FROZEN.get())) {
+//            event.setCanceled(true);
+//            return;
+//        }
+//
+//        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(event.getEntity());
+//        if (abilityCapability != null && event.isCancelable() && abilityCapability.interactingPrevented()) {
+//            event.setCanceled(true);
+//            return;
+//        }
+//
+//        PlayerEntity player = event.getEntity();
+//        PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get(player);
+//        if (playerCapability != null) {
+//
+//            if (event.getLevel().isClientSide && player.getInventory().getMainHandStack().isEmpty() && player.hasStatusEffect(EffectHandler.SUNS_BLESSING.get())) {
+//                if (player.isSneaking()) {
+//                    AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.SOLAR_BEAM_ABILITY);
+//                } else {
+//                    AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.SUNSTRIKE_ABILITY);
+//                }
+//            }
+//
+//            Power[] powers = playerCapability.getPowers();
+//            for (Power power : powers) {
+//                power.onRightClickEmpty(event);
+//            }
+//        }
+//    }
 
     public static ActionResult onPlayerInteractEntity(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult) {
         if (player.hasStatusEffect(EffectHandler.FROZEN))
@@ -422,28 +406,29 @@ public final class ServerEventHandler {
                 power.onRightClickBlock(player, world, hand, hitResult);
             }
         }
+        return ActionResult.PASS;
     }
 
-    @SubscribeEvent
-    public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
-        double range = 6.5;
-        PlayerEntity player = event.getEntity();
-        PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get(player);
-        if (player.getMainHandStack() != null && player.getMainHandStack().getItem() == ItemHandler.SPEAR) {
-            LivingEntity entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
-            if (entityHit != null) {
-                PacketByteBuf buf = PacketByteBufs.create();
-                MessagePlayerAttackMob.serialize(new MessagePlayerAttackMob(entityHit), buf);
-                ServerHelper.sendToAll(StaticVariables.PLAYER_ATTACK_MOB, buf);
-            }
-        }
-        if (playerCapability != null) {
-            Power[] powers = playerCapability.getPowers();
-            for (Power power : powers) {
-                power.onLeftClickEmpty(event);
-            }
-        }
-    }
+//    @SubscribeEvent
+//    public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
+//        double range = 6.5;
+//        PlayerEntity player = event.getEntity();
+//        PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get(player);
+//        if (player.getMainHandStack() != null && player.getMainHandStack().getItem() == ItemHandler.SPEAR) {
+//            LivingEntity entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
+//            if (entityHit != null) {
+//                PacketByteBuf buf = PacketByteBufs.create();
+//                MessagePlayerAttackMob.serialize(new MessagePlayerAttackMob(entityHit), buf);
+//                ServerHelper.sendToAll(StaticVariables.PLAYER_ATTACK_MOB, buf);
+//            }
+//        }
+//        if (playerCapability != null) {
+//            Power[] powers = playerCapability.getPowers();
+//            for (Power power : powers) {
+//                power.onLeftClickEmpty(event);
+//            }
+//        }
+//    }
 
     public static float onLivingDamage(LivingEntity entity, DamageSource source, float amount) {
         if (entity.getHealth() <= amount && entity.hasStatusEffect(EffectHandler.FROZEN)) {

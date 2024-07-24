@@ -5,11 +5,13 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "BlockBehaviourMixin",
+    "BucketItemMixin",
     "LivingEntityMixin",
     "PlayerEntityMixin",
     "PlayerManagerMixin"
   ],
   "client": [
+    "BossBarHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -10,7 +10,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -108,33 +107,27 @@ public class CustomBossBar {
         return this.textColor;
     }
 
-    public void renderBossBar(CustomizeGuiOverlayEvent.BossEventProgress event) {
-        DrawContext guiGraphics = event.getGuiGraphics();
-        int y = event.getY();
+    public void renderBossBar(DrawContext context, int x, int y, BossBar bossBar, int width, int height) {
         int i = MinecraftClient.getInstance().getWindow().getScaledWidth();
         int j = y - 9;
-        int k = i / 2 - 91;
         MinecraftClient.getInstance().getProfiler().push("customBossBarBase");
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, this.getBaseTexture());
-        this.drawBar(guiGraphics, event.getX() + 1, y + this.getBaseOffsetY(), event.getBossEvent());
-        Text component = event.getBossEvent().getName().copy().withStyle(this.getTextColor());
+        this.drawBar(context, x + 1, y + this.getBaseOffsetY(), bossBar);
+        Text component = bossBar.getName().copy().formatted(this.getTextColor());
         MinecraftClient.getInstance().getProfiler().pop();
 
         int l = MinecraftClient.getInstance().textRenderer.getWidth(component);
         int i1 = i / 2 - l / 2;
-        int j1 = j;
-        guiGraphics.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, component, i1, j1, 16777215);
+        context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, component, i1, j, 16777215);
 
         if (this.hasOverlay()) {
             MinecraftClient.getInstance().getProfiler().push("customBossBarOverlay");
             RenderSystem.setShaderTexture(0, this.getOverlayTexture());
-            event.getGuiGraphics().blit(this.getOverlayTexture(), event.getX() + 1 + this.getOverlayOffsetX(), y + this.getOverlayOffsetY() + this.getBaseOffsetY(), 0, 0, this.getOverlayWidth(), this.getOverlayHeight(), this.getOverlayWidth(), this.getOverlayHeight());
+            context.drawTexture(this.getOverlayTexture(), x + 1 + this.getOverlayOffsetX(), y + this.getOverlayOffsetY() + this.getBaseOffsetY(), 0, 0, this.getOverlayWidth(), this.getOverlayHeight(), this.getOverlayWidth(), this.getOverlayHeight());
             MinecraftClient.getInstance().getProfiler().pop();
         }
-
-        event.setIncrement(this.getVerticalIncrement());
     }
 
     private void drawBar(DrawContext guiGraphics, int x, int y, BossBar event) {

@@ -46,12 +46,8 @@ public class ClientProxy extends ServerProxy {
     public void init(final IEventBus modbus) {
         super.init(modbus);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_CONFIG);
 
         modbus.register(MMModels.class);
-        MinecraftForge.EVENT_BUS.register(ClientEventHandler.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(FrozenRenderHandler.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(AbilityClientEventHandler.INSTANCE);
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientLayerRegistry::onAddLayers);
     }

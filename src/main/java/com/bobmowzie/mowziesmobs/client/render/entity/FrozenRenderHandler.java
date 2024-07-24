@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
+import io.github.fabricators_of_create.porting_lib.event.client.RenderHandCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -21,8 +22,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
@@ -36,25 +35,21 @@ public enum FrozenRenderHandler {
 
     private static final Identifier FROZEN_TEXTURE = new Identifier(MowziesMobs.MODID, "textures/entity/frozen.png");
 
-    @SubscribeEvent
-    public void onRenderHand(RenderHandEvent event) {
-        event.getPoseStack().pushPose();
-
+    public void onRenderHand(RenderHandCallback.RenderHandEvent event) {
+        event.getPoseStack().push();
         PlayerEntity player = MinecraftClient.getInstance().player;
-
         if (player != null) {
             FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(player);
             if (frozenCapability != null && frozenCapability.getFrozen()) {
                 boolean isMainHand = event.getHand() == Hand.MAIN_HAND;
                 if (isMainHand && !player.isInvisible() && event.getItemStack().isEmpty()) {
-                    Arm enumhandside = isMainHand ? player.getMainArm() : player.getMainArm().getOpposite();
+                    Arm enumhandside = player.getMainArm();
                     this.renderArmFirstPersonFrozen(event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), event.getEquipProgress(), event.getSwingProgress(), enumhandside);
                     event.setCanceled(true);
                 }
             }
         }
-
-        event.getPoseStack().popPose();
+        event.getPoseStack().pop();
     }
 
     /**

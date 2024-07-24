@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs;
 import com.bobmowzie.mowziesmobs.client.ClientProxy;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
+import com.bobmowzie.mowziesmobs.event.ItemEvents;
 import com.bobmowzie.mowziesmobs.event.LivingEvents;
 import com.bobmowzie.mowziesmobs.event.PlayerEvents;
 import com.bobmowzie.mowziesmobs.server.ServerEventHandler;
@@ -31,7 +32,6 @@ import com.iafenvoy.uranus.event.EntityEvents;
 import com.iafenvoy.uranus.event.LivingEntityEvents;
 import io.github.fabricators_of_create.porting_lib.entity.events.CriticalHitEvent;
 import io.github.fabricators_of_create.porting_lib.entity.events.EntityMountEvents;
-import io.github.fabricators_of_create.porting_lib.event.common.AttackAirCallback;
 import io.github.fabricators_of_create.porting_lib.event.common.BlockEvents;
 import net.fabricmc.fabric.api.event.player.*;
 import net.minecraft.entity.data.TrackedData;
@@ -43,7 +43,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -112,13 +111,11 @@ public final class MowziesMobs {
         LootTableHandler.init();
         CreativeTabHandler.init();
 
-        PROXY.init(bus);
-        bus.<FMLCommonSetupEvent>addListener(this::init);
-        bus.<FMLLoadCompleteEvent>addListener(this::init);
-        bus.addListener(this::onModConfigEvent);
+        SpawnHandler.registerSpawnPlacementTypes();
+        AdvancementHandler.preInit();
+        JigsawHandler.registerJigsawElements();
+        ProcessorHandler.registerStructureProcessors();
 
-        MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
         AbilityCommonEventHandler.register();
 
         ServerNetworkHelper.register();
@@ -140,70 +137,8 @@ public final class MowziesMobs {
         CriticalHitEvent.CRITICAL_HIT.register(ServerEventHandler::checkCritEvent);
         EntityMountEvents.MOUNT.register(ServerEventHandler::onRideEntity);
         PlayerEvents.RESPAWN.register(ServerEventHandler::onPlayerRespawn);
+        ItemEvents.FILL_BUCKET.register(ServerEventHandler::onFillBucket);
 
         TrackedDataHandlerRegistry.register(OPTIONAL_TRADE);
-    }
-
-    @SubscribeEvent
-    public void onModConfigEvent(final ModConfigEvent event) {
-        final ModConfig config = event.getConfig();
-        // Rebake the configs when they change
-        if (config.getSpec() == ConfigHandler.COMMON_CONFIG) {
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamageValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue();
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackSpeedValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackSpeed.get().floatValue();
-
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SPEAR.toolConfig.attackDamageValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SPEAR.toolConfig.attackDamage.get().floatValue();
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SPEAR.toolConfig.attackSpeedValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SPEAR.toolConfig.attackSpeed.get().floatValue();
-
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolConfig.attackDamageValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolConfig.attackDamage.get().floatValue();
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolConfig.attackSpeedValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolConfig.attackSpeed.get().floatValue();
-
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.toolConfig.attackDamageValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.toolConfig.attackDamage.get().floatValue();
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.toolConfig.attackSpeedValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.toolConfig.attackSpeed.get().floatValue();
-
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durabilityValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability.get();
-
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.durabilityValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.durability.get();
-
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.damageReductionValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.damageReduction.get();
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.toughnessValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.toughness.get().floatValue();
-
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig.damageReductionValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig.damageReduction.get();
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig.toughnessValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.UMVUTHANA_MASK.armorConfig.toughness.get().floatValue();
-
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.damageReductionValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.damageReduction.get();
-            ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.toughnessValue =
-                    ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.toughness.get().floatValue();
-        }
-    }
-
-    public void init(final FMLCommonSetupEvent event) {
-        SpawnHandler.registerSpawnPlacementTypes();
-        AdvancementHandler.preInit();
-
-        event.enqueueWork(() -> {
-            JigsawHandler.registerJigsawElements();
-            ProcessorHandler.registerStructureProcessors();
-        });
-    }
-
-    private void init(FMLLoadCompleteEvent event) {
-        final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        PROXY.onLateInit(bus);
     }
 }
