@@ -1,9 +1,9 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.AdvancedModelBase;
 import com.bobmowzie.mowziesmobs.client.model.tools.MMModelAnimator;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieLLibraryEntity;
-import com.bobmowzie.mowziesmobs.client.model.tools.AdvancedModelBase;
-import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
+import com.iafenvoy.uranus.client.model.tools.BasicModelRenderer;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;

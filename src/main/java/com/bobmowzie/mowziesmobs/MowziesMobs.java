@@ -12,7 +12,6 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityCommonEventHandler;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.block.entity.BlockEntityHandler;
-import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.trade.Trade;
@@ -23,7 +22,6 @@ import com.bobmowzie.mowziesmobs.server.message.ServerNetworkHelper;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionTypeHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import com.bobmowzie.mowziesmobs.server.world.BiomeModifiersHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.StructureTypeHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.jigsaw.JigsawHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.processor.ProcessorHandler;
@@ -39,14 +37,7 @@ import net.minecraft.entity.data.TrackedDataHandler;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib.GeckoLib;
@@ -96,7 +87,6 @@ public final class MowziesMobs {
         GeckoLib.initialize();
 
         PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
-        final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         BlockHandler.init();
         EntityHandler.init();
         ItemHandler.init();
@@ -107,7 +97,8 @@ public final class MowziesMobs {
         ContainerHandler.init();
         EffectHandler.init();
         PotionTypeHandler.init();
-        BiomeModifiersHandler.REG.register(bus);
+        SpawnHandler.addBiomeSpawns();
+        StructureTypeHandler.addBiomeSpawns(biome);
         LootTableHandler.init();
         CreativeTabHandler.init();
 

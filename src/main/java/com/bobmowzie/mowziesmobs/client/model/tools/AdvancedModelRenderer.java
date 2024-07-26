@@ -1,11 +1,12 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
-
 import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
-import com.ilexiconn.llibrary.client.model.tools.BasicModelBase;
-import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
+import com.iafenvoy.uranus.client.model.tools.BasicModelBase;
+import com.iafenvoy.uranus.client.model.tools.BasicModelRenderer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -13,8 +14,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -108,36 +107,36 @@ public class AdvancedModelRenderer extends BasicModelRenderer {
     }*/
 
     public AdvancedModelRenderer addBox(String partName, float x, float y, float z, int width, int height, int depth, float delta, int texX, int texY) {
-      this.setTextureSize(texX, texY);
-      this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, (float)width, (float)height, (float)depth, delta, delta, delta, this.mirror, false);
-      return this;
-   }
+        this.setTextureSize(texX, texY);
+        this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, (float) width, (float) height, (float) depth, delta, delta, delta, this.mirror, false);
+        return this;
+    }
 
-   public AdvancedModelRenderer addBox(float x, float y, float z, float width, float height, float depth) {
-      this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, 0.0F, 0.0F, 0.0F, this.mirror, false);
-      return this;
-   }
+    public AdvancedModelRenderer addBox(float x, float y, float z, float width, float height, float depth) {
+        this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, 0.0F, 0.0F, 0.0F, this.mirror, false);
+        return this;
+    }
 
-   public AdvancedModelRenderer addBox(float x, float y, float z, float width, float height, float depth, boolean mirrorIn) {
-      this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, 0.0F, 0.0F, 0.0F, mirrorIn, false);
-      return this;
-   }
+    public AdvancedModelRenderer addBox(float x, float y, float z, float width, float height, float depth, boolean mirrorIn) {
+        this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, 0.0F, 0.0F, 0.0F, mirrorIn, false);
+        return this;
+    }
 
-   public void addBox(float x, float y, float z, float width, float height, float depth, float delta) {
-      this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, delta, delta, delta, this.mirror, false);
-   }
+    public void addBox(float x, float y, float z, float width, float height, float depth, float delta) {
+        this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, delta, delta, delta, this.mirror, false);
+    }
 
-   public void addBox(float x, float y, float z, float width, float height, float depth, float deltaX, float deltaY, float deltaZ) {
-      this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, deltaX, deltaY, deltaZ, this.mirror, false);
-   }
+    public void addBox(float x, float y, float z, float width, float height, float depth, float deltaX, float deltaY, float deltaZ) {
+        this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, deltaX, deltaY, deltaZ, this.mirror, false);
+    }
 
-   public void addBox(float x, float y, float z, float width, float height, float depth, float delta, boolean mirrorIn) {
-      this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, delta, delta, delta, mirrorIn, false);
-   }
+    public void addBox(float x, float y, float z, float width, float height, float depth, float delta, boolean mirrorIn) {
+        this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, delta, delta, delta, mirrorIn, false);
+    }
 
-   private void addBox(int texOffX, int texOffY, float x, float y, float z, float width, float height, float depth, float deltaX, float deltaY, float deltaZ, boolean mirror, boolean p_228305_13_) {
-      this.cubeList.add(new ModelBox(texOffX, texOffY, x, y, z, width, height, depth, deltaX, deltaY, deltaZ, mirror, this.textureWidth, this.textureHeight));
-   }
+    private void addBox(int texOffX, int texOffY, float x, float y, float z, float width, float height, float depth, float deltaX, float deltaY, float deltaZ, boolean mirror, boolean p_228305_13_) {
+        this.cubeList.add(new ModelBox(texOffX, texOffY, x, y, z, width, height, depth, deltaX, deltaY, deltaZ, mirror, this.textureWidth, this.textureHeight));
+    }
 
     /**
      * If true, when using setScale, the children of this model part will be scaled as well as just this part. If false, just this part will be scaled.
@@ -280,10 +279,11 @@ public class AdvancedModelRenderer extends BasicModelRenderer {
                 matrixStackIn.push();
 
                 this.translateRotate(matrixStackIn);
-                if (!isHidden) this.doRender(matrixStackIn.peek(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha * opacity);
+                if (!isHidden)
+                    this.doRender(matrixStackIn.peek(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha * opacity);
 
                 // Render children
-                for(BasicModelRenderer modelrenderer : this.childModels) {
+                for (BasicModelRenderer modelrenderer : this.childModels) {
                     modelrenderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
 
@@ -299,7 +299,7 @@ public class AdvancedModelRenderer extends BasicModelRenderer {
         if (mat3Override != null) matrix3f = mat3Override;
         if (mat4Override != null) matrix4f = mat4Override;
 
-        for(ModelPart modelrenderer$modelbox : this.cubeList) {
+        for (ModelPart modelrenderer$modelbox : this.cubeList) {
             modelrenderer$modelbox.render(matrix4f, matrix3f, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
     }
@@ -309,7 +309,7 @@ public class AdvancedModelRenderer extends BasicModelRenderer {
     }
 
     private float calculateRotation(float speed, float degree, boolean invert, float offset, float weight, float f, float f1) {
-        float movementScale = this.model instanceof AdvancedModelBase ? ((AdvancedModelBase<?>)this.model).getMovementScale() : 1;
+        float movementScale = this.model instanceof AdvancedModelBase ? ((AdvancedModelBase<?>) this.model).getMovementScale() : 1;
         float rotation = (MathHelper.cos(f * (speed * movementScale) + offset) * (degree * movementScale) * f1) + (weight * f1);
         return invert ? -rotation : rotation;
     }
@@ -369,7 +369,7 @@ public class AdvancedModelRenderer extends BasicModelRenderer {
      * @param f1     is the walk speed.
      */
     public void bob(float speed, float degree, boolean bounce, float f, float f1) {
-        float movementScale = this.model instanceof AdvancedModelBase ? ((AdvancedModelBase<?>)this.model).getMovementScale() : 1;
+        float movementScale = this.model instanceof AdvancedModelBase ? ((AdvancedModelBase<?>) this.model).getMovementScale() : 1;
         degree *= movementScale;
         speed *= movementScale;
         float bob = (float) (Math.sin(f * speed) * f1 * degree - f1 * degree);
@@ -494,15 +494,15 @@ public class AdvancedModelRenderer extends BasicModelRenderer {
             PositionTextureVertex modelrenderer$positiontexturevertex4 = new PositionTextureVertex(f, y, f2, 0.0F, 8.0F);
             PositionTextureVertex modelrenderer$positiontexturevertex5 = new PositionTextureVertex(f, f1, f2, 8.0F, 8.0F);
             PositionTextureVertex modelrenderer$positiontexturevertex6 = new PositionTextureVertex(x, f1, f2, 8.0F, 0.0F);
-            float f4 = (float)texOffX;
-            float f5 = (float)texOffX + depth;
-            float f6 = (float)texOffX + depth + width;
-            float f7 = (float)texOffX + depth + width + width;
-            float f8 = (float)texOffX + depth + width + depth;
-            float f9 = (float)texOffX + depth + width + depth + width;
-            float f10 = (float)texOffY;
-            float f11 = (float)texOffY + depth;
-            float f12 = (float)texOffY + depth + height;
+            float f4 = (float) texOffX;
+            float f5 = (float) texOffX + depth;
+            float f6 = (float) texOffX + depth + width;
+            float f7 = (float) texOffX + depth + width + width;
+            float f8 = (float) texOffX + depth + width + depth;
+            float f9 = (float) texOffX + depth + width + depth + width;
+            float f10 = (float) texOffY;
+            float f11 = (float) texOffY + depth;
+            float f12 = (float) texOffY + depth + height;
             this.quads[2] = new TexturedQuad(new PositionTextureVertex[]{modelrenderer$positiontexturevertex4, modelrenderer$positiontexturevertex3, modelrenderer$positiontexturevertex7, modelrenderer$positiontexturevertex}, f5, f10, f6, f11, texWidth, texHeight, mirror, Direction.DOWN);
             this.quads[3] = new TexturedQuad(new PositionTextureVertex[]{modelrenderer$positiontexturevertex1, modelrenderer$positiontexturevertex2, modelrenderer$positiontexturevertex6, modelrenderer$positiontexturevertex5}, f6, f11, f7, f10, texWidth, texHeight, mirror, Direction.UP);
             this.quads[1] = new TexturedQuad(new PositionTextureVertex[]{modelrenderer$positiontexturevertex7, modelrenderer$positiontexturevertex3, modelrenderer$positiontexturevertex6, modelrenderer$positiontexturevertex2}, f4, f11, f5, f12, texWidth, texHeight, mirror, Direction.WEST);
@@ -513,14 +513,14 @@ public class AdvancedModelRenderer extends BasicModelRenderer {
 
         @Override
         public void render(Matrix4f matrix4f, Matrix3f matrix3f, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-            for(TexturedQuad modelrenderer$texturedquad : quads) {
+            for (TexturedQuad modelrenderer$texturedquad : quads) {
                 Vector3f vector3f = new Vector3f(modelrenderer$texturedquad.normal);
                 vector3f.mul(matrix3f);
                 float f = vector3f.x();
                 float f1 = vector3f.y();
                 float f2 = vector3f.z();
 
-                for(int i = 0; i < 4; ++i) {
+                for (int i = 0; i < 4; ++i) {
                     PositionTextureVertex modelrenderer$positiontexturevertex = modelrenderer$texturedquad.vertexPositions[i];
                     float f3 = modelrenderer$positiontexturevertex.position.x() / 16.0F;
                     float f4 = modelrenderer$positiontexturevertex.position.y() / 16.0F;
@@ -570,7 +570,7 @@ public class AdvancedModelRenderer extends BasicModelRenderer {
             if (mirrorIn) {
                 int i = positionsIn.length;
 
-                for(int j = 0; j < i / 2; ++j) {
+                for (int j = 0; j < i / 2; ++j) {
                     PositionTextureVertex modelrenderer$positiontexturevertex = positionsIn[j];
                     positionsIn[j] = positionsIn[i - 1 - j];
                     positionsIn[i - 1 - j] = modelrenderer$positiontexturevertex;

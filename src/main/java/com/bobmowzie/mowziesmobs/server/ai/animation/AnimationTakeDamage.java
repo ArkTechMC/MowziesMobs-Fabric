@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieLLibraryEntity;
-import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import com.iafenvoy.uranus.animation.IAnimatedEntity;
 
 import java.util.EnumSet;
 

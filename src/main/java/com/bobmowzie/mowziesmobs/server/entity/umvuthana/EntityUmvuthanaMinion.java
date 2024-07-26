@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.ai.EntityAIUmvuthanaTrade;
 import com.bobmowzie.mowziesmobs.server.ai.EntityAIUmvuthanaTradeLook;
 import com.bobmowzie.mowziesmobs.server.ai.UmvuthanaHurtByTargetAI;

@@ -1,11 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import com.ilexiconn.llibrary.server.animation.Animation;
-import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import com.iafenvoy.uranus.animation.Animation;
+import com.iafenvoy.uranus.animation.AnimationHandler;
+import com.iafenvoy.uranus.animation.IAnimatedEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -82,15 +82,17 @@ public abstract class MowzieLLibraryEntity extends MowzieEntity implements IAnim
     }
 
     @Override
-    public void writeSpawnData(PacketByteBuf buf) {
-        buf.writeInt(ArrayUtils.indexOf(this.getAnimations(), this.getAnimation()));
-        buf.writeInt(this.getAnimationTick());
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putInt("animation", ArrayUtils.indexOf(this.getAnimations(), this.getAnimation()));
+        nbt.putInt("animation_tick", this.getAnimationTick());
     }
 
     @Override
-    public void readSpawnData(PacketByteBuf buf) {
-        int animOrdinal = buf.readInt();
-        int animTick = buf.readInt();
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        int animOrdinal = nbt.getInt("animation");
+        int animTick = nbt.getInt("animation_tick");
         this.setAnimation(animOrdinal == -1 ? IAnimatedEntity.NO_ANIMATION : this.getAnimations()[animOrdinal]);
         this.setAnimationTick(animTick);
     }

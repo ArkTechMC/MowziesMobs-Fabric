@@ -17,12 +17,16 @@ import java.util.Set;
 
 public class StructureTypeHandler {
     public static final Set<RegistryEntry<Biome>> FERROUS_WROUGHTNAUT_BIOMES = new HashSet<>();
-    public static final Set<RegistryEntry<Biome>> UMVUTHI_BIOMES = new HashSet<>();    public static StructurePieceType WROUGHTNAUT_CHAMBER_PIECE = registerStructurePieceType("wrought_chamber_template", WroughtnautChamberPieces.Piece::new);
+    public static final Set<RegistryEntry<Biome>> UMVUTHI_BIOMES = new HashSet<>();
+    public static StructurePieceType WROUGHTNAUT_CHAMBER_PIECE = registerStructurePieceType("wrought_chamber_template", WroughtnautChamberPieces.Piece::new);
     public static final Set<RegistryEntry<Biome>> FROSTMAW_BIOMES = new HashSet<>();
-    public static final Set<RegistryEntry<Biome>> SCULPTOR_BIOMES = new HashSet<>();    public static StructurePieceType UMVUTHANA_GROVE_PIECE = registerStructurePieceType("umvuthana_grove_template", UmvuthanaGrovePieces.Piece::new);
-    public static StructureType<WroughtnautChamberStructure> WROUGHTNAUT_CHAMBER = registerStructureType("wrought_chamber", () -> WroughtnautChamberStructure.CODEC);    public static StructurePieceType UMVUTHANA_FIREPIT = registerStructurePieceType("umvuthana_firepit", UmvuthanaGrovePieces.FirepitPiece::new);
+    public static final Set<RegistryEntry<Biome>> SCULPTOR_BIOMES = new HashSet<>();
+    public static StructurePieceType UMVUTHANA_GROVE_PIECE = registerStructurePieceType("umvuthana_grove_template", UmvuthanaGrovePieces.Piece::new);
+    public static StructureType<WroughtnautChamberStructure> WROUGHTNAUT_CHAMBER = registerStructureType("wrought_chamber", () -> WroughtnautChamberStructure.CODEC);
+    public static StructurePieceType UMVUTHANA_FIREPIT = registerStructurePieceType("umvuthana_firepit", UmvuthanaGrovePieces.FirepitPiece::new);
     public static StructureType<UmvuthanaGroveStructure> UMVUTHANA_GROVE = registerStructureType("umvuthana_grove", () -> UmvuthanaGroveStructure.CODEC);
-    public static StructureType<FrostmawStructure> FROSTMAW = registerStructureType("frostmaw_spawn", () -> FrostmawStructure.CODEC);    public static StructurePieceType FROSTMAW_PIECE = registerStructurePieceType("frostmaw_template", FrostmawPieces.FrostmawPiece::new);
+    public static StructureType<FrostmawStructure> FROSTMAW = registerStructureType("frostmaw_spawn", () -> FrostmawStructure.CODEC);
+    public static StructurePieceType FROSTMAW_PIECE = registerStructurePieceType("frostmaw_template", FrostmawPieces.FrostmawPiece::new);
     public static StructureType<MonasteryStructure> MONASTERY = registerStructureType("monastery", () -> MonasteryStructure.CODEC);
 
     public static BiomeChecker FERROUS_WROUGHTNAUT_BIOME_CHECKER;

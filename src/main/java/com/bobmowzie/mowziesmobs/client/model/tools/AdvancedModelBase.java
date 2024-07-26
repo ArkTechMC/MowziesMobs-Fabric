@@ -1,12 +1,12 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
-import com.ilexiconn.llibrary.client.model.tools.BasicModelBase;
+import com.iafenvoy.uranus.client.model.tools.BasicModelBase;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 import java.util.function.Function;
 

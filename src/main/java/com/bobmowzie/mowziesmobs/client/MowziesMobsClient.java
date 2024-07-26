@@ -9,9 +9,13 @@ import io.github.fabricators_of_create.porting_lib.entity.events.PlayerTickEvent
 import io.github.fabricators_of_create.porting_lib.event.client.*;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.util.Identifier;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MowziesMobsClient implements ClientModInitializer {
     @Override
@@ -21,6 +25,13 @@ public class MowziesMobsClient implements ClientModInitializer {
         EntityRendererHandler.registerEntityRenderer();
         ClientNetworkHelper.register();
         AbilityClientEventHandler.register();
+
+        ModelLoadingPlugin.register(context -> {
+            List<Identifier> list = new ArrayList<>();
+            EntityRendererHandler.onRegisterModels(list);
+            context.addModels(list);
+            context.modifyModelAfterBake().register(MMModels::onModelBakeEvent);
+        });
 
         RenderHandCallback.EVENT.register(ClientEventHandler::onHandRender);
         LivingEntityRenderEvents.PRE.register(ClientEventHandler::renderLivingEvent);

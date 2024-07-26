@@ -16,7 +16,6 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
@@ -29,11 +28,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
-import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 
 import java.util.List;
 
-public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnData {
+public class EntitySunstrike extends Entity {
     public static final int STRIKE_EXPLOSION = 35;
 
     private static final int STRIKE_LENGTH = 43;
@@ -135,7 +133,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                 int timeBonus = (int) (time * 5);
                 int orbCount = this.random.nextInt(4 + timeBonus) + timeBonus + 1;
                 while (orbCount-- > 0) {
-                    float theta = this.random.nextFloat() * MathUtils.TAU;
+                    float theta = (float) (this.random.nextFloat() * Math.PI * 2);
                     final float min = 0.2F, max = 1.9F;
                     float r = this.random.nextFloat() * (max - min) + min;
                     float ox = r * MathHelper.cos(theta);
@@ -203,7 +201,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                     damageFire *= (float) ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier;
                     damageMob *= (float) ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier;
                 }
-                if (entity.damage(this.getDamageSources().mobProjectile(this, this.caster), damageMob)) entity.timeUntilRegen = 0;
+                if (entity.damage(this.getDamageSources().mobProjectile(this, this.caster), damageMob))
+                    entity.timeUntilRegen = 0;
                 if (entity.damage(this.getDamageSources().onFire(), damageFire)) {
                     entity.setOnFireFor(3);
                 }
@@ -221,7 +220,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         if (this.random.nextFloat() < 0.1F) {
             int amount = this.random.nextInt(2) + 1;
             while (amount-- > 0) {
-                float theta = this.random.nextFloat() * MathUtils.TAU;
+                float theta = (float) (this.random.nextFloat() * Math.PI * 2);
                 float r = this.random.nextFloat() * 0.7F;
                 float x = r * MathHelper.cos(theta);
                 float z = r * MathHelper.sin(theta);
@@ -233,7 +232,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     private void spawnExplosionParticles(int amount) {
         for (int i = 0; i < amount; i++) {
             final float velocity = 0.1F;
-            float yaw = i * (MathUtils.TAU / amount);
+            float yaw = (float) (i * (Math.PI * 2 / amount));
             float vy = this.random.nextFloat() * 0.08F;
             float vx = velocity * MathHelper.cos(yaw);
             float vz = velocity * MathHelper.sin(yaw);
@@ -264,15 +263,5 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     public void readCustomDataFromNbt(NbtCompound compound) {
         this.setStrikeTime(compound.getInt("strikeTime"));
         this.setVariant(compound.getLong("variant"));
-    }
-
-    @Override
-    public void writeSpawnData(PacketByteBuf buffer) {
-        buffer.writeInt(this.strikeTime);
-    }
-
-    @Override
-    public void readSpawnData(PacketByteBuf buffer) {
-        this.setStrikeTime(buffer.readInt());
     }
 }

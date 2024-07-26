@@ -12,7 +12,6 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBa
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityRockSling;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;

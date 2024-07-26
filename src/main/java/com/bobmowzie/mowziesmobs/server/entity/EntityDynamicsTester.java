@@ -1,10 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
-import com.ilexiconn.llibrary.server.animation.Animation;
+import com.iafenvoy.uranus.animation.Animation;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.WanderAroundGoal;
 import net.minecraft.world.World;

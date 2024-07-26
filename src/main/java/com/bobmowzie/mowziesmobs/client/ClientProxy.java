@@ -1,37 +1,26 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.client.render.block.SculptorBlockMarking;
-import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
 import com.bobmowzie.mowziesmobs.client.sound.*;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityClientEventHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.ModelPredicateProvider;
-import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.particle.BlockDustParticle;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
-import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.*;
 
@@ -41,16 +30,6 @@ public class ClientProxy extends ServerProxy {
     public static final Long2ObjectMap<SculptorBlockMarking> sculptorMarkedBlocks = new Long2ObjectOpenHashMap<>();
     private static final List<SunblockSound> sunblockSounds = new ArrayList<>();
     private Entity referencedMob = null;
-
-    @Override
-    public void init(final IEventBus modbus) {
-        super.init(modbus);
-
-
-        modbus.register(MMModels.class);
-
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientLayerRegistry::onAddLayers);
-    }
 
     @Override
     public void playSunstrikeSound(EntitySunstrike strike) {
@@ -79,7 +58,7 @@ public class ClientProxy extends ServerProxy {
 
     @Override
     public void playSunblockSound(LivingEntity entity) {
-        if (ConfigHandler.CLIENT.doUmvuthanaCraneHealSound.get()) {
+        if (ConfigHandler.CLIENT.doUmvuthanaCraneHealSound) {
             sunblockSounds.removeIf(e -> e == null || e.isDone());
             if (sunblockSounds.size() < 10) {
                 SunblockSound sunblockSound = new SunblockSound(entity);

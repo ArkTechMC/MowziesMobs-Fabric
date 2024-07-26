@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
 import com.bobmowzie.mowziesmobs.server.ai.WroughtnautAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
@@ -10,8 +9,9 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieLLibraryEntity;
 import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import com.ilexiconn.llibrary.server.animation.Animation;
-import com.ilexiconn.llibrary.server.animation.AnimationHandler;
+import com.iafenvoy.uranus.animation.Animation;
+import com.iafenvoy.uranus.animation.AnimationHandler;
+import com.iafenvoy.uranus.client.model.tools.ControlledAnimation;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
@@ -32,7 +32,6 @@ import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.DamageTypeTags;
@@ -509,11 +508,6 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Monster {
             this.goalSelector.add(8, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
             this.goalSelector.add(8, new LookAroundGoal(this));
         }
-    }
-
-    @Override
-    public void writeSpawnData(PacketByteBuf buf) {
-        super.writeSpawnData(buf);
     }
 
     @Override

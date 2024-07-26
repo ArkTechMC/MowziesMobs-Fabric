@@ -53,7 +53,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // Uranus
-    modImplementation "curse.maven:uranus-1010827:5527946"
+    modImplementation "curse.maven:uranus-1010827:5537571"
 
     // GeckoLib
     modImplementation "curse.maven:geckolib-388172:5460308"

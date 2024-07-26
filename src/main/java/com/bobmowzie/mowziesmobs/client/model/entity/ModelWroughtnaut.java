@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.client.model.tools.AdvancedModelRenderer;
-import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
+import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import com.iafenvoy.uranus.client.model.tools.BasicModelRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumer;
@@ -451,8 +451,8 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
 
         if (eyesLayer) {
             for (BasicModelRenderer box : this.boxList) {
-                if (box instanceof AdvancedModelRenderer) {
-                    ((AdvancedModelRenderer) box).setIsHidden(true);
+                if (box instanceof AdvancedModelRenderer renderer) {
+                    renderer.setIsHidden(true);
                 }
             }
             this.eyeLeft.setIsHidden(false);

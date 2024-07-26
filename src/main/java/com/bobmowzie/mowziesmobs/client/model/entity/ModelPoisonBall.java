@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
 import com.bobmowzie.mowziesmobs.client.model.tools.AdvancedModelBase;
 import com.bobmowzie.mowziesmobs.client.model.tools.AdvancedModelRenderer;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;

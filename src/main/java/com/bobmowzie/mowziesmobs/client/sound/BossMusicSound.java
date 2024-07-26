@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.sound;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
+import com.iafenvoy.uranus.client.model.tools.ControlledAnimation;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.client.sound.SoundInstance;

@@ -25,7 +25,6 @@ import net.minecraft.world.item.*;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -54,18 +53,8 @@ public class ItemWroughtHelm extends MowzieArmorItem implements IArmorTexturePro
     }
 
     @Override
-    public int getDamage(ItemStack stack) {
-        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable ? super.getDamage(stack) : 0;
-    }
-
-    @Override
     public int getMaxDamage() {
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable ? super.getMaxDamage() : 0;
-    }
-
-    @Override
-    public void setDamage(ItemStack stack, int damage) {
-        if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable) super.setDamage(stack, damage);
     }
 
     @Nullable

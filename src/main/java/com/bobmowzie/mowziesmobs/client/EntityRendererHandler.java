@@ -15,8 +15,8 @@ import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import java.util.Collection;
 
 public class EntityRendererHandler {
     public static void registerEntityRenderer() {
@@ -64,14 +64,11 @@ public class EntityRendererHandler {
         HandledScreens.register(ContainerHandler.CONTAINER_SCULPTOR_TRADE, GuiSculptorTrade::new);
     }
 
-    @SubscribeEvent
-    public static void onRegisterModels(ModelEvent.RegisterAdditional modelRegistryEvent) {
-        for (String item : MMModels.HAND_MODEL_ITEMS) {
-            modelRegistryEvent.register(new ModelIdentifier(new Identifier(MowziesMobs.MODID, item + "_in_hand"), "inventory"));
-        }
-        for (MaskType type : MaskType.values()) {
-            modelRegistryEvent.register(new ModelIdentifier(new Identifier(MowziesMobs.MODID, "umvuthana_mask_" + type.name + "_frame"), "inventory"));
-        }
-        modelRegistryEvent.register(new ModelIdentifier(new Identifier(MowziesMobs.MODID, "sol_visage_frame"), "inventory"));
+    public static void onRegisterModels(Collection<Identifier> collection) {
+        for (String item : MMModels.HAND_MODEL_ITEMS)
+            collection.add(new ModelIdentifier(new Identifier(MowziesMobs.MODID, item + "_in_hand"), "inventory"));
+        for (MaskType type : MaskType.values())
+            collection.add(new ModelIdentifier(new Identifier(MowziesMobs.MODID, "umvuthana_mask_" + type.name + "_frame"), "inventory"));
+        collection.add(new ModelIdentifier(new Identifier(MowziesMobs.MODID, "sol_visage_frame"), "inventory"));
     }
 }

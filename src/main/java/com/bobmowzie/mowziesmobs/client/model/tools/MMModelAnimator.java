@@ -1,9 +1,9 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
-import com.ilexiconn.llibrary.client.model.Transform;
-import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
-import com.ilexiconn.llibrary.server.animation.Animation;
-import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import com.iafenvoy.uranus.animation.Animation;
+import com.iafenvoy.uranus.animation.IAnimatedEntity;
+import com.iafenvoy.uranus.client.model.Transform;
+import com.iafenvoy.uranus.client.model.tools.BasicModelRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.util.math.MathHelper;

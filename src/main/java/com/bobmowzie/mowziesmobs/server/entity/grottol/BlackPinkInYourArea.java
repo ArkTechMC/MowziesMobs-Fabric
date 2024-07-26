@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.World;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.function.BiConsumer;
 

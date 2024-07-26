@@ -1,9 +1,9 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
 import com.bobmowzie.mowziesmobs.client.model.tools.AdvancedModelBase;
 import com.bobmowzie.mowziesmobs.client.model.tools.AdvancedModelRenderer;
-import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
+import com.iafenvoy.uranus.client.model.tools.BasicModelRenderer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 

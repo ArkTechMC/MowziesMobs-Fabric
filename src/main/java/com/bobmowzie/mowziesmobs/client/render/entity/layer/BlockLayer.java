@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.BlockModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.AdvancedModelRenderer;
-import com.ilexiconn.llibrary.client.model.tools.BasicModelRenderer;
+import com.bobmowzie.mowziesmobs.client.model.tools.BlockModelRenderer;
+import com.iafenvoy.uranus.client.model.tools.BasicModelRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockRenderManager;

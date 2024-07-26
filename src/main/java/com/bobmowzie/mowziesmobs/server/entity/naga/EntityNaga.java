@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.naga;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleVanillaCloudExtended;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationProjectileAttackAI;
@@ -14,8 +13,9 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.util.MowzieMathUtil;
-import com.ilexiconn.llibrary.server.animation.Animation;
-import com.ilexiconn.llibrary.server.animation.AnimationHandler;
+import com.iafenvoy.uranus.animation.Animation;
+import com.iafenvoy.uranus.animation.AnimationHandler;
+import com.iafenvoy.uranus.client.model.tools.ControlledAnimation;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -185,7 +185,8 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
                 super.tick();
                 if (EntityNaga.this.interrupted) return;
                 //if (getAnimationTick() == 1) playSound(MMSounds.ENTITY_NAGA_ACID_CHARGE, 2, 1);
-                if (EntityNaga.this.getAnimationTick() < 9) EntityNaga.this.setVelocity(EntityNaga.this.getVelocity().add(0, 0.015, 0));
+                if (EntityNaga.this.getAnimationTick() < 9)
+                    EntityNaga.this.setVelocity(EntityNaga.this.getVelocity().add(0, 0.015, 0));
 //                if (getAnimationTick() == 28) motionY -= 0.2;
             }
         });
@@ -209,7 +210,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
                 if (EntityNaga.this.getAnimationTick() < phase1Length) {
                     if (target != null) {
                         this.entity.lookAtEntity(target, 100, 100);
-                        this.entity.lookControl.lookAt(target, 30F, 30F);
+                        this.entity.getLookControl().lookAt(target, 30F, 30F);
                     }
                 }
                 if (EntityNaga.this.getAnimationTick() < 23 + phase2Length) {
@@ -225,7 +226,8 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
                             if (target != null) {
                                 EntityNaga.this.swoopTargetCorrectY = 0.09f * (float) Math.abs(EntityNaga.this.getY() - target.getY());
                                 EntityNaga.this.swoopTargetCorrectX = 0.1f * (float) Math.sqrt((EntityNaga.this.getX() - target.getX()) * (EntityNaga.this.getX() - target.getX()) + (EntityNaga.this.getZ() - target.getZ()) * (EntityNaga.this.getZ() - target.getZ()));
-                                if (EntityNaga.this.swoopTargetCorrectX > 1.8f) EntityNaga.this.swoopTargetCorrectX = 1.8f;
+                                if (EntityNaga.this.swoopTargetCorrectX > 1.8f)
+                                    EntityNaga.this.swoopTargetCorrectX = 1.8f;
                                 if (EntityNaga.this.swoopTargetCorrectY > 2f) EntityNaga.this.swoopTargetCorrectY = 2f;
                             } else {
                                 EntityNaga.this.swoopTargetCorrectX = EntityNaga.this.swoopTargetCorrectY = 1;
@@ -253,8 +255,10 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
 
                 if (EntityNaga.this.getAnimationTick() == 22) MowziesMobs.PROXY.playNagaSwoopSound(this.entity);
 
-                if (EntityNaga.this.getAnimationTick() == 7) EntityNaga.this.playSound(MMSounds.ENTITY_NAGA_GRUNT_3, 2, 1f);
-                if (EntityNaga.this.getAnimationTick() == 22) EntityNaga.this.playSound(MMSounds.ENTITY_NAGA_ROAR_1, 3, 1f);
+                if (EntityNaga.this.getAnimationTick() == 7)
+                    EntityNaga.this.playSound(MMSounds.ENTITY_NAGA_GRUNT_3, 2, 1f);
+                if (EntityNaga.this.getAnimationTick() == 22)
+                    EntityNaga.this.playSound(MMSounds.ENTITY_NAGA_ROAR_1, 3, 1f);
             }
         });
         this.goalSelector.add(2, new SimpleAnimationAI<>(this, HURT_TO_FALL_ANIMATION, true) {
@@ -274,7 +278,8 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
             @Override
             public void tick() {
                 super.tick();
-                if (EntityNaga.this.getAnimationTick() == 13) EntityNaga.this.playSound(MMSounds.ENTITY_NAGA_FLAP_1, 2f, 1);
+                if (EntityNaga.this.getAnimationTick() == 13)
+                    EntityNaga.this.playSound(MMSounds.ENTITY_NAGA_FLAP_1, 2f, 1);
 
                 if (EntityNaga.this.getAnimationTick() == 15) {
                     EntityNaga.this.setVelocity(EntityNaga.this.getVelocity().add(0, 1.6, 0));
@@ -398,7 +403,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
         }
 
         if (this.movement != EnumNagaMovement.FALLING && this.movement != EnumNagaMovement.FALLEN) {
-            if (this.getAttacking()) {
+            if (this.isAttacking()) {
                 this.movement = EnumNagaMovement.HOVERING;
                 this.hoverAnim.increaseTimer();
 
@@ -810,7 +815,8 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
         return false;
     }
 
-    public boolean getAttacking() {
+    @Override
+    public boolean isAttacking() {
         return this.getDataTracker().get(ATTACKING);
     }
 
