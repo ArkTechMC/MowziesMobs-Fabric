@@ -17,15 +17,16 @@ import net.minecraft.world.gen.structure.Structure;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public abstract class MowzieStructure extends Structure {
     private final ConfigHandler.GenerationConfig config;
-    private Set<RegistryEntry<Biome>> allowedBiomes;
+    private Predicate<RegistryEntry<Biome>> allowedBiomes;
     private boolean doCheckHeight;
     private boolean doAvoidWater;
     private boolean doAvoidStructures;
 
-    public MowzieStructure(Config settings, ConfigHandler.GenerationConfig config, Set<RegistryEntry<Biome>> allowedBiomes, boolean doCheckHeight, boolean doAvoidWater, boolean doAvoidStructures) {
+    public MowzieStructure(Config settings, ConfigHandler.GenerationConfig config, Predicate<RegistryEntry<Biome>> allowedBiomes, boolean doCheckHeight, boolean doAvoidWater, boolean doAvoidStructures) {
         super(settings);
         this.config = config;
         this.allowedBiomes = allowedBiomes;
@@ -34,7 +35,7 @@ public abstract class MowzieStructure extends Structure {
         this.doAvoidStructures = doAvoidStructures;
     }
 
-    public MowzieStructure(Config settings, ConfigHandler.GenerationConfig config, Set<RegistryEntry<Biome>> allowedBiomes) {
+    public MowzieStructure(Config settings, ConfigHandler.GenerationConfig config, Predicate<RegistryEntry<Biome>> allowedBiomes) {
         this(settings, config, allowedBiomes, true, true, true);
     }
 
@@ -61,7 +62,7 @@ public abstract class MowzieStructure extends Structure {
         return this.checkLocation(context, this.config, this.allowedBiomes, this.doCheckHeight, this.doAvoidWater, this.doAvoidStructures);
     }
 
-    protected boolean checkLocation(Context context, ConfigHandler.GenerationConfig config, Set<RegistryEntry<Biome>> allowedBiomes, boolean checkHeight, boolean avoidWater, boolean avoidStructures) {
+    protected boolean checkLocation(Context context, ConfigHandler.GenerationConfig config, Predicate<RegistryEntry<Biome>> allowedBiomes, boolean checkHeight, boolean avoidWater, boolean avoidStructures) {
         if (config.generationDistance < 0) {
             return false;
         }
@@ -73,7 +74,7 @@ public abstract class MowzieStructure extends Structure {
         int j = chunkPos.getCenterZ();
         int k = context.chunkGenerator().getHeightInGround(i, j, Heightmap.Type.WORLD_SURFACE_WG, context.world(), context.noiseConfig());
         RegistryEntry<Biome> biome = context.chunkGenerator().getBiomeSource().getBiome(BiomeCoords.fromBlock(i), BiomeCoords.fromBlock(k), BiomeCoords.fromBlock(j), context.noiseConfig().getMultiNoiseSampler());
-        if (!allowedBiomes.contains(biome)) {
+        if (!allowedBiomes.test(biome)) {
             return false;
         }
 

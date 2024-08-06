@@ -41,6 +41,7 @@ repositories {
             includeGroup "com.jamieswhiteshirt"
         }
     }
+    maven { url = "https://jitpack.io" } // Fabric ASM, Mixin Extras
 }
 
 dependencies {
@@ -53,7 +54,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // Uranus
-    modImplementation "curse.maven:uranus-1010827:5537571"
+    modImplementation "curse.maven:uranus-1010827:5600816"
 
     // GeckoLib
     modImplementation "curse.maven:geckolib-388172:5460308"
@@ -61,6 +62,9 @@ dependencies {
     // CCA
     modImplementation(include("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cca_version}"))
     modImplementation(include("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${cca_version}"))
+
+    //Fabric ASM
+    modImplementation(include("com.github.Chocohead:Fabric-ASM:v2.3"))
 
     // Porting Lib
     modImplementation "io.github.fabricators_of_create.Porting-Lib:asm:${project.porting_version}"

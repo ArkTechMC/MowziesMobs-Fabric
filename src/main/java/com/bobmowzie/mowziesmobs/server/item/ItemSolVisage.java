@@ -1,15 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.render.item.RenderSolVisageArmor;
-import com.bobmowzie.mowziesmobs.client.render.item.RenderSolVisageItem;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.iafenvoy.uranus.client.render.armor.IArmorTextureProvider;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ArmorMaterials;
 import net.minecraft.item.ItemStack;
@@ -18,8 +14,6 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
-import net.minecraft.world.item.*;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -27,16 +21,16 @@ import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.object.PlayState;
-import software.bernie.geckolib.renderer.GeoArmorRenderer;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Created by BobMowzie on 8/15/2016.
  */
-public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, GeoItem {
+public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, GeoItem, IArmorTextureProvider {
     private static final SolVisageMaterial SOL_VISAGE_MATERIAL = new SolVisageMaterial();
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     public String controllerName = "controller";
@@ -57,10 +51,11 @@ public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, Geo
         return true;
     }
 
-    @Override
-    public boolean makesPiglinsNeutral(ItemStack stack, LivingEntity wearer) {
-        return true;
-    }
+    //FIXME: No API found
+//    @Override
+//    public boolean makesPiglinsNeutral(ItemStack stack, LivingEntity wearer) {
+//        return true;
+//    }
 
     @Override
     public boolean isDamageable() {
@@ -68,24 +63,14 @@ public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, Geo
     }
 
     @Override
-    public int getDamage(ItemStack stack) {
-        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable ? super.getDamage(stack) : 0;
-    }
-
-    @Override
     public int getMaxDamage() {
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable ? super.getMaxDamage() : 0;
     }
 
-    @Override
-    public void setDamage(ItemStack stack, int damage) {
-        if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable) super.setDamage(stack, damage);
-    }
-
     @Nullable
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return new Identifier(MowziesMobs.MODID, "textures/entity/umvuthi.png").toString();
+    public Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+        return new Identifier(MowziesMobs.MODID, "textures/entity/umvuthi.png");
     }
 
     @Override
@@ -116,26 +101,13 @@ public class ItemSolVisage extends MowzieArmorItem implements UmvuthanaMask, Geo
     }
 
     @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        super.initializeClient(consumer);
-        consumer.accept(new IClientItemExtensions() {
-            private final BuiltinModelItemRenderer itemRenderer = new RenderSolVisageItem();
-            private GeoArmorRenderer<?> armorRenderer;
+    public void createRenderer(Consumer<Object> consumer) {
+        //FIXME:wtf is this???
+    }
 
-            @Override
-            public BipedEntityModel<?> getHumanoidArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot equipmentSlot, BipedEntityModel<?> original) {
-                if (this.armorRenderer == null)
-                    this.armorRenderer = new RenderSolVisageArmor();
-                if (equipmentSlot == EquipmentSlot.HEAD)
-                    this.armorRenderer.prepForRender(entityLiving, itemStack, equipmentSlot, original);
-                return this.armorRenderer;
-            }
-
-            @Override
-            public BuiltinModelItemRenderer getCustomRenderer() {
-                return this.itemRenderer;
-            }
-        });
+    @Override
+    public Supplier<Object> getRenderProvider() {
+        return null;
     }
 
     private static class SolVisageMaterial implements ArmorMaterial {

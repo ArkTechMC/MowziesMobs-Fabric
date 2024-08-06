@@ -2,13 +2,14 @@ package com.bobmowzie.mowziesmobs.client.render.item;
 
 import com.bobmowzie.mowziesmobs.client.model.item.ModelEarthrendGauntlet;
 import com.bobmowzie.mowziesmobs.server.item.ItemEarthrendGauntlet;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 
-public class RenderEarthrendGauntlet extends GeoItemRenderer<ItemEarthrendGauntlet> {
+public class RenderEarthrendGauntlet extends GeoItemRenderer<ItemEarthrendGauntlet> implements BuiltinItemRendererRegistry.DynamicItemRenderer {
 
     public RenderEarthrendGauntlet() {
         super(new ModelEarthrendGauntlet());

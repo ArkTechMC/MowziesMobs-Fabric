@@ -31,19 +31,21 @@ import com.iafenvoy.uranus.event.LivingEntityEvents;
 import io.github.fabricators_of_create.porting_lib.entity.events.CriticalHitEvent;
 import io.github.fabricators_of_create.porting_lib.entity.events.EntityMountEvents;
 import io.github.fabricators_of_create.porting_lib.event.common.BlockEvents;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.event.player.*;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandler;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraftforge.fml.DistExecutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib.GeckoLib;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public final class MowziesMobs {
     public static final String MODID = "mowziesmobs";
@@ -86,7 +88,7 @@ public final class MowziesMobs {
         GeckoLibUtil.addCustomBakedModelFactory(MODID, new MowzieModelFactory());
         GeckoLib.initialize();
 
-        PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
+        PROXY = (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? (Supplier<ServerProxy>) ClientProxy::new : (Supplier<ServerProxy>) ServerProxy::new).get();
         BlockHandler.init();
         EntityHandler.init();
         ItemHandler.init();
@@ -98,7 +100,6 @@ public final class MowziesMobs {
         EffectHandler.init();
         PotionTypeHandler.init();
         SpawnHandler.addBiomeSpawns();
-        StructureTypeHandler.addBiomeSpawns(biome);
         LootTableHandler.init();
         CreativeTabHandler.init();
 

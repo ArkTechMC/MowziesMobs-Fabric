@@ -1,8 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.render.item.RenderUmvuthanaMaskArmor;
-import com.bobmowzie.mowziesmobs.client.render.item.RenderUmvuthanaMaskItem;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -13,11 +11,8 @@ import com.bobmowzie.mowziesmobs.server.entity.umvuthana.MaskType;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.iafenvoy.uranus.client.render.armor.IArmorTextureProvider;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorMaterial;
@@ -32,8 +27,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import net.minecraft.world.item.*;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.constant.DataTickets;
@@ -43,11 +36,11 @@ import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
-import software.bernie.geckolib.renderer.GeoArmorRenderer;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask, GeoItem, IArmorTextureProvider {
     private static final UmvuthanaMaskMaterial UMVUTHANA_MASK_MATERIAL = new UmvuthanaMaskMaterial();
@@ -128,29 +121,6 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
         return false;
     }
 
-    @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        super.initializeClient(consumer);
-        consumer.accept(new IClientItemExtensions() {
-            private final BuiltinModelItemRenderer itemRenderer = new RenderUmvuthanaMaskItem();
-            private GeoArmorRenderer<?> armorRenderer;
-
-            @Override
-            public BipedEntityModel<?> getHumanoidArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot equipmentSlot, BipedEntityModel<?> original) {
-                if (this.armorRenderer == null)
-                    this.armorRenderer = new RenderUmvuthanaMaskArmor();
-                if (equipmentSlot == EquipmentSlot.HEAD)
-                    this.armorRenderer.prepForRender(entityLiving, itemStack, equipmentSlot, original);
-                return this.armorRenderer;
-            }
-
-            @Override
-            public BuiltinModelItemRenderer getCustomRenderer() {
-                return this.itemRenderer;
-            }
-        });
-    }
-
     public MaskType getMaskType() {
         return this.type;
     }
@@ -190,6 +160,16 @@ public class ItemUmvuthanaMask extends MowzieArmorItem implements UmvuthanaMask,
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.cache;
+    }
+
+    @Override
+    public void createRenderer(Consumer<Object> consumer) {
+        //FIXME:wtf is this???
+    }
+
+    @Override
+    public Supplier<Object> getRenderProvider() {
+        return null;
     }
 
     private static class UmvuthanaMaskMaterial implements ArmorMaterial {

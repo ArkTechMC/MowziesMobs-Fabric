@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.ModelPartMatrix;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import net.minecraft.client.model.ModelPart;

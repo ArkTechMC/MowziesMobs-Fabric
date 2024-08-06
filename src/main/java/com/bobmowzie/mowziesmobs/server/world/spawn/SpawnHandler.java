@@ -4,6 +4,8 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.world.BiomeChecker;
+import com.chocohead.mm.api.ClassTinkerers;
+import com.iafenvoy.uranus.util.function.predicate.Predicate3;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.minecraft.block.BlockState;
@@ -16,7 +18,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.WorldView;
-import net.minecraftforge.common.util.TriPredicate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,26 +39,23 @@ public class SpawnHandler {
         spawnConfigs.put(EntityHandler.GROTTOL, ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig);
     }
 
-    public static void registerSpawnPlacementTypes() {
-        SpawnRestriction.Location.create("MMSPAWN", new TriPredicate<WorldView, BlockPos, EntityType<? extends MobEntity>>() {
-            @Override
-            public boolean test(WorldView t, BlockPos pos, EntityType<? extends MobEntity> entityType) {
-                BlockState block = t.getBlockState(pos.down());
-                if (block.getBlock() == Blocks.BEDROCK || block.getBlock() == Blocks.BARRIER || !block.blocksMovement())
-                    return false;
-                BlockState iblockstateUp = t.getBlockState(pos);
-                BlockState iblockstateUp2 = t.getBlockState(pos.up());
-                return SpawnHelper.isClearForSpawn(t, pos, iblockstateUp, iblockstateUp.getFluidState(), entityType) && SpawnHelper.isClearForSpawn(t, pos.up(), iblockstateUp2, iblockstateUp2.getFluidState(), entityType);
-            }
-        });
+    private static final Predicate3<WorldView, BlockPos, EntityType<? extends MobEntity>> spawnPredicate = (t, pos, entityType) -> {
+        BlockState block = t.getBlockState(pos.down());
+        if (block.getBlock() == Blocks.BEDROCK || block.getBlock() == Blocks.BARRIER || !block.blocksMovement())
+            return false;
+        BlockState iblockstateUp = t.getBlockState(pos);
+        BlockState iblockstateUp2 = t.getBlockState(pos.up());
+        return SpawnHelper.isClearForSpawn(t, pos, iblockstateUp, iblockstateUp.getFluidState(), entityType) && SpawnHelper.isClearForSpawn(t, pos.up(), iblockstateUp2, iblockstateUp2.getFluidState(), entityType);
+    };
 
-        SpawnRestriction.Location mmSpawn = SpawnRestriction.Location.valueOf("MMSPAWN");
-        SpawnRestriction.register(EntityHandler.FOLIAATH, mmSpawn, Heightmap.Type.MOTION_BLOCKING, MowzieEntity::spawnPredicate);
-        SpawnRestriction.register(EntityHandler.LANTERN, mmSpawn, Heightmap.Type.MOTION_BLOCKING, MowzieEntity::spawnPredicate);
-        SpawnRestriction.register(EntityHandler.UMVUTHANA_RAPTOR, mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MowzieEntity::spawnPredicate);
-        SpawnRestriction.register(EntityHandler.NAGA, SpawnRestriction.Location.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING, MowzieEntity::spawnPredicate);
-        SpawnRestriction.register(EntityHandler.GROTTOL, mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MowzieEntity::spawnPredicate);
-        SpawnRestriction.register(EntityHandler.UMVUTHANA_CRANE, mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MowzieEntity::spawnPredicate);
+    public static void registerSpawnPlacementTypes() {
+        SpawnRestriction.Location mmSpawn = ClassTinkerers.getEnum(SpawnRestriction.Location.class, "MMSPAWN");
+        SpawnRestriction.register(EntityHandler.FOLIAATH, mmSpawn, Heightmap.Type.MOTION_BLOCKING, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
+        SpawnRestriction.register(EntityHandler.LANTERN, mmSpawn, Heightmap.Type.MOTION_BLOCKING, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
+        SpawnRestriction.register(EntityHandler.UMVUTHANA_RAPTOR, mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
+        SpawnRestriction.register(EntityHandler.NAGA, SpawnRestriction.Location.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
+        SpawnRestriction.register(EntityHandler.GROTTOL, mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
+        SpawnRestriction.register(EntityHandler.UMVUTHANA_CRANE, mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
     }
 
     public static void addBiomeSpawns() {

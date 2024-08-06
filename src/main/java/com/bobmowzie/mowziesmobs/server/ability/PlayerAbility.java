@@ -6,6 +6,7 @@ import io.github.fabricators_of_create.porting_lib.entity.events.LivingEntityEve
 import io.github.fabricators_of_create.porting_lib.entity.events.PlayerInteractionEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;

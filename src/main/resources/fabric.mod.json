@@ -20,6 +20,9 @@
     "client": [
       "com.bobmowzie.mowziesmobs.client.MowziesMobsClient"
     ],
+    "prelaunch": [
+      "com.bobmowzie.mowziesmobs.ASMHooks"
+    ],
     "cardinal-components-entity": [
       "com.bobmowzie.mowziesmobs.server.capability.ModComponentEntry"
     ]

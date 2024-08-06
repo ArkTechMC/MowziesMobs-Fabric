@@ -1,13 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import com.bobmowzie.mowziesmobs.client.render.item.RenderEarthrendGauntlet;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.iafenvoy.uranus.object.item.ISwingable;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.render.item.BuiltinModelItemRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,7 +17,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
@@ -33,11 +30,12 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Created by BobMowzie on 6/6/2017.
  */
-public class ItemEarthrendGauntlet extends MowzieToolItem implements GeoItem {
+public class ItemEarthrendGauntlet extends MowzieToolItem implements GeoItem, ISwingable {
     public static final String CONTROLLER_NAME = "controller";
     public static final String CONTROLLER_IDLE_NAME = "controller_idle";
     public static final String IDLE_ANIM_NAME = "idle";
@@ -55,19 +53,6 @@ public class ItemEarthrendGauntlet extends MowzieToolItem implements GeoItem {
     }
 
     @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        super.initializeClient(consumer);
-        consumer.accept(new IClientItemExtensions() {
-            private final BuiltinModelItemRenderer renderer = new RenderEarthrendGauntlet();
-
-            @Override
-            public BuiltinModelItemRenderer getCustomRenderer() {
-                return this.renderer;
-            }
-        });
-    }
-
-    @Override
     public boolean isDamageable() {
         return true;
     }
@@ -78,7 +63,7 @@ public class ItemEarthrendGauntlet extends MowzieToolItem implements GeoItem {
         AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(playerIn);
         if (abilityCapability != null) {
             playerIn.setCurrentHand(handIn);
-            if (stack.getDamage() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.breakable.get()) {
+            if (stack.getDamage() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.breakable) {
                 if (!worldIn.isClient())
                     AbilityHandler.INSTANCE.sendAbilityMessage(playerIn, AbilityHandler.TUNNELING_ABILITY);
                 playerIn.setCurrentHand(handIn);
@@ -95,8 +80,8 @@ public class ItemEarthrendGauntlet extends MowzieToolItem implements GeoItem {
     }
 
     @Override
-    public int getMaxDamage(ItemStack stack) {
-        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.durability.get();
+    public int getMaxDamage() {
+        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.durability;
     }
 
     @Override
@@ -109,7 +94,7 @@ public class ItemEarthrendGauntlet extends MowzieToolItem implements GeoItem {
         super.appendTooltip(stack, worldIn, tooltip, flagIn);
         tooltip.add(Text.translatable(this.getTranslationKey() + ".text.0").setStyle(ItemHandler.TOOLTIP_STYLE));
         tooltip.add(Text.translatable(this.getTranslationKey() + ".text.1").setStyle(ItemHandler.TOOLTIP_STYLE));
-        if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.breakable.get()) {
+        if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.breakable) {
             tooltip.add(Text.translatable(this.getTranslationKey() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
         }
     }
@@ -129,16 +114,18 @@ public class ItemEarthrendGauntlet extends MowzieToolItem implements GeoItem {
     }
 
     @Override
-    public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
-        if (abilityCapability != null && abilityCapability.getActiveAbility() == null) {
-            if (entity.getActiveItem() != stack) {
-                if (entity.getWorld() instanceof ServerWorld) {
-                    this.triggerAnim(entity, GeoItem.getOrAssignId(stack, (ServerWorld) entity.getWorld()), CONTROLLER_NAME, ATTACK_ANIM_NAME);
-                }
-            }
+    public boolean onEntitySwing(ItemStack stack, Entity entity) {
+        if (entity instanceof PlayerEntity player) {
+            AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
+            if (abilityCapability != null && abilityCapability.getActiveAbility() == null && player.getActiveItem() != stack && player.getWorld() instanceof ServerWorld)
+                this.triggerAnim(entity, GeoItem.getOrAssignId(stack, (ServerWorld) entity.getWorld()), CONTROLLER_NAME, ATTACK_ANIM_NAME);
         }
-        return super.onEntitySwing(stack, entity);
+        return false;
+    }
+
+    @Override
+    public boolean onSwingHand(ItemStack itemStack, World world, double v, double v1, double v2) {
+        return false;//Handled by onEntitySwing
     }
 
     @Override
@@ -159,5 +146,15 @@ public class ItemEarthrendGauntlet extends MowzieToolItem implements GeoItem {
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.cache;
+    }
+
+    @Override
+    public void createRenderer(Consumer<Object> consumer) {
+        //FIXME:wtf is this???
+    }
+
+    @Override
+    public Supplier<Object> getRenderProvider() {
+        return null;
     }
 }
