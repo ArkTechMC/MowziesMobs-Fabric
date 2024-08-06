@@ -27,7 +27,7 @@ public class SpawnBoulderChargeSound extends MovingSoundInstance {
         this.y = (float) user.getY();
         this.z = (float) user.getZ();
 
-        AbilityCapability.IAbilityCapability capability = AbilityCapability.get((PlayerEntity) user);
+        AbilityCapability.IAbilityCapability capability = AbilityCapability.get(user);
         if (capability != null) {
             this.ability = (SpawnBoulderAbility) capability.getAbilityMap().get(AbilityHandler.SPAWN_BOULDER_ABILITY);
         } else this.ability = null;

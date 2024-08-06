@@ -12,8 +12,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.StructureType;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Predicate;
 
 public class StructureTypeHandler {

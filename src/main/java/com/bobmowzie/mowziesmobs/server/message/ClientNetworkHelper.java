@@ -59,7 +59,7 @@ public class ClientNetworkHelper {
             MessageInterruptAbility message = MessageInterruptAbility.deserialize(buf);
             LivingEntity entity = (LivingEntity) MinecraftClient.getInstance().world.getEntityById(message.getEntityID());
             if (entity != null) {
-                AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
+                AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(entity);
                 if (abilityCapability != null) {
                     AbilityType<?, ?> abilityType = abilityCapability.getAbilityTypesOnEntity(entity)[message.getIndex()];
                     Ability<?> instance = abilityCapability.getAbilityMap().get(abilityType);
@@ -71,7 +71,7 @@ public class ClientNetworkHelper {
             MessageJumpToAbilitySection message = MessageJumpToAbilitySection.deserialize(buf);
             LivingEntity entity = (LivingEntity) MinecraftClient.getInstance().world.getEntityById(message.getEntityID());
             if (entity != null) {
-                AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
+                AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(entity);
                 if (abilityCapability != null) {
                     AbilityType<?, ?> abilityType = abilityCapability.getAbilityTypesOnEntity(entity)[message.getIndex()];
                     Ability<?> instance = abilityCapability.getAbilityMap().get(abilityType);
@@ -113,7 +113,7 @@ public class ClientNetworkHelper {
             MessageUseAbility message = MessageUseAbility.deserialize(buf);
             LivingEntity entity = (LivingEntity) MinecraftClient.getInstance().world.getEntityById(message.getEntityID());
             if (entity != null) {
-                AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
+                AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(entity);
                 if (abilityCapability != null)
                     abilityCapability.activateAbility(entity, abilityCapability.getAbilityTypesOnEntity(entity)[message.getIndex()]);
             }

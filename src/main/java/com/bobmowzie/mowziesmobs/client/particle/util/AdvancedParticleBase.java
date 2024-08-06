@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.particle.util;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import net.fabricmc.api.EnvType;

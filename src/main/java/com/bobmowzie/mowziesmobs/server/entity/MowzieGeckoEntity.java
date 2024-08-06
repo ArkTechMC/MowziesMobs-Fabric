@@ -36,15 +36,9 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements GeoEntit
         return 20;
     }
 
-    @Override
-    public void writeSpawnData(PacketByteBuf buffer) {
-
-    }
-
     public abstract AbilityType getHurtAbility();
 
     public abstract AbilityType getDeathAbility();
-
 
     @Override
     public boolean damage(DamageSource source, float damage) {
@@ -101,7 +95,7 @@ public abstract class MowzieGeckoEntity extends MowzieEntity implements GeoEntit
     }
 
     public AbilityCapability.IAbilityCapability getAbilityCapability() {
-        return AbilityCapability.get((PlayerEntity) this);
+        return AbilityCapability.get( this);
     }
 
     public Ability getActiveAbility() {

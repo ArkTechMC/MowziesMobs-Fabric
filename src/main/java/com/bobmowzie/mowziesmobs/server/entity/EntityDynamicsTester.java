@@ -13,7 +13,8 @@ public class EntityDynamicsTester extends MowzieLLibraryEntity {
     public DynamicChain dc;
 
     public EntityDynamicsTester(World world) {
-        super(EntityHandler.PILLAR, world);
+        //FIXME: What is this?
+        super(EntityHandler.UMVUTHI, world);
     }
 
     @Override

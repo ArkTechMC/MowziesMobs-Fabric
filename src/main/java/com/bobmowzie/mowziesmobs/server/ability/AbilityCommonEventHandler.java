@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.ability;
 
+import com.bobmowzie.mowziesmobs.event.UseEmptyCallback;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.iafenvoy.uranus.event.LivingEntityEvents;
 import io.github.fabricators_of_create.porting_lib.entity.events.PlayerInteractionEvents;
@@ -29,20 +30,16 @@ public class AbilityCommonEventHandler {
         AttackEntityCallback.EVENT.register(AbilityCommonEventHandler::onLeftClickEntity);
         LivingEntityEvents.DAMAGE.register(AbilityCommonEventHandler::onTakeDamage);
         io.github.fabricators_of_create.porting_lib.entity.events.LivingEntityEvents.LivingJumpEvent.JUMP.register(AbilityCommonEventHandler::onJump);
+        UseEmptyCallback.EVENT.register(AbilityCommonEventHandler::onPlayerInteract);
     }
 
-//    @SubscribeEvent
-//    public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
-//        PlayerEntity player = event.getEntity();
-//        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
-//        if (abilityCapability != null) {
-//            for (Ability ability : abilityCapability.getAbilities()) {
-//                if (ability instanceof PlayerAbility) {
-//                    ((PlayerAbility) ability).onRightClickEmpty(event);
-//                }
-//            }
-//        }
-//    }
+    public static void onPlayerInteract(PlayerEntity player, Hand hand) {
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
+        if (abilityCapability != null)
+            for (Ability<?> ability : abilityCapability.getAbilities())
+                if (ability instanceof PlayerAbility playerAbility)
+                    playerAbility.onRightClickEmpty(player, hand);
+    }
 
     public static ActionResult onPlayerRightClickBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
         AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
@@ -99,7 +96,7 @@ public class AbilityCommonEventHandler {
     }
 
     public static float onTakeDamage(LivingEntity entity, DamageSource source, float amount) {
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(entity);
         if (abilityCapability != null)
             for (Ability<?> ability : abilityCapability.getAbilities())
                 ability.onTakeDamage(entity, source, amount);
@@ -108,7 +105,7 @@ public class AbilityCommonEventHandler {
 
     public static void onJump(io.github.fabricators_of_create.porting_lib.entity.events.LivingEntityEvents.LivingJumpEvent event) {
         LivingEntity player = event.getEntity();
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) player);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
         if (abilityCapability != null)
             for (Ability<?> ability : abilityCapability.getAbilities())
                 if (ability instanceof PlayerAbility playerAbility)

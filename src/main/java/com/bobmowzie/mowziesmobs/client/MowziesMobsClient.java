@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.server.message.ClientNetworkHelper;
 import io.github.fabricators_of_create.porting_lib.entity.events.PlayerTickEvents;
 import io.github.fabricators_of_create.porting_lib.event.client.*;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
@@ -55,10 +56,14 @@ public class MowziesMobsClient implements ClientModInitializer {
         BuiltinItemRendererRegistry.INSTANCE.register(ItemHandler.UMVUTHANA_MASK_FURY, new RenderUmvuthanaMaskItem());
         BuiltinItemRendererRegistry.INSTANCE.register(ItemHandler.UMVUTHANA_MASK_MISERY, new RenderUmvuthanaMaskItem());
         BuiltinItemRendererRegistry.INSTANCE.register(ItemHandler.SOL_VISAGE, new RenderSolVisageItem());
-
-        ArmorRenderer.register(new RenderUmvuthanaMaskArmor(), ItemHandler.UMVUTHANA_MASK_BLISS, ItemHandler.UMVUTHANA_MASK_RAGE, ItemHandler.UMVUTHANA_MASK_FAITH, ItemHandler.UMVUTHANA_MASK_FEAR, ItemHandler.UMVUTHANA_MASK_FURY, ItemHandler.UMVUTHANA_MASK_MISERY);
-        ArmorRenderer.register(new RenderSolVisageArmor(), ItemHandler.SOL_VISAGE);
+        BuiltinItemRendererRegistry.INSTANCE.register(ItemHandler.SCULPTOR_STAFF, new RenderSculptorStaff());
 
         ModelPredicateProviderRegistry.register(ItemHandler.BLOWGUN.asItem(), new Identifier("pulling"), (itemStack, world, livingEntity, seed) -> livingEntity != null && livingEntity.isUsingItem() && livingEntity.getActiveItem() == itemStack ? 1 : 0);
+    }
+
+    public static void bootstrapItemRenderers(){
+        ArmorRenderer.register(new RenderUmvuthanaMaskArmor(), ItemHandler.UMVUTHANA_MASK_BLISS, ItemHandler.UMVUTHANA_MASK_RAGE, ItemHandler.UMVUTHANA_MASK_FAITH, ItemHandler.UMVUTHANA_MASK_FEAR, ItemHandler.UMVUTHANA_MASK_FURY, ItemHandler.UMVUTHANA_MASK_MISERY);
+        ArmorRenderer.register(new RenderSolVisageArmor(), ItemHandler.SOL_VISAGE);
+        ArmorRenderer.register(new RenderWroughtHelmArmor(), ItemHandler.WROUGHT_HELMET);
     }
 }

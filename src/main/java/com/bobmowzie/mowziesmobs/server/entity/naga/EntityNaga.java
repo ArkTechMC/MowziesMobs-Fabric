@@ -16,6 +16,7 @@ import com.bobmowzie.mowziesmobs.server.util.MowzieMathUtil;
 import com.iafenvoy.uranus.animation.Animation;
 import com.iafenvoy.uranus.animation.AnimationHandler;
 import com.iafenvoy.uranus.client.model.tools.ControlledAnimation;
+import io.github.fabricators_of_create.porting_lib.attributes.PortingLibAttributes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -649,7 +650,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
 
     public void travel(Vec3d motion) {
         double d0 = 0.08D;
-        EntityAttributeInstance gravity = this.getAttributeInstance(net.minecraftforge.common.ForgeMod.ENTITY_GRAVITY.get());
+        EntityAttributeInstance gravity = this.getAttributeInstance(PortingLibAttributes.ENTITY_GRAVITY);
         boolean flag = this.getVelocity().y <= 0.0D;
 //        if (flag && this.isPotionActive(Effects.SLOW_FALLING)) {
 //            if (!gravity.hasModifier(SLOW_FALLING)) gravity.applyNonPersistentModifier(SLOW_FALLING);
@@ -660,43 +661,41 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
         d0 = gravity.getValue();
 
         FluidState fluidstate = this.getWorld().getFluidState(this.getBlockPos());
-        if ((this.isTouchingWater() || (this.isInFluidType(fluidstate) && fluidstate.getFluidType() != net.minecraftforge.common.ForgeMod.LAVA_TYPE.get())) && this.shouldSwimInFluids() && !this.canWalkOnFluid(fluidstate)) {
-            if (this.isTouchingWater() || (this.isInFluidType(fluidstate) && !this.moveInFluid(fluidstate, motion, d0))) {
-                double d8 = this.getY();
-                float f5 = this.isSprinting() ? 0.9F : this.getBaseMovementSpeedMultiplier();
-                float f6 = 0.02F;
-                float f7 = (float) EnchantmentHelper.getDepthStrider(this);
-                if (f7 > 3.0F) {
-                    f7 = 3.0F;
-                }
+        if (this.isTouchingWater() && this.shouldSwimInFluids() && !this.canWalkOnFluid(fluidstate)) {
+            double d8 = this.getY();
+            float f5 = this.isSprinting() ? 0.9F : this.getBaseMovementSpeedMultiplier();
+            float f6 = 0.02F;
+            float f7 = (float) EnchantmentHelper.getDepthStrider(this);
+            if (f7 > 3.0F) {
+                f7 = 3.0F;
+            }
 
-                if (!this.isOnGround()) {
-                    f7 *= 0.5F;
-                }
+            if (!this.isOnGround()) {
+                f7 *= 0.5F;
+            }
 
-                if (f7 > 0.0F) {
-                    f5 += (0.54600006F - f5) * f7 / 3.0F;
-                    f6 += (this.getMovementSpeed() - f6) * f7 / 3.0F;
-                }
+            if (f7 > 0.0F) {
+                f5 += (0.54600006F - f5) * f7 / 3.0F;
+                f6 += (this.getMovementSpeed() - f6) * f7 / 3.0F;
+            }
 
-                if (this.hasStatusEffect(StatusEffects.DOLPHINS_GRACE)) {
-                    f5 = 0.96F;
-                }
+            if (this.hasStatusEffect(StatusEffects.DOLPHINS_GRACE)) {
+                f5 = 0.96F;
+            }
 
-                f6 *= (float) this.getAttributeInstance(net.minecraftforge.common.ForgeMod.SWIM_SPEED.get()).getValue();
-                this.updateVelocity(f6, motion);
-                this.move(MovementType.SELF, this.getVelocity());
-                Vec3d vector3d6 = this.getVelocity();
-                if (this.horizontalCollision && this.isClimbing()) {
-                    vector3d6 = new Vec3d(vector3d6.x, 0.2D, vector3d6.z);
-                }
+            f6 *= (float) this.getAttributeInstance(PortingLibAttributes.SWIM_SPEED).getValue();
+            this.updateVelocity(f6, motion);
+            this.move(MovementType.SELF, this.getVelocity());
+            Vec3d vector3d6 = this.getVelocity();
+            if (this.horizontalCollision && this.isClimbing()) {
+                vector3d6 = new Vec3d(vector3d6.x, 0.2D, vector3d6.z);
+            }
 
-                this.setVelocity(vector3d6.multiply(f5, 0.8F, f5));
-                Vec3d vec32 = this.applyFluidMovingSpeed(d0, flag, this.getVelocity());
-                this.setVelocity(vec32);
-                if (this.horizontalCollision && this.doesNotCollide(vec32.x, vec32.y + (double) 0.6F - this.getY() + d8, vec32.z)) {
-                    this.setVelocity(vec32.x, 0.3F, vec32.z);
-                }
+            this.setVelocity(vector3d6.multiply(f5, 0.8F, f5));
+            Vec3d vec32 = this.applyFluidMovingSpeed(d0, flag, this.getVelocity());
+            this.setVelocity(vec32);
+            if (this.horizontalCollision && this.doesNotCollide(vec32.x, vec32.y + (double) 0.6F - this.getY() + d8, vec32.z)) {
+                this.setVelocity(vec32.x, 0.3F, vec32.z);
             }
         } else if (this.isInLava() && this.shouldSwimInFluids() && !this.canWalkOnFluid(fluidstate)) {
             double d7 = this.getY();
@@ -722,13 +721,13 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
             BlockPos ground = new BlockPos((int) this.getX(), (int) (this.getBoundingBox().minY - 1.0D), (int) this.getZ());
             float f = 0.91F;
             if (this.isOnGround()) {
-                f = this.getWorld().getBlockState(ground).getFriction(this.getWorld(), ground, this) * 0.91F;
+                f = this.getWorld().getBlockState(ground).getBlock().getSlipperiness() * 0.91F;
             }
 
             float f1 = 0.16277137F / (f * f * f);
             f = 0.91F;
             if (this.isOnGround()) {
-                f = this.getWorld().getBlockState(ground).getFriction(this.getWorld(), ground, this) * 0.91F;
+                f = this.getWorld().getBlockState(ground).getBlock().getSlipperiness() * 0.91F;
             }
 
             this.updateVelocity(this.isOnGround() ? 0.1F * f1 : 0.02F, motion);
@@ -781,7 +780,7 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
 
         } else if (this.movement == EnumNagaMovement.FALLING || this.movement == EnumNagaMovement.FALLEN || this.isAiDisabled()) {
             BlockPos blockpos = this.getVelocityAffectingPos();
-            float f2 = this.getWorld().getBlockState(this.getVelocityAffectingPos()).getFriction(this.getWorld(), this.getVelocityAffectingPos(), this);
+            float f2 = this.getWorld().getBlockState(this.getVelocityAffectingPos()).getBlock().getSlipperiness();
             float f3 = this.isOnGround() ? f2 * 0.91F : 0.91F;
             Vec3d vec35 = this.applyMovementInput(motion, f2);
             double d2 = vec35.y;

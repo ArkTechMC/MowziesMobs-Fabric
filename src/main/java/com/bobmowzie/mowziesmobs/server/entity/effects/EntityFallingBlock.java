@@ -11,6 +11,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.world.World;
 
@@ -24,6 +25,7 @@ public class EntityFallingBlock extends Entity {
     public double prevMotionX, prevMotionY, prevMotionZ;
     public float animY = 0;
     public float prevAnimY = 0;
+
     public EntityFallingBlock(EntityType<?> entityTypeIn, World worldIn) {
         super(entityTypeIn, worldIn);
         this.setBlock(Blocks.DIRT.getDefaultState());
@@ -44,11 +46,11 @@ public class EntityFallingBlock extends Entity {
     }
 
     @Override
-    public void onAddedToWorld() {
+    public void onSpawnPacket(EntitySpawnS2CPacket packet) {
+        super.onSpawnPacket(packet);
         if (this.getVelocity().getX() > 0 || this.getVelocity().getZ() > 0)
             this.setYaw((float) ((180f / Math.PI) * Math.atan2(this.getVelocity().getX(), this.getVelocity().getZ())));
         this.setPitch(this.getPitch() + this.random.nextFloat() * 360);
-        super.onAddedToWorld();
     }
 
     @Override

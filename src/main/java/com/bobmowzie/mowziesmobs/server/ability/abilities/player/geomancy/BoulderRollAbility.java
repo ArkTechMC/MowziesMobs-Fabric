@@ -6,7 +6,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.*;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraft.util.Hand;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
@@ -57,9 +57,9 @@ public class BoulderRollAbility extends PlayerAbility {
     }
 
     @Override
-    public void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
-        super.onRightClickEmpty(event);
-        AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.BOULDER_ROLL_ABILITY);
+    public void onRightClickEmpty(PlayerEntity player, Hand hand) {
+        super.onRightClickEmpty(player, hand);
+        AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(player, AbilityHandler.BOULDER_ROLL_ABILITY);
     }
 
     @Override

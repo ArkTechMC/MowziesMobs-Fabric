@@ -552,7 +552,7 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
 
         float frame = entity.frame + delta;
         limbSwing = (float) ((4 * Math.PI * frame - 30 * MathHelper.sin((float) (0.1 * Math.PI * (frame - 9))) - 27 * Math.PI) / (4 * Math.PI)) + 5f;
-        float walkTimerInterp = entity.walkAnim.getPrevTimer() + (entity.walkAnim.getTimer() - entity.walkAnim.getPrevTimer()) * delta;
+        float walkTimerInterp = entity.walkAnim.getTimer() + (entity.walkAnim.getTimer() - entity.walkAnim.getTimer()) * delta;
         limbSwingAmount = (float) Math.pow(MathHelper.sin((float) (walkTimerInterp * Math.PI * 0.05)), 2);
 
         float globalSpeed = (float) (Math.PI * 0.05);

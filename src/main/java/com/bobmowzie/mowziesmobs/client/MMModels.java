@@ -32,8 +32,8 @@ public class MMModels {
             if (new Identifier(MowziesMobs.MODID, item).equals(context.id())) {
                 Identifier modelInventory = new ModelIdentifier(new Identifier(MowziesMobs.MODID, item), "inventory");
                 Identifier modelHand = new ModelIdentifier(new Identifier(MowziesMobs.MODID, item + "_in_hand"), "inventory");
-                BakedModel bakedModelDefault = map.get(modelInventory);
-                BakedModel bakedModelHand = map.get(modelHand);
+                BakedModel bakedModelDefault = map.getOrDefault(modelInventory, model);
+                BakedModel bakedModelHand = map.getOrDefault(modelHand, model);
                 return new BakedModelImpl(bakedModelDefault) {
                     public Transformation getTransform(ModelTransformationMode cameraTransformType) {
                         BakedModel modelToUse = bakedModelDefault;
@@ -50,18 +50,18 @@ public class MMModels {
             for (MaskType type : MaskType.values()) {
                 ModelIdentifier maskModelInventory = new ModelIdentifier(new Identifier(MowziesMobs.MODID, "umvuthana_mask_" + type.name), "inventory");
                 ModelIdentifier maskModelFrame = new ModelIdentifier(new Identifier(MowziesMobs.MODID, "umvuthana_mask_" + type.name + "_frame"), "inventory");
-                bakeMask(map, maskModelInventory, maskModelFrame);
+                bakeMask(model, map, maskModelInventory, maskModelFrame);
             }
             ModelIdentifier maskModelInventory = new ModelIdentifier(new Identifier(MowziesMobs.MODID, "sol_visage"), "inventory");
             ModelIdentifier maskModelFrame = new ModelIdentifier(new Identifier(MowziesMobs.MODID, "sol_visage_frame"), "inventory");
-            bakeMask(map, maskModelInventory, maskModelFrame);
+            bakeMask(model, map, maskModelInventory, maskModelFrame);
         }
         return model;
     }
 
-    private static void bakeMask(Map<Identifier, BakedModel> map, ModelIdentifier maskModelInventory, ModelIdentifier maskModelFrame) {
-        BakedModel maskBakedModelDefault = map.get(maskModelInventory);
-        BakedModel maskBakedModelFrame = map.get(maskModelFrame);
+    private static void bakeMask(BakedModel model, Map<Identifier, BakedModel> map, ModelIdentifier maskModelInventory, ModelIdentifier maskModelFrame) {
+        BakedModel maskBakedModelDefault = map.getOrDefault(maskModelInventory, model);
+        BakedModel maskBakedModelFrame = map.getOrDefault(maskModelFrame, model);
         BakedModel maskModelWrapper = new BakedModelImpl(maskBakedModelDefault) {
             @Override
             public Transformation getTransform(ModelTransformationMode cameraTransformType) {

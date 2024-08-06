@@ -131,7 +131,7 @@ public enum ClientEventHandler {
         if (playerCapability != null && FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             GeckoPlayer geckoPlayer = playerCapability.getGeckoPlayer();
             if (geckoPlayer != null) geckoPlayer.tick();
-            if (player == MinecraftClient.getInstance().player)
+            if (player == MinecraftClient.getInstance().player && GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON != null)
                 GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON.tick();
         }
 //        if(player.getInventory().getArmor(3).is(ItemHandler.SOL_VISAGE.asItem())){
@@ -170,14 +170,16 @@ public enum ClientEventHandler {
 //                player.prevRotationPitch = player.rotationPitch;
 //                player.prevRotationYawHead = player.rotationYawHead;
 //            }
-        FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(player);
-        if (player != null && frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
-            player.setYaw(frozenCapability.getFrozenYaw());
-            player.setPitch(frozenCapability.getFrozenPitch());
-            player.headYaw = frozenCapability.getFrozenYawHead();
-            player.prevYaw = player.getYaw();
-            player.prevPitch = player.getPitch();
-            player.prevHeadYaw = player.headYaw;
+        if (player != null) {
+            FrozenCapability.IFrozenCapability frozenCapability = FrozenCapability.get(player);
+            if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
+                player.setYaw(frozenCapability.getFrozenYaw());
+                player.setPitch(frozenCapability.getFrozenPitch());
+                player.headYaw = frozenCapability.getFrozenYawHead();
+                player.prevYaw = player.getYaw();
+                player.prevPitch = player.getPitch();
+                player.prevHeadYaw = player.headYaw;
+            }
         }
     }
 

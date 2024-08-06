@@ -140,10 +140,10 @@ public class EntityIceBreath extends EntityMagicEffect {
                 // Do raycast check to prevent damaging through walls
                 if (!this.raytraceCheckEntity(entityHit)) continue;
 
-                if (entityHit.damage(this.getDamageSources().freeze(), damage) && entityHit instanceof LivingEntity) {
+                if (entityHit.damage(this.getDamageSources().freeze(), damage) && entityHit instanceof LivingEntity living) {
                     entityHit.setVelocity(entityHit.getVelocity().multiply(0.25, 1, 0.25));
-                    FrozenCapability.IFrozenCapability capability = AbilityCapability.get((PlayerEntity) entityHit);
-                    if (capability != null) capability.addFreezeProgress((LivingEntity) entityHit, 0.23f);
+                    FrozenCapability.IFrozenCapability capability = FrozenCapability.get(living);
+                    if (capability != null) capability.addFreezeProgress(living, 0.23f);
                 }
             }
         }

@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity.player;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.*;
@@ -163,7 +164,7 @@ public class GeckoRenderPlayer extends PlayerEntityRenderer implements GeoRender
         this.isInvisible = !flag && !flag1 && !flag2;
         RenderLayer rendertype = this.getRenderLayer(entityIn, flag, flag1, flag2);
         if (this.isInvisible) {
-            rendertype = this.model.getLayer(this.getTexture(geckoPlayer));
+            rendertype = this.model.getLayer(this.getTextureLocation(geckoPlayer));
         }
         if (rendertype != null) {
             VertexConsumer ivertexbuilder = bufferIn.getBuffer(rendertype);
@@ -185,7 +186,7 @@ public class GeckoRenderPlayer extends PlayerEntityRenderer implements GeoRender
         AbstractClientPlayerEntity entity = (AbstractClientPlayerEntity) animatable.getPlayer();
         this.model.handSwingProgress = this.getHandSwingProgress(entity, partialTick);
 
-        boolean shouldSit = entity.hasVehicle() && (entity.getVehicle() != null && entity.getVehicle().shouldRiderSit());
+        boolean shouldSit = entity.hasVehicle() && (entity.getVehicle() != null);
         this.model.riding = shouldSit;
         this.model.child = entity.isBaby();
         float f_lerpBodyRot = MathHelper.lerpAngleDegrees(partialTick, entity.prevBodyYaw, entity.bodyYaw);
@@ -312,11 +313,8 @@ public class GeckoRenderPlayer extends PlayerEntityRenderer implements GeoRender
     }
 
     public void renderEntity(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn) {
-        net.minecraftforge.client.event.RenderNameTagEvent renderNameplateEvent = new net.minecraftforge.client.event.RenderNameTagEvent(entityIn, entityIn.getDisplayName(), this, matrixStackIn, bufferIn, packedLightIn, partialTicks);
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
-        if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.hasLabel(entityIn))) {
-            this.renderLabelIfPresent(entityIn, renderNameplateEvent.getContent(), matrixStackIn, bufferIn, packedLightIn);
-        }
+        if (this.hasLabel(entityIn))
+            this.renderLabelIfPresent(entityIn, entityIn.getCustomName(), matrixStackIn, bufferIn, packedLightIn);
     }
 
     protected void setupRotations(AbstractClientPlayerEntity entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks, float headYaw) {
@@ -341,7 +339,7 @@ public class GeckoRenderPlayer extends PlayerEntityRenderer implements GeoRender
         } else if (f > 0.0F) {
             float swimController = this.geoModel.getControllerValueInverted("SwimController");
             this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, headYaw);
-            float f3 = entityLiving.isTouchingWater() || entityLiving.isInFluidType((fluidType, height) -> entityLiving.canSwimInFluidType(fluidType)) ? -90.0F - entityLiving.getPitch() : -90.0F;
+            float f3 = entityLiving.isTouchingWater() ? -90.0F - entityLiving.getPitch() : -90.0F;// || entityLiving.isInFluidType((fluidType, height) -> entityLiving.canSwimInFluidType(fluidType)) ? -90.0F - entityLiving.getPitch() : -90.0F;
             float f4 = MathHelper.lerp(f, 0.0F, f3) * swimController;
             matrixStackIn.multiply(RotationAxis.POSITIVE_X.rotationDegrees(f4));
             if (entityLiving.isInSwimmingPose()) {
@@ -401,7 +399,7 @@ public class GeckoRenderPlayer extends PlayerEntityRenderer implements GeoRender
     }
 
     @Override
-    public Identifier getTexture(GeckoPlayer geckoPlayer) {
+    public Identifier getTextureLocation(GeckoPlayer geckoPlayer) {
         return this.getTexture((AbstractClientPlayerEntity) geckoPlayer.getPlayer());
     }
 
@@ -467,7 +465,7 @@ public class GeckoRenderPlayer extends PlayerEntityRenderer implements GeoRender
      */
     @Override
     public void updateAnimatedTextureFrame(GeckoPlayer animatable) {
-        AnimatableTexture.setAndUpdate(this.getTexture(animatable));
+        AnimatableTexture.setAndUpdate(this.getTextureLocation(animatable));
     }
 
     /**

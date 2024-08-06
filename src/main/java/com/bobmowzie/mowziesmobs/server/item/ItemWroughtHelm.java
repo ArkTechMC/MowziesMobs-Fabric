@@ -1,18 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.LayerHandler;
-import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.iafenvoy.uranus.client.render.armor.IArmorTextureProvider;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ArmorMaterials;
 import net.minecraft.item.ItemStack;
@@ -21,12 +14,9 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
-import net.minecraft.world.item.*;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class ItemWroughtHelm extends MowzieArmorItem implements IArmorTextureProvider {
     private static final WroughtHelmMaterial ARMOR_WROUGHT_HELM = new WroughtHelmMaterial();
@@ -74,11 +64,6 @@ public class ItemWroughtHelm extends MowzieArmorItem implements IArmorTexturePro
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig;
     }
 
-    @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(ArmorRender.INSTANCE);
-    }
-
     private static class WroughtHelmMaterial implements ArmorMaterial {
 
         @Override
@@ -119,21 +104,6 @@ public class ItemWroughtHelm extends MowzieArmorItem implements IArmorTexturePro
         @Override
         public float getKnockbackResistance() {
             return 0.1f;
-        }
-    }
-
-    private static final class ArmorRender implements IClientItemExtensions {
-        private static final ArmorRender INSTANCE = new ArmorRender();
-        private static BipedEntityModel<?> MODEL;
-
-        @Override
-        public BipedEntityModel<?> getHumanoidArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, BipedEntityModel<?> _default) {
-            if (MODEL == null) {
-                EntityModelLoader models = MinecraftClient.getInstance().getEntityModelLoader();
-                ModelPart root = models.getModelPart(LayerHandler.WROUGHT_HELM_LAYER);
-                MODEL = new WroughtHelmModel<>(root);
-            }
-            return MODEL;
         }
     }
 }

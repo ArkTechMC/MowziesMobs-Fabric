@@ -16,12 +16,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
+      "com.bobmowzie.mowziesmobs.MowziesMobs"
     ],
     "client": [
       "com.bobmowzie.mowziesmobs.client.MowziesMobsClient"
-    ],
-    "prelaunch": [
-      "com.bobmowzie.mowziesmobs.ASMHooks"
     ],
     "cardinal-components-entity": [
       "com.bobmowzie.mowziesmobs.server.capability.ModComponentEntry"
@@ -40,8 +38,8 @@
     "mowziesmobs.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${loader_version}",
+    "fabricloader": ">=0.15",
     "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": "1.20.1"
   }
 }

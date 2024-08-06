@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.armor.SolVisageModel;
 import com.bobmowzie.mowziesmobs.client.render.entity.MowzieGeoArmorRenderer;
 import com.bobmowzie.mowziesmobs.server.item.ItemSolVisage;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
@@ -29,6 +30,6 @@ public class RenderSolVisageArmor extends MowzieGeoArmorRenderer<ItemSolVisage> 
         if (slot == EquipmentSlot.HEAD)
             this.prepForRender(entity, stack, slot, contextModel);
         //FIXME: overlay
-        this.render(matrices, vertexConsumers.getBuffer(RenderLayers.getItemLayer(stack, false)), light, 0, 1, 1, 1, 1);
+        this.render(matrices, vertexConsumers.getBuffer(RenderLayers.getItemLayer(stack, false)), light, OverlayTexture.DEFAULT_UV, 1, 1, 1, 1);
     }
 }

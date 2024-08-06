@@ -255,10 +255,10 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
 
         this.stem1Joint.rotateAngleY += (headYaw / (180f / (float) Math.PI));
 
-        this.activeProgress = entity.activate.getAnimationProgressSinSqrt(delta);
-        float activeIntermittent = entity.activate.getAnimationProgressSinSqrt(delta) - entity.activate.getAnimationProgressSinToTenWithoutReturn(delta);
+        this.activeProgress = entity.activate.getAnimationProgressSinSqrt();
+        float activeIntermittent = entity.activate.getAnimationProgressSinSqrt() - entity.activate.getAnimationProgressSinToTenWithoutReturn();
         float activeComplete = this.activeProgress - activeIntermittent;
-        float stopDance = entity.stopDance.getAnimationProgressSinSqrt(delta) - (entity.stopDance.getAnimationProgressSinSqrt(delta) - entity.stopDance.getAnimationProgressSinToTenWithoutReturn(delta));
+        float stopDance = entity.stopDance.getAnimationProgressSinSqrt() - (entity.stopDance.getAnimationProgressSinSqrt() - entity.stopDance.getAnimationProgressSinToTenWithoutReturn());
         float frame = entity.frame + delta;
 
         float globalSpeed = 0.9f;
@@ -386,7 +386,7 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
         this.animator.endKeyframe();
         this.animator.resetKeyframe(7);
 
-        float deathFlailProgress = entity.deathFlail.getAnimationProgressSinSqrt(delta);
+        float deathFlailProgress = entity.deathFlail.getAnimationProgressSinSqrt();
         this.chainFlap(this.stemParts, 0.7F, 0.2F * deathFlailProgress, 2F, entity.frame + delta, 1F);
         this.chainSwing(this.tongueParts, 0.7F, 0.6F * deathFlailProgress, -2F, entity.frame + delta, 1F);
         this.chainWave(this.leafParts1, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame + delta, 1F);

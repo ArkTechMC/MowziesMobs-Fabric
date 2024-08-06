@@ -399,11 +399,10 @@ public class EntitySolarBeam extends Entity {
     @Override
     public void remove(RemovalReason reason) {
         super.remove(reason);
-        if (this.caster instanceof PlayerEntity) {
-            PlayerCapability.IPlayerCapability playerCapability = AbilityCapability.get((PlayerEntity) this.caster);
-            if (playerCapability != null) {
+        if (this.caster instanceof PlayerEntity player) {
+            PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get(player);
+            if (playerCapability != null)
                 playerCapability.setUsingSolarBeam(false);
-            }
         }
     }
 

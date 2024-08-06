@@ -14,6 +14,7 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -76,10 +77,9 @@ public abstract class EntityMagicEffect extends Entity implements ILinkedEntity 
         super.tick();
     }
 
-
     @Override
-    public void onAddedToWorld() {
-        super.onAddedToWorld();
+    public void onSpawnPacket(EntitySpawnS2CPacket packet) {
+        super.onSpawnPacket(packet);
         if (!this.getWorld().isClient() && this.getCasterID().isPresent() && this.caster == null) {
             Entity casterEntity = ((ServerWorld) this.getWorld()).getEntity(this.getCasterID().get());
             if (casterEntity instanceof LivingEntity) {

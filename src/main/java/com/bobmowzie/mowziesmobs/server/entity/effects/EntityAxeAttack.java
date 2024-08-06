@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
-import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -173,12 +172,13 @@ public class EntityAxeAttack extends EntityMagicEffect {
                 // Do raycast check to prevent damaging through walls
                 if (!this.raytraceCheckEntity(entityHit)) continue;
 
-                PlayerCapability.IPlayerCapability playerCapability = AbilityCapability.get((PlayerEntity) this.caster);
-                if (playerCapability != null) {
-                    playerCapability.setAxeCanAttack(true);
-                    if (this.caster instanceof PlayerEntity)
-                        this.attackTargetEntityWithCurrentItem(entityHit, (PlayerEntity) this.caster, damage / ItemHandler.WROUGHT_AXE.getAttackDamage(), applyKnockback);
-                    playerCapability.setAxeCanAttack(false);
+                if (this.caster instanceof PlayerEntity player) {
+                    PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get(player);
+                    if (playerCapability != null) {
+                        playerCapability.setAxeCanAttack(true);
+                        this.attackTargetEntityWithCurrentItem(entityHit, player, damage / ItemHandler.WROUGHT_AXE.getAttackDamage(), applyKnockback);
+                        playerCapability.setAxeCanAttack(false);
+                    }
                 } else {
                     entityHit.damage(this.getDamageSources().mobAttack(this.caster), damage);
                     entityHit.setVelocity(entityHit.getVelocity().x * applyKnockback, entityHit.getVelocity().y, entityHit.getVelocity().z * applyKnockback);

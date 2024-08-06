@@ -1,8 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects.geomancy;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.google.common.collect.Iterables;
+import io.github.fabricators_of_create.porting_lib.attributes.PortingLibAttributes;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.nbt.NbtCompound;
@@ -139,7 +141,7 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
     public boolean nextSingleBoulder() {
         int whichTierIndex = (int) (Math.pow(this.random.nextFloat(), 2) * (GeomancyTier.values().length - 2) + 1);
         GeomancyTier nextTier = GeomancyTier.values()[whichTierIndex];
-        EntityBoulderSculptor nextBoulder = new EntityBoulderSculptor(EntityType.get(), this.getWorld(), this.caster, this.getBlock(), this.getBlockPos(), nextTier);
+        EntityBoulderSculptor nextBoulder = new EntityBoulderSculptor(EntityHandler.BOULDER_SCULPTOR, this.getWorld(), this.caster, this.getBlock(), this.getBlockPos(), nextTier);
 
         // Try many times to find a good placement for the next boulder
         for (int j = 0; j < MAX_TRIES; j++) {
@@ -242,7 +244,7 @@ public class EntityBoulderSculptor extends EntityBoulderProjectile {
         Vec3d startPos = platform.getPos().add(0, platDims.height, 0).add(toNext.multiply(1, 0, 1).normalize().multiply(platDims.width / 2f));
         Vec3d endPos = next.getPos().add(0, nextDims.height, 0).add(toNext.multiply(1, 0, 1).normalize().multiply(-nextDims.width / 2f));
 
-        double gravity = -net.minecraftforge.common.ForgeMod.ENTITY_GRAVITY.get().getDefaultValue();
+        double gravity = -PortingLibAttributes.ENTITY_GRAVITY.getDefaultValue();
         double jumpVelY = 1D; // Player y jump speed with jump boost II
         double heightDiff = endPos.getY() - startPos.getY();
         // Quadratic formula to solve for time it takes to complete jump

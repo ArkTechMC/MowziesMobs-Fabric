@@ -62,10 +62,11 @@ public class ItemSpear extends MowzieToolItem {
         return closest;
     }
 
-    @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment.target == EnchantmentTarget.WEAPON || enchantment.target == EnchantmentTarget.BREAKABLE;
-    }
+    //FIXME: No API
+//    @Override
+//    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+//        return enchantment.target == EnchantmentTarget.WEAPON || enchantment.target == EnchantmentTarget.BREAKABLE;
+//    }
 
     public boolean canMine(BlockState p_43291_, World p_43292_, BlockPos p_43293_, PlayerEntity p_43294_) {
         return !p_43294_.isCreative();

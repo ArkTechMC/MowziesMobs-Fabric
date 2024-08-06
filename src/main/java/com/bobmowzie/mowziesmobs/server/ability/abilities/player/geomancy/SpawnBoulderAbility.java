@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.server.ability.*;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderBase;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityBoulderProjectile;
 import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityGeomancyBase;
@@ -14,7 +15,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,7 +27,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import software.bernie.geckolib.core.animation.RawAnimation;
 
 public class SpawnBoulderAbility extends PlayerAbility {
@@ -85,7 +84,7 @@ public class SpawnBoulderAbility extends PlayerAbility {
                 MowziesMobs.PROXY.playBoulderChargeSound(this.getUser());
             if ((this.spawnBoulderCharge + 10) % 10 == 0 && this.spawnBoulderCharge < 40) {
                 if (this.getUser().getWorld().isClient) {
-                    AdvancedParticleBase.spawnParticle(this.getUser().getWorld(), ParticleHandler.RING2.get(), (float) this.getUser().getX(), (float) this.getUser().getY() + this.getUser().getHeight() / 2f, (float) this.getUser().getZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
+                    AdvancedParticleBase.spawnParticle(this.getUser().getWorld(), ParticleHandler.RING2, (float) this.getUser().getX(), (float) this.getUser().getY() + this.getUser().getHeight() / 2f, (float) this.getUser().getZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 0.7f), false),
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd((0.8f + 2.7f * this.spawnBoulderCharge / 60f) * 10f, 0), false)
                     });
@@ -93,12 +92,12 @@ public class SpawnBoulderAbility extends PlayerAbility {
             }
             if (this.spawnBoulderCharge == 50) {
                 if (this.getUser().getWorld().isClient) {
-                    AdvancedParticleBase.spawnParticle(this.getUser().getWorld(), ParticleHandler.RING2.get(), (float) this.getUser().getX(), (float) this.getUser().getY() + this.getUser().getHeight() / 2f, (float) this.getUser().getZ(), 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 20, true, true, new ParticleComponent[]{
+                    AdvancedParticleBase.spawnParticle(this.getUser().getWorld(), ParticleHandler.RING2, (float) this.getUser().getX(), (float) this.getUser().getY() + this.getUser().getHeight() / 2f, (float) this.getUser().getZ(), 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 20, true, true, new ParticleComponent[]{
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0, 40f), false)
                     });
                 }
-                this.getUser().playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1, 1f);
+                this.getUser().playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL, 1, 1f);
             }
 
             int size = this.getBoulderSize() + 1;
@@ -132,7 +131,7 @@ public class SpawnBoulderAbility extends PlayerAbility {
 
         int size = this.getBoulderSize();
         if (this.spawnBoulderCharge >= 60) size = 3;
-        EntityBoulderProjectile boulder = new EntityBoulderProjectile(EntityType.get(), this.getUser().getWorld(), this.getUser(), this.spawnBoulderBlock, this.spawnBoulderPos, EntityGeomancyBase.GeomancyTier.values()[size + 1]);
+        EntityBoulderProjectile boulder = new EntityBoulderProjectile(EntityHandler.BOULDER_PROJECTILE, this.getUser().getWorld(), this.getUser(), this.spawnBoulderBlock, this.spawnBoulderPos, EntityGeomancyBase.GeomancyTier.values()[size + 1]);
         boulder.setPosition(this.spawnBoulderPos.getX() + 0.5F, this.spawnBoulderPos.getY() + 2, this.spawnBoulderPos.getZ() + 0.5F);
         if (!this.getUser().getWorld().isClient && boulder.checkCanSpawn()) {
             this.getUser().getWorld().spawnEntity(boulder);
@@ -187,9 +186,9 @@ public class SpawnBoulderAbility extends PlayerAbility {
     }
 
     @Override
-    public void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
-        super.onRightClickEmpty(event);
-        AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.SPAWN_BOULDER_ABILITY);
+    public void onRightClickEmpty(PlayerEntity player, Hand hand) {
+        super.onRightClickEmpty(player, hand);
+        AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(player, AbilityHandler.SPAWN_BOULDER_ABILITY);
     }
 
     @Override

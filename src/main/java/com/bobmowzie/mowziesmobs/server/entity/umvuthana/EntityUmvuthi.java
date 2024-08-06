@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
@@ -337,8 +338,8 @@ public class EntityUmvuthi extends MowzieGeckoEntity implements LeaderSunstrikeI
 
     @Override
     public void tick() {
-        this.legsUp.updatePrevTimer();
-        this.angryEyebrow.updatePrevTimer();
+        this.legsUp.increaseTimer();
+        this.angryEyebrow.increaseTimer();
         this.setVelocity(0, this.getVelocity().y, 0);
         super.tick();
         if (this.age == 1) {

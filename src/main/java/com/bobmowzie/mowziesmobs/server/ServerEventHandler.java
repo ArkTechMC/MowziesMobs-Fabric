@@ -88,7 +88,7 @@ import java.util.stream.Collectors;
 public final class ServerEventHandler {
     public static boolean onJoinWorld(Entity entity, World world) {
         if (entity instanceof PlayerEntity || entity instanceof MowzieGeckoEntity) {
-            AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) (LivingEntity) entity);
+            AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((LivingEntity) entity);
             if (abilityCapability != null) abilityCapability.instanceAbilities((LivingEntity) entity);
         }
 
@@ -98,7 +98,7 @@ public final class ServerEventHandler {
         }
 
         if (world.isClient)
-            return false;
+            return true;
         if (entity instanceof ZombieEntity && !(entity instanceof ZombifiedPiglinEntity)) {
             ((PathAwareEntity) entity).targetSelector.add(2, new ActiveTargetGoal<>((PathAwareEntity) entity, EntityFoliaath.class, 0, true, false, null));
             ((PathAwareEntity) entity).targetSelector.add(3, new ActiveTargetGoal<>((PathAwareEntity) entity, EntityUmvuthana.class, 0, true, false, null));
@@ -125,7 +125,7 @@ public final class ServerEventHandler {
             merchant.goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityNaga.class, 10.0F, 1.0D, 1.2D));
             merchant.goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
-        return false;
+        return true;
     }
 
     public static void onLivingTick(LivingEntity entity) {

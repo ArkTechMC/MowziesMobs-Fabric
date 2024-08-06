@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.PlayerAbility;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.entity.EntityType;
@@ -31,7 +32,7 @@ public class IceBreathAbility extends PlayerAbility {
         super.start();
         LivingEntity user = this.getUser();
         if (!this.getUser().getWorld().isClient()) {
-            EntityIceBreath iceBreath = new EntityIceBreath(EntityType.get(), user.getWorld(), user);
+            EntityIceBreath iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH, user.getWorld(), user);
             iceBreath.updatePositionAndAngles(user.getX(), user.getY() + user.getStandingEyeHeight() - 0.5f, user.getZ(), user.getYaw(), user.getPitch());
             user.getWorld().spawnEntity(iceBreath);
             this.iceBreath = iceBreath;
@@ -66,8 +67,8 @@ public class IceBreathAbility extends PlayerAbility {
     private boolean checkIceCrystal() {
         ItemStack stack = this.getUser().getActiveItem();
         if (this.getTicksInUse() <= 1) return true;
-        if (stack.getItem() != ItemHandler.ICE_CRYSTAL.get()) return false;
-        return stack.getDamage() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get();
+        if (stack.getItem() != ItemHandler.ICE_CRYSTAL) return false;
+        return stack.getDamage() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable;
     }
 
     @Override
@@ -89,6 +90,6 @@ public class IceBreathAbility extends PlayerAbility {
 
     @Override
     public boolean preventsItemUse(ItemStack stack) {
-        return stack.getItem() != ItemHandler.ICE_CRYSTAL.get();
+        return stack.getItem() != ItemHandler.ICE_CRYSTAL;
     }
 }

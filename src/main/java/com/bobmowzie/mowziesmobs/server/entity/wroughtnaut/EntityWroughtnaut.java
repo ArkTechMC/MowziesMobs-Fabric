@@ -222,7 +222,7 @@ public class EntityWroughtnaut extends MowzieLLibraryEntity implements Monster {
     @Override
     public void tick() {
         super.tick();
-        this.walkAnim.updatePrevTimer();
+        this.walkAnim.increaseTimer();
 
 //        if (getAnimation() == NO_ANIMATION) {
 //            setActive(true);

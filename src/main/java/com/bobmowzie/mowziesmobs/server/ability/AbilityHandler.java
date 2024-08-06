@@ -66,7 +66,7 @@ public enum AbilityHandler {
 
     @Nullable
     public Ability<?> getAbility(LivingEntity entity, AbilityType<?, ?> abilityType) {
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(entity);
         if (abilityCapability != null)
             return abilityCapability.getAbilityMap().get(abilityType);
         return null;
@@ -74,7 +74,7 @@ public enum AbilityHandler {
 
     public <T extends LivingEntity> void sendAbilityMessage(T entity, AbilityType<?, ?> abilityType) {
         if (entity.getWorld().isClient) return;
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(entity);
         if (abilityCapability != null) {
             Ability<?> instance = abilityCapability.getAbilityMap().get(abilityType);
             if (instance != null && instance.canUse()) {
@@ -88,7 +88,7 @@ public enum AbilityHandler {
 
     public <T extends LivingEntity> void sendInterruptAbilityMessage(T entity, AbilityType<?, ?> abilityType) {
         if (entity.getWorld().isClient) return;
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(entity);
         if (abilityCapability != null) {
             Ability<?> instance = abilityCapability.getAbilityMap().get(abilityType);
             if (instance.isUsing()) {
@@ -113,7 +113,7 @@ public enum AbilityHandler {
 
     public <T extends LivingEntity> void sendJumpToSectionMessage(T entity, AbilityType<?, ?> abilityType, int sectionIndex) {
         if (entity.getWorld().isClient) return;
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get((PlayerEntity) entity);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(entity);
         if (abilityCapability != null) {
             Ability<?> instance = abilityCapability.getAbilityMap().get(abilityType);
             if (instance.isUsing()) {

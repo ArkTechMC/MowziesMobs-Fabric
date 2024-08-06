@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
+import com.iafenvoy.uranus.client.render.armor.IArmorTextureProvider;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -49,14 +50,13 @@ public class UmvuthanaArmorLayer extends GeoRenderLayer<EntityUmvuthana> {
 
     private void renderArmor(LivingEntity entityLivingBaseIn, VertexConsumerProvider bufferIn, MatrixStack poseStack, int packedLightIn) {
         ItemStack itemStack = entityLivingBaseIn.getEquippedStack(EquipmentSlot.HEAD);
-        if (itemStack.getItem() instanceof ArmorItem armoritem) {
+        if (itemStack.getItem() instanceof ArmorItem armoritem&&armoritem instanceof IArmorTextureProvider provider) {
             if (armoritem.getType() == ArmorItem.Type.HELMET) {
                 boolean glintIn = itemStack.hasGlint();
                 BipedEntityModel a = this.defaultBipedModel;
-                a = this.getArmorModelHook(entityLivingBaseIn, itemStack, EquipmentSlot.HEAD, a);
-                String armorTexture = armoritem.getArmorTexture(itemStack, entityLivingBaseIn, EquipmentSlot.HEAD, null);
+                Identifier armorTexture = provider.getArmorTexture(itemStack, entityLivingBaseIn, EquipmentSlot.HEAD, null);
                 if (armorTexture != null) {
-                    VertexConsumer ivertexbuilder = ItemRenderer.getItemGlintConsumer(bufferIn, RenderLayer.getEntityCutoutNoCull(new Identifier(armorTexture)), false, glintIn);
+                    VertexConsumer ivertexbuilder = ItemRenderer.getItemGlintConsumer(bufferIn, RenderLayer.getEntityCutoutNoCull(armorTexture), false, glintIn);
                     poseStack.multiply((new Quaternionf()).rotationXYZ(0.0F, 0.0F, (float) Math.PI));
                     poseStack.scale(1.511f, 1.511f, 1.511f);
                     poseStack.translate(0, -0.55, 0.15);
@@ -64,10 +64,5 @@ public class UmvuthanaArmorLayer extends GeoRenderLayer<EntityUmvuthana> {
                 }
             }
         }
-    }
-
-    protected BipedEntityModel<?> getArmorModelHook(LivingEntity entity, ItemStack itemStack, EquipmentSlot slot, BipedEntityModel model) {
-        Model basicModel = net.minecraftforge.client.ForgeHooksClient.getArmorModel(entity, itemStack, slot, model);
-        return basicModel instanceof BipedEntityModel ? (BipedEntityModel<?>) basicModel : model;
     }
 }

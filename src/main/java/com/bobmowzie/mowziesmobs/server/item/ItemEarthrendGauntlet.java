@@ -67,7 +67,7 @@ public class ItemEarthrendGauntlet extends MowzieToolItem implements GeoItem, IS
                 if (!worldIn.isClient())
                     AbilityHandler.INSTANCE.sendAbilityMessage(playerIn, AbilityHandler.TUNNELING_ABILITY);
                 playerIn.setCurrentHand(handIn);
-                return new TypedActionResult<ItemStack>(ActionResult.SUCCESS, playerIn.getStackInHand(handIn));
+                return new TypedActionResult<>(ActionResult.SUCCESS, playerIn.getStackInHand(handIn));
             } else {
                 abilityCapability.getAbilityMap().get(AbilityHandler.TUNNELING_ABILITY).end();
             }

@@ -134,9 +134,9 @@ public class EntityFoliaath extends MowzieLLibraryEntity implements Monster {
     @Override
     public void tick() {
         super.tick();
-        this.activate.updatePrevTimer();
-        this.deathFlail.updatePrevTimer();
-        this.stopDance.updatePrevTimer();
+        this.activate.increaseTimer();
+        this.deathFlail.increaseTimer();
+        this.stopDance.increaseTimer();
         this.openMouth.updatePrevTimer();
         this.setVelocity(0, this.getVelocity().y, 0);
         // Open mouth animation

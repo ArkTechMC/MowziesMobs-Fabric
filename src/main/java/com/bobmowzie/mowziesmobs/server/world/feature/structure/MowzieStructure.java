@@ -16,7 +16,6 @@ import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.structure.Structure;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Predicate;
 
 public abstract class MowzieStructure extends Structure {

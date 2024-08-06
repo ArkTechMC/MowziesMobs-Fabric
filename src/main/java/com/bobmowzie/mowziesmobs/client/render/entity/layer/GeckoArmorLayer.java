@@ -2,6 +2,8 @@ package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import com.bobmowzie.mowziesmobs.client.render.entity.MowzieGeoArmorRenderer;
+import com.google.common.collect.Maps;
+import com.iafenvoy.uranus.client.render.armor.IArmorTextureProvider;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
@@ -10,6 +12,7 @@ import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ArmorItem;
@@ -17,6 +20,10 @@ import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.trim.ArmorTrim;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Locale;
+import java.util.Map;
 
 public class GeckoArmorLayer<T extends LivingEntity, M extends BipedEntityModel<T>, A extends BipedEntityModel<T>> extends ArmorFeatureRenderer<T, M, A> {
     public GeckoArmorLayer(FeatureRendererContext<T, M> layerParent, A innerModel, A outerModel, BakedModelManager modelManager) {
@@ -24,38 +31,42 @@ public class GeckoArmorLayer<T extends LivingEntity, M extends BipedEntityModel<
     }
 
     @Override
-    protected void renderArmor(MatrixStack poseStack, VertexConsumerProvider bufferSource, T entity, EquipmentSlot equipmentSlot, int p_117123_, A baseModel) {
+    public void render(MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, T livingEntity, float f, float g, float h, float j, float k, float l) {
+        super.render(matrixStack, vertexConsumerProvider, i, livingEntity, f, g, h, j, k, l);
+    }
+
+    @Override
+    public void renderArmor(MatrixStack poseStack, VertexConsumerProvider bufferSource, T entity, EquipmentSlot equipmentSlot, int p_117123_, A baseModel) {
         ItemStack itemstack = entity.getEquippedStack(equipmentSlot);
         if (itemstack.getItem() instanceof ArmorItem armoritem) {
             if (armoritem.getType().getEquipmentSlot() == equipmentSlot) {
-                Model model = getArmorModelHook(entity, itemstack, equipmentSlot, baseModel);
-                if (model instanceof BipedEntityModel<?>) {
-                    BipedEntityModel<T> humanoidModel = (BipedEntityModel<T>) model;
+                if (baseModel instanceof BipedEntityModel<?>) {
                     this.getContextModel().copyBipedStateTo(baseModel);
-                    this.getContextModel().copyBipedStateTo(humanoidModel);
+                    this.getContextModel().copyBipedStateTo(baseModel);
                     this.setVisible(baseModel, equipmentSlot);
-                    this.setVisible((A) humanoidModel, equipmentSlot);
+                    this.setVisible(baseModel, equipmentSlot);
                     boolean flag = this.usesInnerModel(equipmentSlot);
                     boolean flag1 = itemstack.hasGlint();
-                    ModelBipedAnimated.setUseMatrixMode(humanoidModel, true);
+                    ModelBipedAnimated.setUseMatrixMode(baseModel, true);
                     if (armoritem instanceof net.minecraft.item.DyeableItem) {
                         int i = ((net.minecraft.item.DyeableItem) armoritem).getColor(itemstack);
                         float f = (float) (i >> 16 & 255) / 255.0F;
                         float f1 = (float) (i >> 8 & 255) / 255.0F;
                         float f2 = (float) (i & 255) / 255.0F;
-                        this.renderModel(poseStack, bufferSource, p_117123_, model, f, f1, f2, this.getArmorResource(entity, itemstack, equipmentSlot, null));
-                        this.renderModel(poseStack, bufferSource, p_117123_, model, 1.0F, 1.0F, 1.0F, this.getArmorResource(entity, itemstack, equipmentSlot, "overlay"));
+                        //this.getArmorResource(entity, itemstack, equipmentSlot, null)
+                        this.renderModel(poseStack, bufferSource, p_117123_, baseModel, f, f1, f2, this.getArmorResource(entity, itemstack, equipmentSlot, null));
+                        this.renderModel(poseStack, bufferSource, p_117123_, baseModel, 1.0F, 1.0F, 1.0F, this.getArmorResource(entity, itemstack, equipmentSlot, "overlay"));
                     } else {
-                        this.renderModel(poseStack, bufferSource, p_117123_, model, 1.0F, 1.0F, 1.0F, this.getArmorResource(entity, itemstack, equipmentSlot, null));
+                        this.renderModel(poseStack, bufferSource, p_117123_,  baseModel, 1.0F, 1.0F, 1.0F, this.getArmorResource(entity, itemstack, equipmentSlot, null));
                     }
 
                     ArmorTrim.getTrim(entity.getWorld().getRegistryManager(), itemstack).ifPresent((p_289638_) -> {
-                        ModelBipedAnimated.setUseMatrixMode(humanoidModel, true);
-                        this.renderTrim(armoritem.getMaterial(), poseStack, bufferSource, p_117123_, p_289638_, model, flag);
+                        ModelBipedAnimated.setUseMatrixMode(baseModel, true);
+                        this.renderTrim(armoritem.getMaterial(), poseStack, bufferSource, p_117123_, p_289638_, baseModel, flag);
                     });
                     if (itemstack.hasGlint()) {
-                        ModelBipedAnimated.setUseMatrixMode(humanoidModel, true);
-                        this.renderGlint(poseStack, bufferSource, p_117123_, model);
+                        ModelBipedAnimated.setUseMatrixMode(baseModel, true);
+                        this.renderGlint(poseStack, bufferSource, p_117123_, baseModel);
                     }
                 }
             }
@@ -77,5 +88,29 @@ public class GeckoArmorLayer<T extends LivingEntity, M extends BipedEntityModel<
 
     private void renderGlint(MatrixStack p_289673_, VertexConsumerProvider p_289654_, int p_289649_, net.minecraft.client.model.Model p_289659_) {
         p_289659_.render(p_289673_, p_289654_.getBuffer(RenderLayer.getArmorEntityGlint()), p_289649_, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    //FIXME: standalone file
+    private static final Map<Identifier, Identifier> ARMOR_TEXTURE_CACHE = Maps.newHashMap();
+
+    private Identifier getArmorResource(Entity entity, ItemStack stack, EquipmentSlot slot, @Nullable String type) {
+        ArmorItem item = (ArmorItem) stack.getItem();
+        String texture = item.getMaterial().getName();
+        String domain = "minecraft";
+        int idx = texture.indexOf(58);
+        if (idx != -1) {
+            domain = texture.substring(0, idx);
+            texture = texture.substring(idx + 1);
+        }
+
+        Identifier s1 = new Identifier(domain,String.format(Locale.ROOT, "textures/models/armor/%s_layer_%d%s.png", texture, this.usesInnerModel(slot) ? 2 : 1, type == null ? "" : String.format(Locale.ROOT, "_%s", type)));
+        s1 = getArmorTexture(entity, stack, s1, slot, type);
+        return ARMOR_TEXTURE_CACHE.computeIfAbsent(s1, s -> s);
+    }
+
+    public static Identifier getArmorTexture(Entity entity, ItemStack armor, Identifier _default, EquipmentSlot slot, String type) {
+        if (armor.getItem() instanceof IArmorTextureProvider provider)
+            return provider.getArmorTexture(armor, entity, slot, type);
+        return _default;
     }
 }

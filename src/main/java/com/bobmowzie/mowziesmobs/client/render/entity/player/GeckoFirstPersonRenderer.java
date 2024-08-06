@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.player;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
@@ -76,7 +77,7 @@ public class GeckoFirstPersonRenderer extends HeldItemRenderer implements GeoRen
             this.geoModel.addAdditionalStateData(geckoPlayer, instanceId, animationState::setData);
             this.geoModel.handleAnimations(geckoPlayer, instanceId, animationState);
 
-            RenderLayer rendertype = RenderLayer.getItemEntityTranslucentCull(this.getTexture(geckoPlayer));
+            RenderLayer rendertype = RenderLayer.getItemEntityTranslucentCull(this.getTextureLocation(geckoPlayer));
             VertexConsumer ivertexbuilder = bufferIn.getBuffer(rendertype);
             matrixStackIn.translate(0, -2, -1);
             this.actuallyRender(matrixStackIn, geckoPlayer, this.getGeoModel().getBakedModel(this.getGeoModel().getModelResource(geckoPlayer)), rendertype, bufferIn, ivertexbuilder, false, partialTicks, combinedLightIn, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
@@ -158,7 +159,7 @@ public class GeckoFirstPersonRenderer extends HeldItemRenderer implements GeoRen
     }
 
     @Override
-    public Identifier getTexture(GeckoPlayer geckoPlayer) {
+    public Identifier getTextureLocation(GeckoPlayer geckoPlayer) {
         return ((AbstractClientPlayerEntity) geckoPlayer.getPlayer()).getSkinTexture();
     }
 

@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleRing;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleSnowFlake;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
+import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability.IFrozenCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -55,8 +56,8 @@ public class EntityIceBall extends EntityMagicEffect {
                 if (entity.getType().isIn(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES) || entity instanceof EnderDragonEntity)
                     continue;
                 if (entity.damage(this.getDamageSources().freeze(), (float) (3f * ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier))) {
-                    IFrozenCapability capability = AbilityCapability.get((PlayerEntity) entity);
-                    if (capability != null && entity instanceof LivingEntity)
+                    IFrozenCapability capability = FrozenCapability.get((PlayerEntity) entity);
+                    if (capability != null)
                         capability.addFreezeProgress((LivingEntity) entity, 1);
                 }
             }

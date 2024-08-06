@@ -32,6 +32,7 @@ import io.github.fabricators_of_create.porting_lib.entity.events.CriticalHitEven
 import io.github.fabricators_of_create.porting_lib.entity.events.EntityMountEvents;
 import io.github.fabricators_of_create.porting_lib.event.common.BlockEvents;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.*;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.data.TrackedData;
@@ -47,7 +48,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public final class MowziesMobs {
+public final class MowziesMobs implements ModInitializer {
     public static final String MODID = "mowziesmobs";
     public static final Logger LOGGER = LogManager.getLogger();
     public static ServerProxy PROXY;
@@ -84,7 +85,8 @@ public final class MowziesMobs {
         }
     };
 
-    public MowziesMobs() {
+    @Override
+    public void onInitialize() {
         GeckoLibUtil.addCustomBakedModelFactory(MODID, new MowzieModelFactory());
         GeckoLib.initialize();
 

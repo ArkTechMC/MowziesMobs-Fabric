@@ -41,7 +41,12 @@ repositories {
             includeGroup "com.jamieswhiteshirt"
         }
     }
-    maven { url = "https://jitpack.io" } // Fabric ASM, Mixin Extras
+    maven {
+        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content {
+            includeGroup "com.eliotlash.mclib"
+        }
+    }
 }
 
 dependencies {
@@ -62,9 +67,6 @@ dependencies {
     // CCA
     modImplementation(include("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${cca_version}"))
     modImplementation(include("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${cca_version}"))
-
-    //Fabric ASM
-    modImplementation(include("com.github.Chocohead:Fabric-ASM:v2.3"))
 
     // Porting Lib
     modImplementation "io.github.fabricators_of_create.Porting-Lib:asm:${project.porting_version}"
@@ -102,6 +104,9 @@ dependencies {
     modImplementation "io.github.fabricators_of_create.Porting-Lib:tool_actions:${project.porting_version}"
     modImplementation "io.github.fabricators_of_create.Porting-Lib:transfer:${project.porting_version}"
     modImplementation "io.github.fabricators_of_create.Porting-Lib:utility:${project.porting_version}"
+
+    //Runtime
+    runtimeOnly "com.eliotlash.mclib:mclib:20"
 }
 
 processResources {

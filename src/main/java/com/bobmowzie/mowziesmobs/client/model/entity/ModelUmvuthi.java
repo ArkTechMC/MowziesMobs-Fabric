@@ -42,7 +42,7 @@ public class ModelUmvuthi extends MowzieGeoModel<EntityUmvuthi> {
         MowzieGeoBone rightThigh = this.getMowzieBone("rightThigh");
         MowzieGeoBone leftThigh = this.getMowzieBone("leftThigh");
 
-        float liftLegs = entity.legsUp.getAnimationProgressSinSqrt(animationState.getPartialTick());
+        float liftLegs = entity.legsUp.getAnimationProgressSinSqrt();
         leftThigh.addRotX(liftLegs);
         rightThigh.addRotX(liftLegs);
         leftThigh.addRotZ(1.5f * liftLegs);

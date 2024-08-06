@@ -38,7 +38,7 @@ public class ItemWroughtAxe extends MowzieAxeItem implements ISwingable {
 
     @Override
     public boolean onEntitySwing(ItemStack itemStack, Entity entity) {
-        PlayerCapability.IPlayerCapability playerCapability = AbilityCapability.get((PlayerEntity) entity);
+        PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get((PlayerEntity) entity);
         return playerCapability != null && playerCapability.getUntilAxeSwing() > 0;
     }
 
@@ -54,7 +54,7 @@ public class ItemWroughtAxe extends MowzieAxeItem implements ISwingable {
         if (!entityHit.getWorld().isClient) {
             entityHit.playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);
         }
-        PlayerCapability.IPlayerCapability playerCapability = AbilityCapability.get((PlayerEntity) attacker);
+        PlayerCapability.IPlayerCapability playerCapability = PlayerCapability.get((PlayerEntity) attacker);
         return playerCapability == null || (!playerCapability.getAxeCanAttack() && playerCapability.getUntilAxeSwing() > 0);
     }
 

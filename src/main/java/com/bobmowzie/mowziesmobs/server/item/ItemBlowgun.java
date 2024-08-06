@@ -15,7 +15,6 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
-import net.minecraft.world.item.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -53,11 +52,10 @@ public class ItemBlowgun extends BowItem {
 
                 float f = getArrowVelocity(i);
                 if (!((double) f < 0.1D)) {
-                    boolean flag1 = playerentity.getAbilities().creativeMode || (itemstack.getItem() instanceof ItemDart && ((ItemDart) itemstack.getItem()).isInfinite(itemstack, stack, playerentity));
+                    boolean flag1 = playerentity.getAbilities().creativeMode || itemstack.getItem() instanceof ItemDart && EnchantmentHelper.getLevel(Enchantments.INFINITY, stack) > 0;
                     if (!worldIn.isClient) {
                         ArrowItem arrowitem = (ArrowItem) (itemstack.getItem() instanceof ItemDart ? itemstack.getItem() : ItemHandler.DART);
                         PersistentProjectileEntity abstractarrowentity = arrowitem.createArrow(worldIn, itemstack, playerentity);
-                        abstractarrowentity = customArrow(abstractarrowentity);
                         abstractarrowentity.setVelocity(playerentity, playerentity.getPitch(), playerentity.getYaw(), 0.0F, f * 1.1F /*ALTERED FROM PARENT*/, 1.0F);
                         if (f == 1.0F) {
                             abstractarrowentity.setCritical(true);

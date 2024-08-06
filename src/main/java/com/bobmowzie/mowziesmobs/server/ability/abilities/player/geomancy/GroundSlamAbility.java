@@ -12,7 +12,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvents;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraft.util.Hand;
 import software.bernie.geckolib.core.animation.RawAnimation;
 
 public class GroundSlamAbility extends PlayerAbility {
@@ -88,10 +88,10 @@ public class GroundSlamAbility extends PlayerAbility {
     }
 
     @Override
-    public void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
-        super.onRightClickEmpty(event);
+    public void onRightClickEmpty(PlayerEntity player, Hand hand) {
+        super.onRightClickEmpty(player, hand);
         if (!this.getUser().isOnGround() && this.getUser().isInSneakingPose()) {
-            AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getEntity(), AbilityHandler.GROUND_SLAM_ABILITY);
+            AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(player, AbilityHandler.GROUND_SLAM_ABILITY);
         }
     }
 }

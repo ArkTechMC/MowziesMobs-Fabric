@@ -4,7 +4,6 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.world.BiomeChecker;
-import com.chocohead.mm.api.ClassTinkerers;
 import com.iafenvoy.uranus.util.function.predicate.Predicate3;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
@@ -49,50 +48,39 @@ public class SpawnHandler {
     };
 
     public static void registerSpawnPlacementTypes() {
-        SpawnRestriction.Location mmSpawn = ClassTinkerers.getEnum(SpawnRestriction.Location.class, "MMSPAWN");
-        SpawnRestriction.register(EntityHandler.FOLIAATH, mmSpawn, Heightmap.Type.MOTION_BLOCKING, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
-        SpawnRestriction.register(EntityHandler.LANTERN, mmSpawn, Heightmap.Type.MOTION_BLOCKING, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
-        SpawnRestriction.register(EntityHandler.UMVUTHANA_RAPTOR, mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
-        SpawnRestriction.register(EntityHandler.NAGA, SpawnRestriction.Location.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
-        SpawnRestriction.register(EntityHandler.GROTTOL, mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
-        SpawnRestriction.register(EntityHandler.UMVUTHANA_CRANE, mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
+        SpawnRestriction.register(EntityHandler.FOLIAATH, SpawnRestriction.Location.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
+        SpawnRestriction.register(EntityHandler.LANTERN, SpawnRestriction.Location.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
+        SpawnRestriction.register(EntityHandler.UMVUTHANA_RAPTOR, SpawnRestriction.Location.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
+        SpawnRestriction.register(EntityHandler.NAGA, SpawnRestriction.Location.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING, MowzieEntity::spawnPredicate);
+        SpawnRestriction.register(EntityHandler.GROTTOL, SpawnRestriction.Location.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
+        SpawnRestriction.register(EntityHandler.UMVUTHANA_CRANE, SpawnRestriction.Location.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, (type, world, spawnReason, pos, random) -> MowzieEntity.spawnPredicate(type, world, spawnReason, pos, random) && spawnPredicate.test(world, pos, type));
     }
 
     public static void addBiomeSpawns() {
         if (FOLIAATH_BIOME_CHECKER == null)
             FOLIAATH_BIOME_CHECKER = new BiomeChecker(ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig.biomeConfig);
-        if (ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig.spawnRate > 0) {
-//              System.out.println("Added foliaath biome: " + biomeName.toString());
+        if (ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig.spawnRate > 0)
             registerEntityWorldSpawn(x -> FOLIAATH_BIOME_CHECKER.isBiomeInConfig(x.getBiomeRegistryEntry()), EntityHandler.FOLIAATH, ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig, SpawnGroup.MONSTER);
-        }
 
         if (UMVUTHANA_RAPTOR_BIOME_CHECKER == null)
             UMVUTHANA_RAPTOR_BIOME_CHECKER = new BiomeChecker(ConfigHandler.COMMON.MOBS.UMVUTHANA.spawnConfig.biomeConfig);
-        if (ConfigHandler.COMMON.MOBS.UMVUTHANA.spawnConfig.spawnRate > 0) {
-//              System.out.println("Added Barakoa biome: " + biomeName.toString());
+        if (ConfigHandler.COMMON.MOBS.UMVUTHANA.spawnConfig.spawnRate > 0)
             registerEntityWorldSpawn(x -> UMVUTHANA_RAPTOR_BIOME_CHECKER.isBiomeInConfig(x.getBiomeRegistryEntry()), EntityHandler.UMVUTHANA_RAPTOR, ConfigHandler.COMMON.MOBS.UMVUTHANA.spawnConfig, SpawnGroup.MONSTER);
-        }
 
         if (GROTTOL_BIOME_CHECKER == null)
             GROTTOL_BIOME_CHECKER = new BiomeChecker(ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig.biomeConfig);
-        if (ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig.spawnRate > 0) {
-//              System.out.println("Added grottol biome: " + biomeName.toString());
+        if (ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig.spawnRate > 0)
             registerEntityWorldSpawn(x -> GROTTOL_BIOME_CHECKER.isBiomeInConfig(x.getBiomeRegistryEntry()), EntityHandler.GROTTOL, ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig, SpawnGroup.MONSTER);
-        }
 
         if (LANTERN_BIOME_CHECKER == null)
             LANTERN_BIOME_CHECKER = new BiomeChecker(ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig.biomeConfig);
-        if (ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig.spawnRate > 0) {
-//              System.out.println("Added lantern biome: " + biomeName.toString());
+        if (ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig.spawnRate > 0)
             registerEntityWorldSpawn(x -> LANTERN_BIOME_CHECKER.isBiomeInConfig(x.getBiomeRegistryEntry()), EntityHandler.LANTERN, ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig, SpawnGroup.AMBIENT);
-        }
 
         if (NAGA_BIOME_CHECKER == null)
             NAGA_BIOME_CHECKER = new BiomeChecker(ConfigHandler.COMMON.MOBS.NAGA.spawnConfig.biomeConfig);
-        if (ConfigHandler.COMMON.MOBS.NAGA.spawnConfig.spawnRate > 0) {
-//              System.out.println("Added naga biome: " + biomeName.toString());
+        if (ConfigHandler.COMMON.MOBS.NAGA.spawnConfig.spawnRate > 0)
             registerEntityWorldSpawn(x -> NAGA_BIOME_CHECKER.isBiomeInConfig(x.getBiomeRegistryEntry()), EntityHandler.NAGA, ConfigHandler.COMMON.MOBS.NAGA.spawnConfig, SpawnGroup.MONSTER);
-        }
     }
 
     private static void registerEntityWorldSpawn(Predicate<BiomeSelectionContext> biomeSelector, EntityType<?> entity, ConfigHandler.SpawnConfig spawnConfig, SpawnGroup classification) {

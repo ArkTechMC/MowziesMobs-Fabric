@@ -66,7 +66,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                             }
                             float applyKnockbackResistance = 0;
                             if (entity instanceof LivingEntity) {
-                                entity.damage(entity.getDamageSources().mobAttack(this.entity), (factor * 5 + 1) * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier);
+                                entity.damage(entity.getDamageSources().mobAttack(this.entity), (float) ((factor * 5 + 1) * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier));
                                 applyKnockbackResistance = (float) ((LivingEntity) entity).getAttributeInstance(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE).getValue();
                             }
                             double magnitude = world.random.nextDouble() * 0.15 + 0.1;

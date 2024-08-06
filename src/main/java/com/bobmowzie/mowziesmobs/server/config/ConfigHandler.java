@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.config;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterials;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class ConfigHandler {
@@ -12,7 +13,8 @@ public final class ConfigHandler {
     static {
         COMMON = ConfigLoader.load(Common.class, "./config/mmobs/common.json", new Common());
         CLIENT = ConfigLoader.load(Client.class, "./config/mmobs/client.json", new Client());
-        initConfig();
+        //FIXME
+//        initConfig();
     }
 
     public static void initConfig() {
@@ -36,9 +38,9 @@ public final class ConfigHandler {
 
     // Config templates
     public static class BiomeConfig {
-        public List<? extends String> biomeTags;
-        public List<? extends String> biomeWhitelist;
-        public List<? extends String> biomeBlacklist;
+        public List<? extends String> biomeTags = new ArrayList<>();
+        public List<? extends String> biomeWhitelist = new ArrayList<>();
+        public List<? extends String> biomeBlacklist = new ArrayList<>();
     }
 
     public static class SpawnConfig {
@@ -46,25 +48,25 @@ public final class ConfigHandler {
         public int minGroupSize;
         public int maxGroupSize;
         public double extraRarity;
-        public BiomeConfig biomeConfig;
-        public List<? extends String> dimensions;
+        public BiomeConfig biomeConfig = new BiomeConfig();
+        public List<? extends String> dimensions = new ArrayList<>();
         public int heightMin;
         public int heightMax;
         public boolean needsDarkness;
         public boolean needsSeeSky;
         public boolean needsCantSeeSky;
-        public List<? extends String> allowedBlocks;
-        public List<? extends String> allowedBlockTags;
-        public List<? extends String> avoidStructures;
+        public List<? extends String> allowedBlocks = new ArrayList<>();
+        public List<? extends String> allowedBlockTags = new ArrayList<>();
+        public List<? extends String> avoidStructures = new ArrayList<>();
     }
 
     public static class GenerationConfig {
         public int generationDistance;
         public int generationSeparation;
-        public BiomeConfig biomeConfig;
+        public BiomeConfig biomeConfig = new BiomeConfig();
         public int heightMin;
         public int heightMax;
-        public List<? extends String> avoidStructures;
+        public List<? extends String> avoidStructures = new ArrayList<>();
     }
 
     public static class CombatConfig {
@@ -88,51 +90,51 @@ public final class ConfigHandler {
 
     // Mob configuration
     public static class Foliaath {
-        public SpawnConfig spawnConfig;
-        public CombatConfig combatConfig;
+        public SpawnConfig spawnConfig = new SpawnConfig();
+        public CombatConfig combatConfig = new CombatConfig();
     }
 
     public static class Umvuthana {
-        public SpawnConfig spawnConfig;
-        public CombatConfig combatConfig;
+        public SpawnConfig spawnConfig = new SpawnConfig();
+        public CombatConfig combatConfig = new CombatConfig();
     }
 
     public static class Naga {
-        public SpawnConfig spawnConfig;
-        public CombatConfig combatConfig;
+        public SpawnConfig spawnConfig = new SpawnConfig();
+        public CombatConfig combatConfig = new CombatConfig();
     }
 
     public static class Lantern {
-        public SpawnConfig spawnConfig;
-        public CombatConfig combatConfig;
+        public SpawnConfig spawnConfig = new SpawnConfig();
+        public CombatConfig combatConfig = new CombatConfig();
     }
 
     public static class Grottol {
-        public SpawnConfig spawnConfig;
-        public CombatConfig combatConfig;
+        public SpawnConfig spawnConfig = new SpawnConfig();
+        public CombatConfig combatConfig = new CombatConfig();
     }
 
     public static class FerrousWroughtnaut {
-        public GenerationConfig generationConfig;
-        public CombatConfig combatConfig;
+        public GenerationConfig generationConfig = new GenerationConfig();
+        public CombatConfig combatConfig = new CombatConfig();
         public boolean hasBossBar;
         public boolean healsOutOfBattle;
         public boolean resetHealthWhenRespawn;
     }
 
     public static class Umvuthi {
-        public GenerationConfig generationConfig;
-        public CombatConfig combatConfig;
+        public GenerationConfig generationConfig = new GenerationConfig();
+        public CombatConfig combatConfig = new CombatConfig();
         public boolean hasBossBar;
         public boolean healsOutOfBattle;
-        public String whichItem;
+        public String whichItem = "";
         public int howMany;
         public boolean resetHealthWhenRespawn;
     }
 
     public static class Frostmaw {
-        public GenerationConfig generationConfig;
-        public CombatConfig combatConfig;
+        public GenerationConfig generationConfig = new GenerationConfig();
+        public CombatConfig combatConfig = new CombatConfig();
         public boolean stealableIceCrystal;
         public boolean hasBossBar;
         public boolean healsOutOfBattle;
@@ -140,29 +142,29 @@ public final class ConfigHandler {
     }
 
     public static class Sculptor {
-        public GenerationConfig generationConfig;
-        public CombatConfig combatConfig;
+        public GenerationConfig generationConfig = new GenerationConfig();
+        public CombatConfig combatConfig = new CombatConfig();
         public boolean healsOutOfBattle;
     }
 
     public static class WroughtHelm {
-        public ArmorConfig armorConfig;
+        public ArmorConfig armorConfig = new ArmorConfig();
         public boolean breakable;
     }
 
     public static class AxeOfAThousandMetals {
-        public ToolConfig toolConfig;
+        public ToolConfig toolConfig = new ToolConfig();
         public boolean breakable;
     }
 
     public static class SolVisage {
-        public ArmorConfig armorConfig;
+        public ArmorConfig armorConfig = new ArmorConfig();
         public boolean breakable;
         public int maxFollowers;
     }
 
     public static class UmvuthanaMask {
-        public ArmorConfig armorConfig;
+        public ArmorConfig armorConfig = new ArmorConfig();
     }
 
     public static class IceCrystal {
@@ -177,16 +179,16 @@ public final class ConfigHandler {
         public boolean breakable;
         public int durability;
         public int durabilityValue;
-        public ToolConfig toolConfig;
+        public ToolConfig toolConfig = new ToolConfig();
         public boolean enableTunneling;
     }
 
     public static class Spear {
-        public ToolConfig toolConfig;
+        public ToolConfig toolConfig = new ToolConfig();
     }
 
     public static class NagaFangDagger {
-        public ToolConfig toolConfig;
+        public ToolConfig toolConfig = new ToolConfig();
         public int poisonDuration;
         public double backstabDamageMultiplier;
     }
@@ -204,28 +206,28 @@ public final class ConfigHandler {
     }
 
     public static class Mobs {
-        public Frostmaw FROSTMAW;
-        public Umvuthi UMVUTHI;
-        public FerrousWroughtnaut FERROUS_WROUGHTNAUT;
-        public Sculptor SCULPTOR;
-        public Grottol GROTTOL;
-        public Lantern LANTERN;
-        public Umvuthana UMVUTHANA;
-        public Naga NAGA;
-        public Foliaath FOLIAATH;
+        public Frostmaw FROSTMAW = new Frostmaw();
+        public Umvuthi UMVUTHI = new Umvuthi();
+        public FerrousWroughtnaut FERROUS_WROUGHTNAUT = new FerrousWroughtnaut();
+        public Sculptor SCULPTOR = new Sculptor();
+        public Grottol GROTTOL = new Grottol();
+        public Lantern LANTERN = new Lantern();
+        public Umvuthana UMVUTHANA = new Umvuthana();
+        public Naga NAGA = new Naga();
+        public Foliaath FOLIAATH = new Foliaath();
     }
 
     public static class ToolsAndAbilities {
-        public SunsBlessing SUNS_BLESSING;
-        public WroughtHelm WROUGHT_HELM;
-        public AxeOfAThousandMetals AXE_OF_A_THOUSAND_METALS;
-        public SolVisage SOL_VISAGE;
-        public IceCrystal ICE_CRYSTAL;
-        public UmvuthanaMask UMVUTHANA_MASK;
-        public Spear SPEAR;
-        public NagaFangDagger NAGA_FANG_DAGGER;
-        public Blowgun BLOW_GUN;
-        public EarthrendGauntlet EARTHREND_GAUNTLET;
+        public SunsBlessing SUNS_BLESSING = new SunsBlessing();
+        public WroughtHelm WROUGHT_HELM = new WroughtHelm();
+        public AxeOfAThousandMetals AXE_OF_A_THOUSAND_METALS = new AxeOfAThousandMetals();
+        public SolVisage SOL_VISAGE = new SolVisage();
+        public IceCrystal ICE_CRYSTAL = new IceCrystal();
+        public UmvuthanaMask UMVUTHANA_MASK = new UmvuthanaMask();
+        public Spear SPEAR = new Spear();
+        public NagaFangDagger NAGA_FANG_DAGGER = new NagaFangDagger();
+        public Blowgun BLOW_GUN = new Blowgun();
+        public EarthrendGauntlet EARTHREND_GAUNTLET = new EarthrendGauntlet();
     }
 
     public static class Client {
@@ -239,7 +241,7 @@ public final class ConfigHandler {
     }
 
     public static class Common {
-        public ToolsAndAbilities TOOLS_AND_ABILITIES;
-        public Mobs MOBS;
+        public ToolsAndAbilities TOOLS_AND_ABILITIES = new ToolsAndAbilities();
+        public Mobs MOBS = new Mobs();
     }
 }

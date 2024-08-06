@@ -37,7 +37,7 @@ public class BossMusicPlayer {
     }
 
     public static void stopBossMusic(MowzieEntity entity) {
-        if (!ConfigHandler.CLIENT.playBossMusic.get()) return;
+        if (!ConfigHandler.CLIENT.playBossMusic) return;
 
         if (bossMusic != null && bossMusic.getBoss() == entity)
             bossMusic.setBoss(null);

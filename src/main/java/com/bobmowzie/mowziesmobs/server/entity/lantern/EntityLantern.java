@@ -183,13 +183,13 @@ public class EntityLantern extends MowzieLLibraryEntity {
             BlockPos ground = BlockPos.ofFloored(this.getX(), this.getBoundingBox().minY - 1.0D, this.getZ());
             float f = 0.91F;
             if (this.isOnGround()) {
-                f = this.getWorld().getBlockState(ground).getFriction(this.getWorld(), ground, this) * 0.91F;
+                f = this.getWorld().getBlockState(ground).getBlock().getSlipperiness() * 0.91F;
             }
 
             float f1 = 0.16277137F / (f * f * f);
             f = 0.91F;
             if (this.isOnGround()) {
-                f = this.getWorld().getBlockState(ground).getFriction(this.getWorld(), ground, this) * 0.91F;
+                f = this.getWorld().getBlockState(ground).getBlock().getSlipperiness() * 0.91F;
             }
 
             this.updateVelocity(this.isOnGround() ? 0.1F * f1 : 0.02F, movement);

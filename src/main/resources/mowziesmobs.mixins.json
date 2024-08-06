@@ -11,7 +11,9 @@
     "PlayerManagerMixin"
   ],
   "client": [
-    "BossBarHudMixin"
+    "BossBarHudMixin",
+    "EntityModelLoaderMixin",
+    "MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1
