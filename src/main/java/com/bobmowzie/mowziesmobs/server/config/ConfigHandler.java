@@ -14,7 +14,7 @@ public final class ConfigHandler {
         COMMON = ConfigLoader.load(Common.class, "./config/mmobs/common.json", new Common());
         CLIENT = ConfigLoader.load(Client.class, "./config/mmobs/client.json", new Client());
         //FIXME
-//        initConfig();
+        initConfig();
     }
 
     public static void initConfig() {
@@ -44,7 +44,7 @@ public final class ConfigHandler {
     }
 
     public static class SpawnConfig {
-        public int spawnRate;
+        public int spawnRate = 10;
         public int minGroupSize;
         public int maxGroupSize;
         public double extraRarity;

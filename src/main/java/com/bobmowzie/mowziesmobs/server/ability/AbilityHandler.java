@@ -68,7 +68,7 @@ public enum AbilityHandler {
     public Ability<?> getAbility(LivingEntity entity, AbilityType<?, ?> abilityType) {
         AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(entity);
         if (abilityCapability != null)
-            return abilityCapability.getAbilityMap().get(abilityType);
+            return abilityCapability.getAbilityFromType(abilityType);
         return null;
     }
 
@@ -76,7 +76,7 @@ public enum AbilityHandler {
         if (entity.getWorld().isClient) return;
         AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(entity);
         if (abilityCapability != null) {
-            Ability<?> instance = abilityCapability.getAbilityMap().get(abilityType);
+            Ability<?> instance = abilityCapability.getAbilityFromType(abilityType);
             if (instance != null && instance.canUse()) {
                 abilityCapability.activateAbility(entity, abilityType);
                 PacketByteBuf buf = PacketByteBufs.create();

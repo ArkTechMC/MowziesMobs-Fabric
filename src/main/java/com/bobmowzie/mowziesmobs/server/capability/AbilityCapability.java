@@ -72,6 +72,11 @@ public class AbilityCapability {
         SortedMap<AbilityType<?, ?>, Ability> abilityInstances = new TreeMap<>();
         Ability activeAbility = null;
         Map<String, NbtElement> nbtMap = new HashMap<>();
+        private final LivingEntity entity;
+
+        public AbilityCapabilityImp(LivingEntity entity) {
+            this.entity = entity;
+        }
 
         @Override
         public void instanceAbilities(LivingEntity entity) {
@@ -119,6 +124,8 @@ public class AbilityCapability {
 
         @Override
         public Ability getAbilityFromType(AbilityType<?, ?> abilityType) {
+            if (!this.abilityInstances.containsKey(abilityType))
+                this.abilityInstances.put(abilityType, abilityType.makeInstance(this.entity));
             return this.abilityInstances.get(abilityType);
         }
 
@@ -190,11 +197,12 @@ public class AbilityCapability {
 
     public static class AbilityProvider implements ComponentV3, AutoSyncedComponent, CommonTickingComponent {
         protected static final ComponentKey<AbilityProvider> COMPONENT = ComponentRegistryV3.INSTANCE.getOrCreate(new Identifier(MowziesMobs.MODID, "ability"), AbilityProvider.class);
-        private final IAbilityCapability capability = new AbilityCapabilityImp();
+        private final IAbilityCapability capability;
         private final LivingEntity entity;
 
         public AbilityProvider(LivingEntity entity) {
             this.entity = entity;
+            this.capability = new AbilityCapabilityImp(entity);
         }
 
         public static AbilityProvider get(LivingEntity entity) {

@@ -10,7 +10,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
 
 @Environment(EnvType.CLIENT)
@@ -29,7 +28,7 @@ public class SpawnBoulderChargeSound extends MovingSoundInstance {
 
         AbilityCapability.IAbilityCapability capability = AbilityCapability.get(user);
         if (capability != null) {
-            this.ability = (SpawnBoulderAbility) capability.getAbilityMap().get(AbilityHandler.SPAWN_BOULDER_ABILITY);
+            this.ability = (SpawnBoulderAbility) capability.getAbilityFromType(AbilityHandler.SPAWN_BOULDER_ABILITY);
         } else this.ability = null;
     }
 

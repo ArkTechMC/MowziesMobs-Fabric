@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class ItemIceCrystal extends Item {
     public ItemIceCrystal(Settings properties) {
-        super(properties.maxCount(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability));
+        super(properties.maxCount(1));//.maxCount(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability)
     }
 
     @Override
@@ -41,9 +41,9 @@ public class ItemIceCrystal extends Item {
                     AbilityHandler.INSTANCE.sendAbilityMessage(playerIn, AbilityHandler.ICE_BREATH_ABILITY);
                 stack.damage(5, playerIn, p -> p.sendToolBreakStatus(handIn));
                 playerIn.setCurrentHand(handIn);
-                return new TypedActionResult<ItemStack>(ActionResult.SUCCESS, playerIn.getStackInHand(handIn));
+                return new TypedActionResult<>(ActionResult.SUCCESS, playerIn.getStackInHand(handIn));
             } else {
-                abilityCapability.getAbilityMap().get(AbilityHandler.ICE_BREATH_ABILITY).end();
+                abilityCapability.getAbilityFromType(AbilityHandler.ICE_BREATH_ABILITY).end();
             }
         }
         return super.use(worldIn, playerIn, handIn);
