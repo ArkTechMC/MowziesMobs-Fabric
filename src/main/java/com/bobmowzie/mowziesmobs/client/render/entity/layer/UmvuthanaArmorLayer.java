@@ -3,7 +3,6 @@ package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieGeckoEntity;
 import com.bobmowzie.mowziesmobs.server.entity.umvuthana.EntityUmvuthana;
 import com.iafenvoy.uranus.client.render.armor.IArmorTextureProvider;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;

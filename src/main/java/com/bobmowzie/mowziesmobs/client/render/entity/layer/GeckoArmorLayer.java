@@ -4,7 +4,6 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import com.bobmowzie.mowziesmobs.client.render.entity.MowzieGeoArmorRenderer;
 import com.google.common.collect.Maps;
 import com.iafenvoy.uranus.client.render.armor.IArmorTextureProvider;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;

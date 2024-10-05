@@ -3,7 +3,7 @@
   "id": "mowziesmobs",
   "version": "${version}",
   "name": "MowziesMobs Fabric",
-  "description": "",
+  "description": "Mowzie's Mobs adds a variety of high-quality fantasy creatures to your Minecraft world.",
   "authors": [
     "BobMowzie(Original Author)",
     "IAFEnvoy"
@@ -11,8 +11,8 @@
   "contact": {
     "repo": "https://github.com/ArkTechMC/MowziesMobs-Fabric"
   },
-  "license": "LGPL-3.0",
-  "icon": "banner.png",
+  "license": "All Right Reserved",
+  "icon": "logo.png",
   "environment": "*",
   "entrypoints": {
     "main": [

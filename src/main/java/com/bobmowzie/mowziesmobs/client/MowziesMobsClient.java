@@ -3,13 +3,12 @@ package com.bobmowzie.mowziesmobs.client;
 import com.bobmowzie.mowziesmobs.client.model.LayerHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.render.item.*;
+import com.bobmowzie.mowziesmobs.event.PlayerEvents;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityClientEventHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.ClientNetworkHelper;
-import io.github.fabricators_of_create.porting_lib.entity.events.PlayerTickEvents;
 import io.github.fabricators_of_create.porting_lib.event.client.*;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
@@ -39,7 +38,7 @@ public class MowziesMobsClient implements ClientModInitializer {
 
         RenderHandCallback.EVENT.register(ClientEventHandler::onHandRender);
         LivingEntityRenderEvents.PRE.register(ClientEventHandler::renderLivingEvent);
-        PlayerTickEvents.END.register(ClientEventHandler::onPlayerTick);
+        PlayerEvents.AFTER_TICK.register(ClientEventHandler::onPlayerTick);
         RenderTickStartCallback.EVENT.register(ClientEventHandler::onRenderTick);
         OverlayRenderCallback.EVENT.register(ClientEventHandler::onRenderOverlay);
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(ClientEventHandler::onRenderLevelStage);
@@ -61,7 +60,7 @@ public class MowziesMobsClient implements ClientModInitializer {
         ModelPredicateProviderRegistry.register(ItemHandler.BLOWGUN.asItem(), new Identifier("pulling"), (itemStack, world, livingEntity, seed) -> livingEntity != null && livingEntity.isUsingItem() && livingEntity.getActiveItem() == itemStack ? 1 : 0);
     }
 
-    public static void bootstrapItemRenderers(){
+    public static void bootstrapItemRenderers() {
         ArmorRenderer.register(new RenderUmvuthanaMaskArmor(), ItemHandler.UMVUTHANA_MASK_BLISS, ItemHandler.UMVUTHANA_MASK_RAGE, ItemHandler.UMVUTHANA_MASK_FAITH, ItemHandler.UMVUTHANA_MASK_FEAR, ItemHandler.UMVUTHANA_MASK_FURY, ItemHandler.UMVUTHANA_MASK_MISERY);
         ArmorRenderer.register(new RenderSolVisageArmor(), ItemHandler.SOL_VISAGE);
         ArmorRenderer.register(new RenderWroughtHelmArmor(), ItemHandler.WROUGHT_HELMET);

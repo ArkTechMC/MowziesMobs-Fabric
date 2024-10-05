@@ -22,6 +22,8 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.geomancy.EntityPillar;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerSculptorTrade;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
@@ -309,17 +311,23 @@ public class EntitySculptor extends MowzieGeckoEntity {
                     if (!this.getWorld().getBlockState(checkPos).isAir()) {
                         this.isTestObstructed = true;
                         this.isTestObstructedSoFar = true;
-                        if (this.getWorld().isClient() && this.isPlayerInTestZone(MinecraftClient.getInstance().player) && this.blockHasExposedSide(checkPos)) {
-                            MowziesMobs.PROXY.sculptorMarkBlock(this.getId(), checkPos);
-                            ParticleRotation.FaceCamera faceCamera = new ParticleRotation.FaceCamera(0);
-                            AdvancedParticleBase.spawnAlwaysVisibleParticle(this.getWorld(), ParticleHandler.RING2, 64, checkPos.getX() + 0.5, checkPos.getY() + 0.5, checkPos.getZ() + 0.5, 0, 0, 0, faceCamera, 3.5F, 0.83f, 1, 0.39f, 1, 1, 20, true, false, new ParticleComponent[]{
-                                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
-                                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, 16.0f), false)
-                            });
-                        }
+                        if (this.getWorld().isClient())
+                            this.executeClientCode(checkPos);
                     }
                 }
             }
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    private void executeClientCode(BlockPos checkPos) {
+        if (this.isPlayerInTestZone(MinecraftClient.getInstance().player) && this.blockHasExposedSide(checkPos)) {
+            MowziesMobs.PROXY.sculptorMarkBlock(this.getId(), checkPos);
+            ParticleRotation.FaceCamera faceCamera = new ParticleRotation.FaceCamera(0);
+            AdvancedParticleBase.spawnAlwaysVisibleParticle(this.getWorld(), ParticleHandler.RING2, 64, checkPos.getX() + 0.5, checkPos.getY() + 0.5, checkPos.getZ() + 0.5, 0, 0, 0, faceCamera, 3.5F, 0.83f, 1, 0.39f, 1, 1, 20, true, false, new ParticleComponent[]{
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, 16.0f), false)
+            });
         }
     }
 

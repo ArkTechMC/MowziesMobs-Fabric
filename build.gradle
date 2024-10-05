@@ -72,15 +72,13 @@ dependencies {
     modImplementation(include("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${cca_version}"))
 
     // Porting Lib
-    modImplementation "io.github.fabricators_of_create.Porting-Lib:attributes:${project.porting_version}"
-    modImplementation "io.github.fabricators_of_create.Porting-Lib:base:${project.porting_version}"
-    modImplementation "io.github.fabricators_of_create.Porting-Lib:client_events:${project.porting_version}"
-    modImplementation "io.github.fabricators_of_create.Porting-Lib:common:${project.porting_version}"
-    modImplementation "io.github.fabricators_of_create.Porting-Lib:core:${project.porting_version}"
-    modImplementation "io.github.fabricators_of_create.Porting-Lib:entity:${project.porting_version}"
-    modImplementation "io.github.fabricators_of_create.Porting-Lib:level_events:${project.porting_version}"
-    modImplementation "io.github.fabricators_of_create.Porting-Lib:models:${project.porting_version}"
-    modImplementation "io.github.fabricators_of_create.Porting-Lib:tags:${project.porting_version}"
+    modImplementation(include("io.github.fabricators_of_create.Porting-Lib:attributes:${project.porting_version}"))
+    modImplementation(include("io.github.fabricators_of_create.Porting-Lib:base:${project.porting_version}"))
+    modImplementation(include("io.github.fabricators_of_create.Porting-Lib:client_events:${project.porting_version}"))
+    modImplementation(include("io.github.fabricators_of_create.Porting-Lib:entity:${project.porting_version}"))
+    modImplementation(include("io.github.fabricators_of_create.Porting-Lib:level_events:${project.porting_version}"))
+    modImplementation(include("io.github.fabricators_of_create.Porting-Lib:models:${project.porting_version}"))
+    modImplementation(include("io.github.fabricators_of_create.Porting-Lib:tags:${project.porting_version}"))
 
     //Runtime
     runtimeOnly "com.eliotlash.mclib:mclib:20"
