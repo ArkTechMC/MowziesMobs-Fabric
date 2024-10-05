@@ -51,7 +51,7 @@ public class ItemHandler {
     public static final ItemNagaFangDagger NAGA_FANG_DAGGER = register("naga_fang_dagger", new ItemNagaFangDagger(new Item.Settings()));
     public static final ItemEarthrendGauntlet EARTHREND_GAUNTLET = register("earthrend_gauntlet", new ItemEarthrendGauntlet(new Item.Settings().maxDamageIfAbsent(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.durabilityValue).rarity(Rarity.RARE)));
     public static final ItemSculptorStaff SCULPTOR_STAFF = register("sculptor_staff", new ItemSculptorStaff(new Item.Settings().maxDamageIfAbsent(1000).rarity(Rarity.RARE)));
-    public static final ItemSandRake SAND_RAKE = register("sand_rake", new ItemSandRake(new Item.Settings().maxDamageIfAbsent(64)));
+//    public static final ItemSandRake SAND_RAKE = register("sand_rake", new ItemSandRake(new Item.Settings().maxDamageIfAbsent(64)));
     public static final Item LOGO = register("logo", new Item(new Item.Settings()));
     public static final MusicDiscItem PETIOLE_MUSIC_DISC = register("music_disc_petiole", new MusicDiscItem(14, MMSounds.MUSIC_PETIOLE, new Item.Settings().maxCount(1).rarity(Rarity.RARE), 2800));
     public static final SpawnEggItem FOLIAATH_SPAWN_EGG = register("foliaath_spawn_egg", new SpawnEggItem(EntityHandler.FOLIAATH, 0x47CC3B, 0xC03BCC, new Item.Settings()));

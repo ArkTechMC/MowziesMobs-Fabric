@@ -99,31 +99,31 @@ public final class ServerEventHandler {
 
         if (world.isClient)
             return true;
-        if (entity instanceof ZombieEntity && !(entity instanceof ZombifiedPiglinEntity)) {
-            ((PathAwareEntity) entity).targetSelector.add(2, new ActiveTargetGoal<>((PathAwareEntity) entity, EntityFoliaath.class, 0, true, false, null));
-            ((PathAwareEntity) entity).targetSelector.add(3, new ActiveTargetGoal<>((PathAwareEntity) entity, EntityUmvuthana.class, 0, true, false, null));
-            ((PathAwareEntity) entity).targetSelector.add(2, new ActiveTargetGoal<>((PathAwareEntity) entity, EntityUmvuthi.class, 0, true, false, null));
+        if (entity instanceof ZombieEntity zombie && !(entity instanceof ZombifiedPiglinEntity)) {
+            zombie.targetSelector.add(2, new ActiveTargetGoal<>(zombie, EntityFoliaath.class, 0, true, false, null));
+            zombie.targetSelector.add(3, new ActiveTargetGoal<>(zombie, EntityUmvuthana.class, 0, true, false, null));
+            zombie.targetSelector.add(2, new ActiveTargetGoal<>(zombie, EntityUmvuthi.class, 0, true, false, null));
         }
         if (entity instanceof AbstractSkeletonEntity skeleton) {
-            skeleton.targetSelector.add(3, new ActiveTargetGoal<>((PathAwareEntity) entity, EntityUmvuthana.class, 0, true, false, null));
-            skeleton.targetSelector.add(2, new ActiveTargetGoal<>((PathAwareEntity) entity, EntityUmvuthi.class, 0, true, false, null));
+            skeleton.targetSelector.add(3, new ActiveTargetGoal<>(skeleton, EntityUmvuthana.class, 0, true, false, null));
+            skeleton.targetSelector.add(2, new ActiveTargetGoal<>(skeleton, EntityUmvuthi.class, 0, true, false, null));
         }
 
         if (entity instanceof ParrotEntity parrot) {
-            parrot.goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
+            parrot.goalSelector.add(3, new FleeEntityGoal<>(parrot, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
         }
         if (entity instanceof AnimalEntity animal) {
-            animal.goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>((PathAwareEntity) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
-            animal.goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>((PathAwareEntity) entity, EntityUmvuthana.class, 6.0F, 1.0D, 1.2D));
-            animal.goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>((PathAwareEntity) entity, EntityUmvuthi.class, 6.0F, 1.0D, 1.2D));
-            animal.goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>((PathAwareEntity) entity, EntityNaga.class, 10.0F, 1.0D, 1.2D));
-            animal.goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>((PathAwareEntity) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
+            animal.goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>(animal, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
+            animal.goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>(animal, EntityUmvuthana.class, 6.0F, 1.0D, 1.2D));
+            animal.goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>(animal, EntityUmvuthi.class, 6.0F, 1.0D, 1.2D));
+            animal.goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>(animal, EntityNaga.class, 10.0F, 1.0D, 1.2D));
+            animal.goalSelector.add(3, new AvoidEntityIfNotTamedGoal<>(animal, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
         if (entity instanceof MerchantEntity merchant) {
-            merchant.goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityUmvuthana.class, 6.0F, 1.0D, 1.2D));
-            merchant.goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityUmvuthi.class, 6.0F, 1.0D, 1.2D));
-            merchant.goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityNaga.class, 10.0F, 1.0D, 1.2D));
-            merchant.goalSelector.add(3, new FleeEntityGoal<>((PathAwareEntity) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
+            merchant.goalSelector.add(3, new FleeEntityGoal<>(merchant, EntityUmvuthana.class, 6.0F, 1.0D, 1.2D));
+            merchant.goalSelector.add(3, new FleeEntityGoal<>(merchant, EntityUmvuthi.class, 6.0F, 1.0D, 1.2D));
+            merchant.goalSelector.add(3, new FleeEntityGoal<>(merchant, EntityNaga.class, 10.0F, 1.0D, 1.2D));
+            merchant.goalSelector.add(3, new FleeEntityGoal<>(merchant, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
         return true;
     }

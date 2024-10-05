@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class ItemIceCrystal extends Item {
     public ItemIceCrystal(Settings properties) {
-        super(properties.maxCount(1));//.maxCount(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability)
+        super(properties);//.maxCount(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability)
     }
 
     @Override

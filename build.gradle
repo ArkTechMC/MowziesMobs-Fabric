@@ -61,6 +61,9 @@ dependencies {
     // Uranus
     modImplementation "curse.maven:uranus-1010827:5600816"
 
+    // Jupiter
+    modImplementation "curse.maven:jupiter-1072905:5685082"
+
     // GeckoLib
     modImplementation "curse.maven:geckolib-388172:5460308"
 

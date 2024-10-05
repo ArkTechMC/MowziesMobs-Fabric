@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.block;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
@@ -23,7 +24,7 @@ public final class BlockHandler {
 
     public static Block registerBlockAndItem(String name, Block block) {
         Block blockObj = register(name, block);
-        Registry.register(Registries.ITEM, name, new BlockItem(blockObj, new Item.Settings()));
+        ItemHandler.ITEMS.add(Registry.register(Registries.ITEM, new Identifier(MowziesMobs.MODID, name), new BlockItem(blockObj, new Item.Settings())));
         return blockObj;
     }
 
@@ -38,9 +39,9 @@ public final class BlockHandler {
         fireblock.registerFlammableBlock(PAINTED_ACACIA_SLAB, 5, 20);
         fireblock.registerFlammableBlock(CLAWED_LOG, 5, 5);
 
-        FuelRegistry.INSTANCE.add(BlockHandler.CLAWED_LOG,300);
-        FuelRegistry.INSTANCE.add(BlockHandler.PAINTED_ACACIA,300);
-        FuelRegistry.INSTANCE.add(BlockHandler.PAINTED_ACACIA_SLAB,150);
-        FuelRegistry.INSTANCE.add(BlockHandler.THATCH,100);
+        FuelRegistry.INSTANCE.add(BlockHandler.CLAWED_LOG, 300);
+        FuelRegistry.INSTANCE.add(BlockHandler.PAINTED_ACACIA, 300);
+        FuelRegistry.INSTANCE.add(BlockHandler.PAINTED_ACACIA_SLAB, 150);
+        FuelRegistry.INSTANCE.add(BlockHandler.THATCH, 100);
     }
 }

@@ -81,13 +81,13 @@ public final class GuiUmvuthiTrade extends HandledScreen<ContainerUmvuthiTrade> 
     }
 
     @Override
-    protected void drawBackground(DrawContext guiGraphics, float partialTicks, int x, int y) {
+    protected void drawBackground(DrawContext guiGraphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.colorMask(true, true, true, true);
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, this.hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE);
         //minecraft.getTextureManager().bindForSetup(hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE);
-        guiGraphics.drawTexture(this.hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE, x, y, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        guiGraphics.drawTexture(this.hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight);
         this.umvuthi.renderingInGUI = true;
         InventoryScreen.drawEntity(guiGraphics, x + 33, y + 57, 10, x + 33 - x, y + 21 - y, this.umvuthi);
         this.umvuthi.renderingInGUI = false;

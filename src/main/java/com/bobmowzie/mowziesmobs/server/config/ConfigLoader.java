@@ -28,7 +28,7 @@ public class ConfigLoader {
         try {
             FileUtils.copyFile(new File(src), new File(dest));
         } catch (IOException e) {
-            LOGGER.error("Failed to copy config",e);
+            LOGGER.error("Failed to copy config", e);
         }
     }
 
@@ -36,7 +36,7 @@ public class ConfigLoader {
         try {
             FileUtils.write(new File(path), GSON.toJson(value), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            LOGGER.error("Failed to save config",e);
+            LOGGER.error("Failed to save config", e);
         }
     }
 }

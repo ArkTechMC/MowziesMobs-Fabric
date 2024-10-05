@@ -40,7 +40,7 @@ public final class GuiUmvuthanaTrade extends HandledScreen<ContainerUmvuthanaTra
     }
 
     @Override
-    protected void drawBackground(DrawContext guiGraphics, float partialTicks, int x, int y) {
+    protected void drawBackground(DrawContext guiGraphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.colorMask(true, true, true, true);
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         guiGraphics.drawTexture(TEXTURE, x, y, 0, 0, this.backgroundWidth, this.backgroundHeight);
