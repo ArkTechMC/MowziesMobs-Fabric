@@ -1,6 +1,6 @@
-# Mowzie's Mobs Fabric
+# Mowzie's Mobs Unofficial
 
-This mod is an official authorized port of Mowzie's Mobs.
+This mod is an official authorized fabric port of Mowzie's Mobs.
 
 Origin mod: [CurseForge](https://www.curseforge.com/minecraft/mc-mods/mowzies-mobs) | [GitHub](https://github.com/BobMowzie/MowziesMobs)
 
