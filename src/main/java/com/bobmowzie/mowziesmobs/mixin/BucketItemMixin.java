@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BucketItem.class)
 public class BucketItemMixin {
     @Inject(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;incrementStat(Lnet/minecraft/stat/Stat;)V", ordinal = 0), cancellable = true)
-    private void onFillSuccess(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir, @Local(name = "itemStack2") ItemStack filledStack) {
+    private void onFillSuccess(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir, @Local(ordinal = 1) ItemStack filledStack) {
         if (ItemEvents.FILL_BUCKET.invoker().onFillBucket(world, user, hand, filledStack))
             cir.setReturnValue(TypedActionResult.fail(filledStack));
     }

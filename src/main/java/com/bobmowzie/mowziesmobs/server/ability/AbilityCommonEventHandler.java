@@ -1,10 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.ability;
 
-import com.bobmowzie.mowziesmobs.event.UseEmptyCallback;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.iafenvoy.uranus.event.LivingEntityEvents;
 import io.github.fabricators_of_create.porting_lib.entity.events.PlayerInteractionEvents;
+import io.github.fabricators_of_create.porting_lib.event.client.InteractEvents;
 import net.fabricmc.fabric.api.event.player.*;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -15,6 +16,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -30,15 +32,16 @@ public class AbilityCommonEventHandler {
         AttackEntityCallback.EVENT.register(AbilityCommonEventHandler::onLeftClickEntity);
         LivingEntityEvents.DAMAGE.register(AbilityCommonEventHandler::onTakeDamage);
         io.github.fabricators_of_create.porting_lib.entity.events.LivingEntityEvents.LivingJumpEvent.JUMP.register(AbilityCommonEventHandler::onJump);
-        UseEmptyCallback.EVENT.register(AbilityCommonEventHandler::onPlayerInteract);
+        InteractEvents.USE.register(AbilityCommonEventHandler::onPlayerInteract);
     }
 
-    public static void onPlayerInteract(PlayerEntity player, Hand hand) {
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(player);
+    public static ActionResult onPlayerInteract(MinecraftClient mc, HitResult hit, Hand hand) {
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityCapability.get(mc.player);
         if (abilityCapability != null)
             for (Ability<?> ability : abilityCapability.getAbilities())
                 if (ability instanceof PlayerAbility playerAbility)
-                    playerAbility.onRightClickEmpty(player, hand);
+                    playerAbility.onRightClickEmpty(mc.player, hand);
+        return ActionResult.PASS;
     }
 
     public static ActionResult onPlayerRightClickBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
