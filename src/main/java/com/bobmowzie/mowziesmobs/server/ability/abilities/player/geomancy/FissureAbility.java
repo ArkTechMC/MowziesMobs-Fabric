@@ -14,7 +14,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class FissureAbility extends PlayerAbility {
-    public FissureAbility(AbilityType<PlayerEntity, ? extends Ability> abilityType, PlayerEntity user) {
+    public FissureAbility(AbilityType<PlayerEntity, ? extends Ability<?>> abilityType, PlayerEntity user) {
         super(abilityType, user, new AbilitySection[]{
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 2),
                 new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE),
