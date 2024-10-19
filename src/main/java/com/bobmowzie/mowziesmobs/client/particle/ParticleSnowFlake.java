@@ -145,7 +145,6 @@ public class ParticleSnowFlake extends SpriteBillboardParticle {
             buffer.writeBoolean(this.swirls);
         }
 
-        @SuppressWarnings("deprecation")
         @Override
         public String asString() {
             return String.format(Locale.ROOT, "%s %.2f %b", Registries.PARTICLE_TYPE.getId(this.getType()),

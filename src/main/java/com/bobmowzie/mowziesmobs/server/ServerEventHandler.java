@@ -574,7 +574,8 @@ public final class ServerEventHandler {
                             particlePos = particlePos.rotateX((float) (rand.nextFloat() * 2 * Math.PI));
                             double value = rand.nextFloat() * 0.1f;
                             double life = rand.nextFloat() * 8f + 15f;
-                            ParticleVanillaCloudExtended.spawnVanillaCloud(target.getWorld(), pos.getX(), pos.getY(), pos.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.6, life);
+                            World world = target.getWorld();
+                            world.addParticle(new ParticleVanillaCloudExtended.VanillaCloudData((float) (double) 1, (float) (0.25d + value), (float) (0.75d + value), (float) (0.25d + value), (float) 0.6, (float) life, null), pos.getX(), pos.getY(), pos.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed);
                         }
                         for (int i = 0; i < 10; i++) {
                             Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.25, 0, 0);

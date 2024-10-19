@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.client.particle.util;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public class RibbonComponent extends ParticleComponent {
     int length;
@@ -38,7 +39,13 @@ public class RibbonComponent extends ParticleComponent {
             newComponents[this.components.length] = new AttachToParticle(particle);
             newComponents[this.components.length + 1] = new Trail();
 
-            ParticleRibbon.spawnRibbon(particle.getWorld(), this.ribbon, this.length, particle.getPosX(), particle.getPosY(), particle.getPosZ(), 0, 0, 0, this.faceCamera, this.yaw, this.pitch, this.roll, this.scale, this.r, this.g, this.b, this.a, 0, particle.getMaxAge() + this.length, this.emissive, newComponents);
+            World world = particle.getWorld();
+            double x = particle.getPosX();
+            double y = particle.getPosY();
+            double z = particle.getPosZ();
+            double duration = particle.getMaxAge() + this.length;
+            ParticleRotation rotation = this.faceCamera ? new ParticleRotation.FaceCamera((float) 0) : new ParticleRotation.EulerAngles((float) this.yaw, (float) this.pitch, (float) this.roll);
+            world.addParticle(new RibbonParticleData(this.ribbon, rotation, this.scale, this.r, this.g, this.b, this.a, 0, duration, this.emissive, this.length, newComponents), x, y, z, 0, 0, 0);
         }
     }
 

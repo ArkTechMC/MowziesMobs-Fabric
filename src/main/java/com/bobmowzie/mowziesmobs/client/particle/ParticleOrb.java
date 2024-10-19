@@ -28,7 +28,6 @@ public class ParticleOrb extends SpriteBillboardParticle {
     private double startZ;
     private double signX;
     private double signZ;
-    private float red, green, blue;
     private int mode;
     private double duration;
 
@@ -125,10 +124,6 @@ public class ParticleOrb extends SpriteBillboardParticle {
     public void buildGeometry(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
         if (this.mode == 2) this.alpha = Math.max(1 - ((float) this.age + partialTicks) / (float) this.duration, 0.001f);
         else this.alpha = ((float) this.age + partialTicks) / (float) this.duration;
-        this.red = this.red;
-        this.green = this.green;
-        this.blue = this.blue;
-
         super.buildGeometry(buffer, renderInfo, partialTicks);
     }
 
@@ -155,7 +150,7 @@ public class ParticleOrb extends SpriteBillboardParticle {
     }
 
     public static class OrbData implements ParticleEffect {
-        public static final Factory<OrbData> DESERIALIZER = new Factory<OrbData>() {
+        public static final Factory<OrbData> DESERIALIZER = new Factory<>() {
             public OrbData read(ParticleType<OrbData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
                 reader.expect(' ');
                 float r = (float) reader.readDouble();
@@ -234,7 +229,6 @@ public class ParticleOrb extends SpriteBillboardParticle {
             buffer.writeInt(this.duration);
         }
 
-        @SuppressWarnings("deprecation")
         @Override
         public String asString() {
             return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %d", Registries.PARTICLE_TYPE.getId(this.getType()),

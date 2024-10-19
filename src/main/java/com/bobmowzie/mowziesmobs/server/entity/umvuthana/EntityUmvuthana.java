@@ -3,12 +3,8 @@ package com.bobmowzie.mowziesmobs.server.entity.umvuthana;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleDecal;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
-import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
-import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
-import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent;
+import com.bobmowzie.mowziesmobs.client.particle.util.*;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
@@ -481,7 +477,10 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
             this.footstepCounter++;
             double rotation = Math.toRadians(this.bodyYaw + 180f);
             Vec3d offset = new Vec3d(0, 0, this.footstepCounter % 2 == 0 ? 0.3 : -0.3).rotateY((float) rotation);
-            ParticleDecal.spawnDecal(this.getWorld(), ParticleHandler.STRIX_FOOTPRINT, this.getX() + offset.getX(), this.getY() + 0.01, this.getZ() + offset.getZ(), 0, 0, 0, rotation, 1F, 1, 0.95, 0.1, 1, 1, 200, true, 8, 32, new ParticleComponent[]{
+            World world = this.getWorld();
+            int spriteSize = 8;
+            int bufferSize = 32;
+            ParticleComponent[] components = new ParticleComponent[]{
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.RED, new ParticleComponent.KeyTrack(
                             new float[]{0.995f, 0.05f},
                             new float[]{0, 0.3f}
@@ -514,7 +513,8 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
                             }
                         }
                     }
-            });
+            };
+            world.addParticle(new DecalParticleData(ParticleHandler.STRIX_FOOTPRINT, rotation, 1F, 1, 0.95, 0.1, 1, 1, 200, true, spriteSize, bufferSize, components), this.getX() + offset.getX(), this.getY() + 0.01, this.getZ() + offset.getZ(), 0, 0, 0);
         } else super.handleStatus(id);
     }
 
@@ -1094,11 +1094,15 @@ public abstract class EntityUmvuthana extends MowzieGeckoEntity {
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1f, 10f), false)
                         });
                     int spawnFreq = 5;
-                    if (this.getTicksInUse() % spawnFreq == 0)
-                        ParticleRibbon.spawnRibbon(this.getUser().getWorld(), ParticleHandler.RIBBON_SQUIGGLE, (int) (0.5 * dist), this.getUser().headPos[0].getX(), this.getUser().headPos[0].getY(), this.getUser().headPos[0].getZ(), 0, 0, 0, true, 0, 0, 0, 0.5F, 0.95, 0.9, 0.35, 0.75, 1, spawnFreq, true, new ParticleComponent[]{
+                    if (this.getTicksInUse() % spawnFreq == 0) {
+                        World world = this.getUser().getWorld();
+                        ParticleComponent[] components = new ParticleComponent[]{
                                 new RibbonComponent.BeamPinning(this.getUser().headPos, this.getUser().barakoPos),
                                 new RibbonComponent.PanTexture(0, 1)
-                        });
+                        };
+                        ParticleRotation rotation = new ParticleRotation.FaceCamera((float) 0);
+                        world.addParticle(new RibbonParticleData(ParticleHandler.RIBBON_SQUIGGLE, rotation, 0.5F, 0.95, 0.9, 0.35, 0.75, 1, spawnFreq, true, (int) (0.5 * dist), components), this.getUser().headPos[0].getX(), this.getUser().headPos[0].getY(), this.getUser().headPos[0].getZ(), 0, 0, 0);
+                    }
                 }
             }
         }
