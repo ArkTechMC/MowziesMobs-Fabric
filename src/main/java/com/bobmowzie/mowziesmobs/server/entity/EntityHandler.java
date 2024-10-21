@@ -38,7 +38,8 @@ public class EntityHandler {
     public static final EntityType<EntityGrottol> GROTTOL = register("grottol", build(EntityGrottol::new, SpawnGroup.MONSTER, false, 0.9F, 1.2F, 1));
     public static final EntityType<EntityLantern> LANTERN = register("lantern", build(EntityLantern::new, SpawnGroup.AMBIENT, false, 1.0f, 1.0f, 1));
     public static final EntityType<EntityNaga> NAGA = register("naga", build(EntityNaga::new, SpawnGroup.MONSTER, false, 3.0f, 1.0f, 1, 128));
-    public static final EntityType<EntitySculptor> SCULPTOR = register("sculptor", build(EntitySculptor::new, SpawnGroup.MISC, false, 1.0f, 2.0f, 1));
+    //TODO:After release
+    //    public static final EntityType<EntitySculptor> SCULPTOR = register("sculptor", build(EntitySculptor::new, SpawnGroup.MISC, false, 1.0f, 2.0f, 1));
 
     public static final EntityType<EntitySunstrike> SUNSTRIKE = register("sunstrike", build(EntitySunstrike::new, SpawnGroup.MISC, false, 0.1F, 0.1F));
     public static final EntityType<EntitySolarBeam> SOLAR_BEAM = register("solar_beam", build(EntitySolarBeam::new, SpawnGroup.MISC, false, 0.1F, 0.1F, 1));
@@ -102,6 +103,7 @@ public class EntityHandler {
         FabricDefaultAttributeRegistry.register(EntityHandler.NAGA, EntityNaga.createAttributes().build());
         FabricDefaultAttributeRegistry.register(EntityHandler.LANTERN, EntityLantern.createAttributes().build());
         FabricDefaultAttributeRegistry.register(EntityHandler.GROTTOL, EntityGrottol.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(EntityHandler.SCULPTOR, EntitySculptor.createAttributes().build());
+        //TODO:After release
+//        FabricDefaultAttributeRegistry.register(EntityHandler.SCULPTOR, EntitySculptor.createAttributes().build());
     }
 }

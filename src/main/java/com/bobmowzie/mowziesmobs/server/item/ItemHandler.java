@@ -50,7 +50,8 @@ public class ItemHandler {
     public static final ItemNagaFang NAGA_FANG = register("naga_fang", new ItemNagaFang(new Item.Settings()));
     public static final ItemNagaFangDagger NAGA_FANG_DAGGER = register("naga_fang_dagger", new ItemNagaFangDagger(new Item.Settings()));
     public static final ItemEarthrendGauntlet EARTHREND_GAUNTLET = register("earthrend_gauntlet", new ItemEarthrendGauntlet(new Item.Settings().maxDamageIfAbsent(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHREND_GAUNTLET.durabilityValue).rarity(Rarity.RARE)));
-    public static final ItemSculptorStaff SCULPTOR_STAFF = register("sculptor_staff", new ItemSculptorStaff(new Item.Settings().maxDamageIfAbsent(1000).rarity(Rarity.RARE)));
+    //TODO:After release
+    //    public static final ItemSculptorStaff SCULPTOR_STAFF = register("sculptor_staff", new ItemSculptorStaff(new Item.Settings().maxDamageIfAbsent(1000).rarity(Rarity.RARE)));
 //    public static final ItemSandRake SAND_RAKE = register("sand_rake", new ItemSandRake(new Item.Settings().maxDamageIfAbsent(64)));
     public static final Item LOGO = register("logo", new Item(new Item.Settings()));
     public static final MusicDiscItem PETIOLE_MUSIC_DISC = register("music_disc_petiole", new MusicDiscItem(14, MMSounds.MUSIC_PETIOLE, new Item.Settings().maxCount(1).rarity(Rarity.RARE), 2800));
@@ -64,7 +65,8 @@ public class ItemHandler {
     public static final SpawnEggItem GROTTOL_SPAWN_EGG = register("grottol_spawn_egg", new SpawnEggItem(EntityHandler.GROTTOL, 0x777777, 0xbce0ff, new Item.Settings()));
     public static final SpawnEggItem LANTERN_SPAWN_EGG = register("lantern_spawn_egg", new SpawnEggItem(EntityHandler.LANTERN, 0x6dea00, 0x235a10, new Item.Settings()));
     public static final SpawnEggItem NAGA_SPAWN_EGG = register("naga_spawn_egg", new SpawnEggItem(EntityHandler.NAGA, 0x154850, 0x8dd759, new Item.Settings()));
-    public static final SpawnEggItem SCULPTOR_SPAWN_EGG = register("sculptor_spawn_egg", new SpawnEggItem(EntityHandler.SCULPTOR, 0xc4a137, 0xfff5e7, new Item.Settings()));
+    //TODO:After release
+    //    public static final SpawnEggItem SCULPTOR_SPAWN_EGG = register("sculptor_spawn_egg", new SpawnEggItem(EntityHandler.SCULPTOR, 0xc4a137, 0xfff5e7, new Item.Settings()));
     public static Style TOOLTIP_STYLE = Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.GRAY));
 
     private static <T extends Item> T register(String name, T item) {

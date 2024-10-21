@@ -55,7 +55,8 @@ public class MowziesMobsClient implements ClientModInitializer {
         BuiltinItemRendererRegistry.INSTANCE.register(ItemHandler.UMVUTHANA_MASK_FURY, new RenderUmvuthanaMaskItem());
         BuiltinItemRendererRegistry.INSTANCE.register(ItemHandler.UMVUTHANA_MASK_MISERY, new RenderUmvuthanaMaskItem());
         BuiltinItemRendererRegistry.INSTANCE.register(ItemHandler.SOL_VISAGE, new RenderSolVisageItem());
-        BuiltinItemRendererRegistry.INSTANCE.register(ItemHandler.SCULPTOR_STAFF, new RenderSculptorStaff());
+        //TODO:After release
+//        BuiltinItemRendererRegistry.INSTANCE.register(ItemHandler.SCULPTOR_STAFF, new RenderSculptorStaff());
 
         ModelPredicateProviderRegistry.register(ItemHandler.BLOWGUN.asItem(), new Identifier("pulling"), (itemStack, world, livingEntity, seed) -> livingEntity != null && livingEntity.isUsingItem() && livingEntity.getActiveItem() == itemStack ? 1 : 0);
     }

@@ -34,7 +34,8 @@ public class EntityRendererHandler {
         EntityRendererRegistry.register(EntityHandler.GROTTOL, RenderGrottol::new);
         EntityRendererRegistry.register(EntityHandler.LANTERN, RenderLantern::new);
         EntityRendererRegistry.register(EntityHandler.NAGA, RenderNaga::new);
-        EntityRendererRegistry.register(EntityHandler.SCULPTOR, RenderSculptor::new);
+        //TODO:After release
+//        EntityRendererRegistry.register(EntityHandler.SCULPTOR, RenderSculptor::new);
 
         EntityRendererRegistry.register(EntityHandler.DART, RenderDart::new);
         EntityRendererRegistry.register(EntityHandler.SUNSTRIKE, RenderSunstrike::new);
