@@ -95,7 +95,12 @@ public class EntityLantern extends MowzieLLibraryEntity {
             this.setVelocity(this.getVelocity().add(0, 0.2d + 0.2d / this.groundDist, 0));
             if (this.getWorld().isClient) {
                 for (int i = 0; i < 5; i++) {
-                    ParticleVanillaCloudExtended.spawnVanillaCloud(this.getWorld(), this.getX(), this.getY() + 0.3, this.getZ(), -this.getVelocity().getX() * 0.2 + 0.1 * (this.random.nextFloat() - 0.5), -this.getVelocity().getY() * 0.2 + 0.1 * (this.random.nextFloat() - 0.5), -this.getVelocity().getZ() * 0.2 + 0.1 * (this.random.nextFloat() - 0.5), 0.8d + this.random.nextDouble(), 163d / 256d, 247d / 256d, 74d / 256d, 0.95, 30);
+                    World world = this.getWorld();
+                    double motionX = -this.getVelocity().getX() * 0.2 + 0.1 * (this.random.nextFloat() - 0.5);
+                    double motionY = -this.getVelocity().getY() * 0.2 + 0.1 * (this.random.nextFloat() - 0.5);
+                    double motionZ = -this.getVelocity().getZ() * 0.2 + 0.1 * (this.random.nextFloat() - 0.5);
+                    double scale = 0.8d + this.random.nextDouble();
+                    world.addParticle(new ParticleVanillaCloudExtended.VanillaCloudData((float) scale, (float) (163d / 256d), (float) (247d / 256d), (float) (74d / 256d), (float) 0.95, (float) (double) 30, null), this.getX(), this.getY() + 0.3, this.getZ(), motionX, motionY, motionZ);
                 }
                 for (int i = 0; i < 8; i++) {
                     AdvancedParticleBase.spawnParticle(this.getWorld(), ParticleHandler.PIXEL, this.getX(), this.getY() + 0.3, this.getZ(), -this.getVelocity().getX() * 0.2 + 0.2 * (this.random.nextFloat() - 0.5), -this.getVelocity().getY() * 0.2 + 0.1 * (this.random.nextFloat() - 0.5), -this.getVelocity().getZ() * 0.2 + 0.2 * (this.random.nextFloat() - 0.5), true, 0, 0, 0, 0, 4f, 163d / 256d, 247d / 256d, 74d / 256d, 1, 0.9, 17 + this.random.nextFloat() * 10, true, true, new ParticleComponent[]{

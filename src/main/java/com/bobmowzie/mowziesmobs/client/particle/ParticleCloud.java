@@ -159,7 +159,6 @@ public class ParticleCloud extends SpriteBillboardParticle {
             buffer.writeFloat(this.airDrag);
         }
 
-        @SuppressWarnings("deprecation")
         @Override
         public String asString() {
             return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %d %.2f", Registries.PARTICLE_TYPE.getId(this.getType()),

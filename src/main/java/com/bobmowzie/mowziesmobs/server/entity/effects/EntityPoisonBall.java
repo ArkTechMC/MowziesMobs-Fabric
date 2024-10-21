@@ -81,7 +81,8 @@ public class EntityPoisonBall extends EntityMagicEffect {
                     double zSpeed = scale * 0.02 * (this.random.nextFloat() * 2 - 1);
                     double value = this.random.nextFloat() * 0.1f;
                     double life = this.random.nextFloat() * 10f + 15f;
-                    ParticleVanillaCloudExtended.spawnVanillaCloud(this.getWorld(), x - motionX * 0.5, y - motionY * 0.5, z - motionZ * 0.5, xSpeed, ySpeed, zSpeed, scale, 0.25d + value, 0.75d + value, 0.25d + value, 0.99, life);
+                    World world = this.getWorld();
+                    world.addParticle(new ParticleVanillaCloudExtended.VanillaCloudData((float) (double) scale, (float) (0.25d + value), (float) (0.75d + value), (float) (0.25d + value), (float) 0.99, (float) life, null), x - motionX * 0.5, y - motionY * 0.5, z - motionZ * 0.5, xSpeed, ySpeed, zSpeed);
                 }
                 for (int i = 0; i < 2; i++) {
                     double xSpeed = scale * 0.06 * (this.random.nextFloat() * 2 - 1);
@@ -134,7 +135,8 @@ public class EntityPoisonBall extends EntityMagicEffect {
                 particlePos = particlePos.rotateX((float) (this.random.nextFloat() * 2 * Math.PI));
                 double value = this.random.nextFloat() * 0.1f;
                 double life = this.random.nextFloat() * 17f + 30f;
-                ParticleVanillaCloudExtended.spawnVanillaCloud(this.getWorld(), this.getX(), this.getY(), this.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.6, life);
+                World world = this.getWorld();
+                world.addParticle(new ParticleVanillaCloudExtended.VanillaCloudData((float) (double) 1, (float) (0.25d + value), (float) (0.75d + value), (float) (0.25d + value), (float) 0.6, (float) life, null), this.getX(), this.getY(), this.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed);
             }
             for (int i = 0; i < 26; i++) {
                 Vec3d particlePos = new Vec3d(this.random.nextFloat() * 0.25, 0, 0);

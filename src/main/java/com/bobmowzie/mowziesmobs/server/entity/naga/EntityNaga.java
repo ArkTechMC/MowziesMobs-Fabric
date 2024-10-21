@@ -488,7 +488,8 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
                     particlePos = particlePos.rotateX((float) (this.random.nextFloat() * 2 * Math.PI));
                     double value = this.random.nextFloat() * 0.1f;
                     double life = this.random.nextFloat() * 10f + 20f;
-                    ParticleVanillaCloudExtended.spawnVanillaCloud(this.getWorld(), particlePos.x + this.mouthPos[0].x, particlePos.y + this.mouthPos[0].y, particlePos.z + this.mouthPos[0].z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.6, life);
+                    World world = this.getWorld();
+                    world.addParticle(new ParticleVanillaCloudExtended.VanillaCloudData((float) (double) 1, (float) (0.25d + value), (float) (0.75d + value), (float) (0.25d + value), (float) 0.6, (float) life, null), particlePos.x + this.mouthPos[0].x, particlePos.y + this.mouthPos[0].y, particlePos.z + this.mouthPos[0].z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed);
                 }
             }
 
@@ -501,7 +502,8 @@ public class EntityNaga extends MowzieLLibraryEntity implements RangedAttackMob,
                     particlePos = particlePos.rotateY((float) (this.random.nextFloat() * 2 * Math.PI));
                     particlePos = particlePos.rotateX((float) (this.random.nextFloat() * 2 * Math.PI));
                     double value = this.random.nextFloat() * 0.15f;
-                    ParticleVanillaCloudExtended.spawnVanillaCloudDestination(this.getWorld(), particlePos.x + this.mouthPos[0].x, particlePos.y + this.mouthPos[0].y, particlePos.z + this.mouthPos[0].z, 0, 0, 0, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.9, 15, this.mouthPos);
+                    World world = this.getWorld();
+                    world.addParticle(new ParticleVanillaCloudExtended.VanillaCloudData((float) (double) 1, (float) (0.25d + value), (float) (0.75d + value), (float) (0.25d + value), (float) 0.9, (float) (double) 15, this.mouthPos), particlePos.x + this.mouthPos[0].x, particlePos.y + this.mouthPos[0].y, particlePos.z + this.mouthPos[0].z, 0, 0, 0);
                 }
             }
         }

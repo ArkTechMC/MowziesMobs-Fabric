@@ -13,7 +13,6 @@ import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 
 import java.util.Locale;
 
@@ -51,14 +50,6 @@ public class ParticleVanillaCloudExtended extends SpriteBillboardParticle {
         this.animatedSprite = animatedSprite;
         if (destination != null) this.setSprite(animatedSprite.getSprite(this.maxAge - this.age, this.maxAge));
         else this.setSpriteForAge(this.animatedSprite);
-    }
-
-    public static void spawnVanillaCloud(World world, double x, double y, double z, double motionX, double motionY, double motionZ, double scale, double r, double g, double b, double drag, double duration) {
-        world.addParticle(new VanillaCloudData((float) scale, (float) r, (float) g, (float) b, (float) drag, (float) duration, null), x, y, z, motionX, motionY, motionZ);
-    }
-
-    public static void spawnVanillaCloudDestination(World world, double x, double y, double z, double motionX, double motionY, double motionZ, double scale, double r, double g, double b, double drag, double duration, Vec3d[] destination) {
-        world.addParticle(new VanillaCloudData((float) scale, (float) r, (float) g, (float) b, (float) drag, (float) duration, destination), x, y, z, motionX, motionY, motionZ);
     }
 
     @Override

@@ -235,7 +235,6 @@ public class ParticleRing extends SpriteBillboardParticle {
             buffer.writeInt(this.duration);
         }
 
-        @SuppressWarnings("deprecation")
         @Override
         public String asString() {
             return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f %.2f %.2f %d %b", Registries.PARTICLE_TYPE.getId(this.getType()),

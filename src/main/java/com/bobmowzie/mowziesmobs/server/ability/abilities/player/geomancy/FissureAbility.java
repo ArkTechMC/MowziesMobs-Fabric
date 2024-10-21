@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities.player.geomancy;
 
-import com.bobmowzie.mowziesmobs.client.particle.ParticleDecal;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
+import com.bobmowzie.mowziesmobs.client.particle.util.DecalParticleData;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
@@ -28,7 +28,8 @@ public class FissureAbility extends PlayerAbility {
         if (player.getStackInHand(hand).isEmpty()) {
             float rotation = (float) Math.toRadians(this.getUser().headYaw + 180f);
             Vec3d pos = hitResult.getPos();
-            ParticleDecal.spawnDecal(this.getUser().getWorld(), ParticleHandler.GROUND_CRACK, pos.getX(), pos.getY() + 0.01, pos.getZ(), 0, 0, 0, rotation, 2, 1F, 1F, 1F, 1F, 0, 200, false, 32, 64, new ParticleComponent[]{});
+            World world1 = this.getUser().getWorld();
+            world1.addParticle(new DecalParticleData(ParticleHandler.GROUND_CRACK, rotation, 2, 1F, 1F, 1F, 1F, 0, 200, false, 32, 64, new ParticleComponent[]{}), pos.getX(), pos.getY() + 0.01, pos.getZ(), 0, 0, 0);
         }
     }
 }

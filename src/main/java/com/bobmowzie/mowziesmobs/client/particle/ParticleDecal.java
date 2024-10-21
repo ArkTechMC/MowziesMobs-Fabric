@@ -14,13 +14,11 @@ import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.ParticleType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 
 public class ParticleDecal extends AdvancedParticleBase {
@@ -96,10 +94,6 @@ public class ParticleDecal extends AdvancedParticleBase {
         Vec3d vector3d = renderInfo.getPos();
 //        Vector3d = new Vec3(0, 1, 0);
         buffer.vertex(x - vector3d.getX(), y - vector3d.getY(), z - vector3d.getZ()).texture(u, v).color(r, g, b, alpha).light(lightColor).next();
-    }
-
-    public static void spawnDecal(World world, ParticleType<DecalParticleData> particle, double x, double y, double z, double motionX, double motionY, double motionZ, double rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, int spriteSize, int bufferSize, ParticleComponent[] components) {
-        world.addParticle(new DecalParticleData(particle, rotation, scale, r, g, b, a, drag, duration, emissive, spriteSize, bufferSize, components), x, y, z, motionX, motionY, motionZ);
     }
 
     @Override

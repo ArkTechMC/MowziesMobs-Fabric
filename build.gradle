@@ -47,6 +47,9 @@ repositories {
             includeGroup "com.eliotlash.mclib"
         }
     }
+    maven {
+        url = "https://api.modrinth.com/maven"
+    }
 }
 
 dependencies {
@@ -59,10 +62,10 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // Uranus
-    modImplementation "curse.maven:uranus-1010827:5600816"
+    modImplementation "maven.modrinth:uranus:MSGUcQEI"
 
     // Jupiter
-    modImplementation "curse.maven:jupiter-1072905:5685082"
+    modImplementation "maven.modrinth:jupiter:ZPI6y61s"
 
     // GeckoLib
     modImplementation "curse.maven:geckolib-388172:5460308"
